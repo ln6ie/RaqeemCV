@@ -1,26 +1,37 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Platform } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { SPACING, BORDER_RADIUS, TYPOGRAPHY } from '../constants/tokens';
+import { SPACING, BORDER_RADIUS, TYPOGRAPHY, getFontFamily } from '../constants/tokens';
+import { TranslationSet } from '../constants/translations';
 
 interface HeaderProps {
   isDarkMode: boolean;
   onOpenSettings: () => void;
   theme: any;
+  isRTL: boolean;
+  t: TranslationSet;
 }
 
-/**
- * Top application header containing the brand name and the iOS gear button for Action Sheet settings.
- */
-export const Header = ({ isDarkMode, onOpenSettings, theme }: HeaderProps) => {
+export const Header = ({ isDarkMode, onOpenSettings, theme, isRTL, t }: HeaderProps) => {
   return (
-    <View style={styles.headerContainer}>
-      <View>
-        <Text style={[styles.appTitle, { color: theme.textPrimary }]}>
-          CV BUILDER
+    <View
+      style={[
+        styles.headerContainer,
+        { flexDirection: isRTL ? 'row-reverse' : 'row' },
+      ]}
+    >
+      <View style={isRTL ? { alignItems: 'flex-end' } : undefined}>
+        <Text style={[
+          styles.appTitle,
+          { color: theme.textPrimary, fontFamily: getFontFamily(isRTL, 900) }
+        ]}>
+          {t.app.title}
         </Text>
-        <Text style={[styles.appSubtitle, { color: theme.textSecondary }]}>
-          A4 PDF Creator
+        <Text style={[
+          styles.appSubtitle,
+          { color: theme.textSecondary, textAlign: isRTL ? 'right' : 'left', fontFamily: getFontFamily(isRTL, 700) }
+        ]}>
+          {t.app.subtitle}
         </Text>
       </View>
       <TouchableOpacity
@@ -39,7 +50,6 @@ export const Header = ({ isDarkMode, onOpenSettings, theme }: HeaderProps) => {
 
 const styles = StyleSheet.create({
   headerContainer: {
-    flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: SPACING.lg,

@@ -1,17 +1,15 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { SPACING, TYPOGRAPHY } from '../constants/tokens';
+import { SPACING, TYPOGRAPHY, getFontFamily } from '../constants/tokens';
 import { Language } from '../types/cv';
 
 interface LanguagePreviewProps {
   languages: Language[];
   theme: any;
+  isRTL?: boolean;
 }
 
-/**
- * Preview component showing all the loaded languages and their proficiency levels in a clean list structure.
- */
-export const LanguagePreview = ({ languages, theme }: LanguagePreviewProps) => {
+export const LanguagePreview = ({ languages, theme, isRTL = false }: LanguagePreviewProps) => {
   return (
     <>
       {languages.map((lang, idx) => {
@@ -25,8 +23,14 @@ export const LanguagePreview = ({ languages, theme }: LanguagePreviewProps) => {
               isLast ? { borderBottomWidth: 0 } : null,
             ]}
           >
-            <Text style={[styles.langText, { color: theme.textBody }]}>
-              <Text style={[styles.langName, { color: theme.textPrimary }]}>{lang.name}:</Text>{' '}
+            <Text style={[
+              styles.langText,
+              { color: theme.textBody, fontFamily: getFontFamily(isRTL, 500) }
+            ]}>
+              <Text style={[
+                styles.langName,
+                { color: theme.textPrimary, fontFamily: getFontFamily(isRTL, 700) }
+              ]}>{lang.name}:</Text>{' '}
               {lang.level}
             </Text>
           </View>

@@ -1,10 +1,6 @@
 import { StyleSheet } from 'react-native';
 import { SPACING, BORDER_RADIUS, TYPOGRAPHY } from '../constants/tokens';
 
-/**
- * Centered layout stylesheet for the CV Builder progressive wizard.
- * Uses design token constants for spacing, typography, and pill curves.
- */
 export const styles = StyleSheet.create({
   root: {
     flex: 1,
@@ -15,6 +11,7 @@ export const styles = StyleSheet.create({
   scrollContent: {
     padding: SPACING.md,
     paddingBottom: SPACING.xl,
+    flexGrow: 1,
   },
   stepperTrack: {
     flexDirection: 'row',
@@ -62,7 +59,7 @@ export const styles = StyleSheet.create({
   },
   modalBackdrop: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.45)', // iOS standard dim backdrop
+    backgroundColor: 'rgba(0, 0, 0, 0.45)',
     justifyContent: 'flex-end',
   },
   actionSheetContainer: {
@@ -93,7 +90,7 @@ export const styles = StyleSheet.create({
   },
   cancelButton: {
     width: '100%',
-    borderRadius: BORDER_RADIUS.xl, // Pill rounded cancels
+    borderRadius: BORDER_RADIUS.xl,
     paddingVertical: SPACING.md,
     alignItems: 'center',
     marginTop: SPACING.md,

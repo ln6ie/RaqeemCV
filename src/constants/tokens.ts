@@ -1,20 +1,11 @@
 import { Platform, PlatformColor, ColorValue } from 'react-native';
 
-/**
- * Helper to dynamically fetch UIKit system colors on iOS,
- * with pixel-perfect design system fallbacks for Android/Web.
- */
-const getNativeColor = (iosName: string, fallback: string): ColorValue => {
-  return Platform.select({
+const system = (iosName: string, fallback: string): ColorValue =>
+  Platform.select<ColorValue>({
     ios: PlatformColor(iosName),
-    default: fallback as any,
-  }) as ColorValue;
-};
+    default: fallback as ColorValue,
+  })!;
 
-/**
- * Global Design Tokens for the CV Builder Application.
- * Locked to iOS specifications and absolute solid parameters.
- */
 export const COLORS = {
   pdf: {
     light: {
@@ -32,37 +23,39 @@ export const COLORS = {
   },
   app: {
     light: {
-      background: '#F2F2F7',
-      cardBackground: 'rgba(255, 255, 255, 0.75)',
-      cardBorder: 'rgba(0, 0, 0, 0.1)',
-      textPrimary: '#002060',
-      textSecondary: '#3A3A3C',
-      textBody: '#000000',
-      inputBackground: 'rgba(255, 255, 255, 0.85)',
-      inputBorder: 'rgba(0, 32, 96, 0.15)',
-      buttonBackground: '#002060',
+      background: system('systemGroupedBackground', '#F2F2F7'),
+      cardBackground: system('secondarySystemGroupedBackground', '#FFFFFF'),
+      cardBorder: system('separator', 'rgba(0, 0, 0, 0.1)'),
+      textPrimary: system('label', '#000000'),
+      textSecondary: system('secondaryLabel', '#3C3C43'),
+      textBody: system('label', '#000000'),
+      placeholderText: system('placeholderText', '#C7C7CC'),
+      inputBackground: system('systemGray6', '#F2F2F7'),
+      inputBorder: system('separator', 'rgba(0, 32, 96, 0.15)'),
+      buttonBackground: system('systemBlue', '#007AFF'),
       buttonText: '#FFFFFF',
-      accent: '#0055A5',
+      accent: system('systemBlue', '#0055A5'),
       shadow: 'rgba(0, 0, 0, 0.05)',
-      error: '#EF4444',
-      success: '#10B981',
-      borderMuted: '#D1D1D6',
+      error: system('systemRed', '#EF4444'),
+      success: system('systemGreen', '#10B981'),
+      borderMuted: system('separator', '#D1D1D6'),
     },
     dark: {
-      background: '#000000', // Pure OLED Black Background
-      cardBackground: 'rgba(28, 28, 30, 0.8)',
-      cardBorder: 'rgba(255, 255, 255, 0.1)', // Subtle glass element lines
-      textPrimary: '#8ECAE6',
-      textSecondary: '#AEAEB2',
-      textBody: '#E5E5E5',
-      inputBackground: 'rgba(44, 44, 46, 0.7)',
+      background: '#000000',
+      cardBackground: '#1C1C1E',
+      cardBorder: 'rgba(255, 255, 255, 0.1)',
+      textPrimary: '#FFFFFF',
+      textSecondary: '#EBEBF5',
+      textBody: '#FFFFFF',
+      placeholderText: '#636366',
+      inputBackground: '#1C1C1E',
       inputBorder: 'rgba(255, 255, 255, 0.1)',
-      buttonBackground: '#1D3557',
+      buttonBackground: '#0A84FF',
       buttonText: '#FFFFFF',
-      accent: '#3B82F6',
+      accent: '#0A84FF',
       shadow: 'rgba(0, 0, 0, 0.3)',
-      error: '#EF4444',
-      success: '#10B981',
+      error: '#FF453A',
+      success: '#30D158',
       borderMuted: '#38383A',
     },
   },
@@ -79,14 +72,17 @@ export const SPACING = {
 export const BORDER_RADIUS = {
   sm: 8,
   md: 16,
-  lg: 24, // Pill curves
-  xl: 32, // Native pill actions
+  lg: 24,
+  xl: 32,
   full: 9999,
 };
 
 export const TYPOGRAPHY = {
   fontFamily: {
     sans: 'System',
+    arabic: 'Cairo',
+    arabicBold: 'Cairo-Bold',
+    arabicBlack: 'Cairo-Black',
   },
   fontSize: {
     xs: 12,
@@ -97,4 +93,16 @@ export const TYPOGRAPHY = {
     xxl: 24,
     heading: 28,
   },
+};
+
+/**
+ * Returns the correct font family based on language direction and desired weight.
+ * Falls back to 'System' for LTR; uses Cairo variants for RTL Arabic text.
+ */
+export const getFontFamily = (isRTL: boolean, weight: string | number = '400'): string => {
+  if (!isRTL) return 'System';
+  const w = typeof weight === 'string' ? parseInt(weight, 10) || 400 : weight;
+  if (w >= 800) return TYPOGRAPHY.fontFamily.arabicBlack;
+  if (w >= 600) return TYPOGRAPHY.fontFamily.arabicBold;
+  return TYPOGRAPHY.fontFamily.arabic;
 };

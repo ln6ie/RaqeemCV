@@ -1,36 +1,66 @@
-import React from 'react';
-import { SafeAreaView, View, Text, StyleSheet } from 'react-native';
-import { StatusBar } from 'expo-status-bar';
+import React, { useEffect, useRef } from 'react';
+import { Animated, View, Text, StyleSheet, StatusBar } from 'react-native';
 
-/**
- * Minimalist procedural introductory splash screen.
- * Displays the high-end Royal Blue continuous curve gear box logo.
- */
-export const Splash = () => {
+interface SplashProps {
+  onFinish: () => void;
+}
+
+export const Splash = ({ onFinish }: SplashProps) => {
+  const scale = useRef(new Animated.Value(0.85)).current;
+  const fadeIn = useRef(new Animated.Value(0)).current;
+  const fadeOut = useRef(new Animated.Value(1)).current;
+
+  useEffect(() => {
+    Animated.parallel([
+      Animated.spring(scale, {
+        toValue: 1,
+        useNativeDriver: true,
+        tension: 50,
+        friction: 7,
+      }),
+      Animated.timing(fadeIn, {
+        toValue: 1,
+        duration: 400,
+        useNativeDriver: true,
+      }),
+    ]).start(() => {
+      Animated.timing(fadeOut, {
+        toValue: 0,
+        duration: 500,
+        useNativeDriver: true,
+      }).start(onFinish);
+    });
+  }, []);
+
   return (
-    <SafeAreaView style={styles.splashRoot}>
-      <StatusBar style="light" />
-      <View style={styles.splashLogoContainer}>
-        <View style={styles.splashLogoBox}>
-          <Text style={styles.splashLogoText}>CV</Text>
+    <Animated.View style={[styles.root, { opacity: fadeOut }]}>
+      <StatusBar barStyle="light-content" />
+      <Animated.View
+        style={[
+          styles.logoContainer,
+          { opacity: fadeIn, transform: [{ scale }] },
+        ]}
+      >
+        <View style={styles.logoBox}>
+          <Text style={styles.logoText}>CV</Text>
         </View>
-        <Text style={styles.splashSub}>A4 PROFESSIONAL BUILDER</Text>
-      </View>
-    </SafeAreaView>
+        <Text style={styles.sub}>A4 PROFESSIONAL BUILDER</Text>
+      </Animated.View>
+    </Animated.View>
   );
 };
 
 const styles = StyleSheet.create({
-  splashRoot: {
+  root: {
     flex: 1,
     backgroundColor: '#000000',
     alignItems: 'center',
     justifyContent: 'center',
   },
-  splashLogoContainer: {
+  logoContainer: {
     alignItems: 'center',
   },
-  splashLogoBox: {
+  logoBox: {
     backgroundColor: '#002060',
     width: 90,
     height: 90,
@@ -43,13 +73,13 @@ const styles = StyleSheet.create({
     shadowRadius: 15,
     elevation: 8,
   },
-  splashLogoText: {
+  logoText: {
     color: '#FFFFFF',
     fontSize: 38,
     fontWeight: '900',
     letterSpacing: -1,
   },
-  splashSub: {
+  sub: {
     color: '#8E8E93',
     fontSize: 10,
     fontWeight: '800',

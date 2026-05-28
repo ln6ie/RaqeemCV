@@ -1,17 +1,15 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { SPACING, TYPOGRAPHY } from '../constants/tokens';
+import { SPACING, TYPOGRAPHY, getFontFamily } from '../constants/tokens';
 import { WorkExperience } from '../types/cv';
 
 interface ExperiencePreviewProps {
   workExperience: WorkExperience[];
   theme: any;
+  isRTL?: boolean;
 }
 
-/**
- * Preview component showing all the loaded work experiences inside a clean list structure.
- */
-export const ExperiencePreview = ({ workExperience, theme }: ExperiencePreviewProps) => {
+export const ExperiencePreview = ({ workExperience, theme, isRTL = false }: ExperiencePreviewProps) => {
   return (
     <>
       {workExperience.map((exp, idx) => {
@@ -25,13 +23,22 @@ export const ExperiencePreview = ({ workExperience, theme }: ExperiencePreviewPr
               isLast ? { borderBottomWidth: 0 } : null,
             ]}
           >
-            <Text style={[styles.expTitle, { color: theme.textPrimary }]}>
+            <Text style={[
+              styles.expTitle,
+              { color: theme.textPrimary, fontFamily: getFontFamily(isRTL, 700) }
+            ]}>
               {exp.jobTitle}
             </Text>
-            <Text style={[styles.expDetails, { color: theme.textSecondary }]}>
+            <Text style={[
+              styles.expDetails,
+              { color: theme.textSecondary, fontFamily: getFontFamily(isRTL, 600) }
+            ]}>
               {exp.companyLocation} | {exp.dateRange}
             </Text>
-            <Text style={[styles.expTasks, { color: theme.textBody }]}>
+            <Text style={[
+              styles.expTasks,
+              { color: theme.textBody, fontFamily: getFontFamily(isRTL, 500) }
+            ]}>
               Tasks: {exp.mainTasks.length} bullet points loaded
             </Text>
           </View>

@@ -1,22 +1,19 @@
 import React from 'react';
 import { View, Text, TextInput, StyleSheet, TextInputProps } from 'react-native';
-import { COLORS, SPACING, BORDER_RADIUS, TYPOGRAPHY } from '../constants/tokens';
+import { COLORS, SPACING, BORDER_RADIUS, TYPOGRAPHY, getFontFamily } from '../constants/tokens';
 
 interface GlassInputProps extends TextInputProps {
   label: string;
   isDarkMode: boolean;
   error?: string;
+  isRTL?: boolean;
 }
 
-/**
- * Reusable Glassmorphism text input component.
- * Features modern semi-transparent blur card styling,
- * dynamic theme adaptability, and error highlight states.
- */
 export const GlassInput = ({
   label,
   isDarkMode,
   error,
+  isRTL = false,
   style,
   ...props
 }: GlassInputProps) => {
@@ -24,7 +21,12 @@ export const GlassInput = ({
 
   return (
     <View style={styles.container}>
-      <Text style={[styles.label, { color: theme.textSecondary }]}>{label}</Text>
+      <Text style={[
+        styles.label,
+        { color: theme.textSecondary, textAlign: isRTL ? 'right' : 'left', fontFamily: getFontFamily(isRTL, 600) }
+      ]}>
+        {label}
+      </Text>
       <View
         style={[
           styles.inputWrapper,
@@ -35,17 +37,20 @@ export const GlassInput = ({
         ]}
       >
         <TextInput
-          placeholderTextColor={isDarkMode ? '#6B7280' : '#9CA3AF'}
+          placeholderTextColor={isDarkMode ? '#636366' : '#C7C7CC'}
           style={[
             styles.input,
-            { color: theme.textBody },
+            { color: theme.textBody, textAlign: isRTL ? 'right' : 'left', fontFamily: getFontFamily(isRTL, 400) },
             style,
           ]}
           {...props}
         />
       </View>
       {error && (
-        <Text style={[styles.errorText, { color: theme.error }]}>
+        <Text style={[
+          styles.errorText,
+          { color: theme.error, textAlign: isRTL ? 'right' : 'left', fontFamily: getFontFamily(isRTL, 400) }
+        ]}>
           {error}
         </Text>
       )}
@@ -79,7 +84,6 @@ const styles = StyleSheet.create({
   },
   input: {
     fontSize: TYPOGRAPHY.fontSize.md,
-    fontFamily: TYPOGRAPHY.fontFamily.sans,
     padding: 0,
   },
   errorText: {

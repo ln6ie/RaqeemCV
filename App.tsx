@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   SafeAreaView,
   ScrollView,
@@ -11,31 +11,35 @@ import {
   ActionSheetIOS,
 } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
-import { COLORS } from './src/constants/tokens';
+import { useFonts, Cairo_400Regular, Cairo_700Bold, Cairo_900Black } from '@expo-google-fonts/cairo';
+import { COLORS, getFontFamily } from './src/constants/tokens';
+import { translations } from './src/constants/translations';
 import { useCV } from './src/hooks/useCV';
 import { GlassInput } from './src/components/GlassInput';
 import { StatusBanner } from './src/components/StatusBanner';
 import { Header } from './src/components/Header';
 import { SectionCard } from './src/components/SectionCard';
 import { ExperiencePreview } from './src/components/ExperiencePreview';
-import { EducationPreview } from './src/components/EducationPreview';
-import { LanguagePreview } from './src/components/LanguagePreview';
 import { Splash } from './src/components/Splash';
 import { Education } from './src/types/cv';
 import { styles } from './src/styles/app.styles';
 
-/**
- * Root CV Builder Wizard.
- * Cross-platform: Native iOS ActionSheetIOS on iPhone, custom glass modal on Android.
- * Highly structured and strictly kept under 250 lines.
- */
 export default function App() {
-  const [showSplash, setShowSplash] = useState<boolean>(true);
-  const [activeStep, setActiveStep] = useState<number>(0);
-  const [isDarkMode, setIsDarkMode] = useState<boolean>(false);
+  const [showSplash, setShowSplash] = useState(true);
+  const [activeStep, setActiveStep] = useState(0);
+  const [isDarkMode, setIsDarkMode] = useState(false);
   const [pdfLang, setPdfLang] = useState<'en' | 'ar'>('en');
-  const [isSettingsVisible, setIsSettingsVisible] = useState<boolean>(false);
+  const [activeLanguage, setActiveLanguage] = useState<'en' | 'ar'>('en');
+  const [isSettingsVisible, setIsSettingsVisible] = useState(false);
 
+  useFonts({
+    'Cairo': Cairo_400Regular,
+    'Cairo-Bold': Cairo_700Bold,
+    'Cairo-Black': Cairo_900Black,
+  });
+
+  const isRTL = activeLanguage === 'ar';
+  const t = translations[activeLanguage];
   const theme = isDarkMode ? COLORS.app.dark : COLORS.app.light;
 
   const {
@@ -49,14 +53,8 @@ export default function App() {
     handleGeneratePDF,
   } = useCV();
 
-  // 1.5-second introductory vector logo display
-  useEffect(() => {
-    const timer = setTimeout(() => setShowSplash(false), 1500);
-    return () => clearTimeout(timer);
-  }, []);
-
   if (showSplash) {
-    return <Splash />;
+    return <Splash onFinish={() => setShowSplash(false)} />;
   }
 
   const activeSkillsText = cvData.skills.join(', ');
@@ -78,19 +76,15 @@ export default function App() {
     }
   };
 
-  /**
-   * ActionSheet controller.
-   * Invokes AppleUIKit ActionSheetIOS on iPhone, falls back to modal on Android.
-   */
   const handleOpenSettings = () => {
     if (Platform.OS === 'ios') {
       ActionSheetIOS.showActionSheetWithOptions(
         {
           options: [
-            'Cancel',
-            `Toggle ${isDarkMode ? 'Light' : 'Dark'} Theme`,
-            'Render PDF: English (LTR)',
-            'Render PDF: Arabic (RTL)',
+            t.actionSheet.cancel,
+            t.actionSheet.toggleTheme,
+            t.actionSheet.pdfEnglish,
+            t.actionSheet.pdfArabic,
           ],
           cancelButtonIndex: 0,
           title: 'CV Builder Preferences',
@@ -101,8 +95,10 @@ export default function App() {
             setIsDarkMode((prev) => !prev);
           } else if (buttonIndex === 2) {
             setPdfLang('en');
+            setActiveLanguage('en');
           } else if (buttonIndex === 3) {
             setPdfLang('ar');
+            setActiveLanguage('ar');
           }
         }
       );
@@ -111,6 +107,10 @@ export default function App() {
     }
   };
 
+  const rtlRow = isRTL
+    ? { flexDirection: 'row-reverse' as const }
+    : { flexDirection: 'row' as const };
+
   return (
     <SafeAreaView style={[styles.root, { backgroundColor: theme.background }]}>
       <StatusBar style={isDarkMode ? 'light' : 'dark'} />
@@ -118,158 +118,176 @@ export default function App() {
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.flex}
       >
-        {/* Apple Nav Header with Gear settings button */}
         <Header
           isDarkMode={isDarkMode}
           onOpenSettings={handleOpenSettings}
           theme={theme}
+          isRTL={isRTL}
+          t={t}
         />
 
-        {/* Wizard Segmented Indicator Track */}
-        <View style={styles.stepperTrack}>
+        <View style={[styles.stepperTrack, rtlRow]}>
           {[0, 1, 2, 3].map((stepIdx) => (
             <View
               key={stepIdx}
               style={[
                 styles.stepIndicator,
                 {
-                  backgroundColor: stepIdx <= activeStep ? theme.textPrimary : theme.borderMuted,
+                  backgroundColor:
+                    stepIdx <= activeStep ? theme.textPrimary : theme.borderMuted,
                 },
               ]}
             />
           ))}
         </View>
 
-        <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
-          <StatusBanner isDarkMode={isDarkMode} isLoading={isLoading} error={systemError} />
+        <ScrollView
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
+        >
+          <StatusBanner isDarkMode={isDarkMode} isLoading={isLoading} error={systemError} isRTL={isRTL} translations={t.status} />
 
-          {/* STEP 1: Personal Summary */}
           {activeStep === 0 && (
-            <SectionCard title="Personal Details" theme={theme}>
+            <SectionCard title={t.steps.personal} theme={theme} isRTL={isRTL}>
               <GlassInput
-                label="Full Name"
+                label={t.labels.fullName}
                 value={cvData.fullName}
                 onChangeText={(val: string) => updateField('fullName', val)}
-                placeholder="e.g. Abdullah Karim Hussein"
+                placeholder={t.labels.fullName}
                 isDarkMode={isDarkMode}
+                isRTL={isRTL}
                 error={validationErrors['fullName']}
               />
               <GlassInput
-                label="Official Address"
+                label={t.labels.address}
                 value={cvData.address}
                 onChangeText={(val: string) => updateField('address', val)}
-                placeholder="e.g. Basra, Iraq"
+                placeholder={t.labels.address}
                 isDarkMode={isDarkMode}
+                isRTL={isRTL}
                 error={validationErrors['address']}
               />
               <GlassInput
-                label="Phone Number"
+                label={t.labels.phone}
                 value={cvData.phone}
                 onChangeText={(val: string) => updateField('phone', val)}
-                placeholder="e.g. 07729375972"
+                placeholder={t.labels.phone}
                 keyboardType="phone-pad"
                 isDarkMode={isDarkMode}
+                isRTL={isRTL}
                 error={validationErrors['phone']}
               />
               <GlassInput
-                label="Email Address"
+                label={t.labels.email}
                 value={cvData.email}
                 onChangeText={(val: string) => updateField('email', val)}
-                placeholder="e.g. barkiq.2002@gmail.com"
+                placeholder={t.labels.email}
                 keyboardType="email-address"
                 autoCapitalize="none"
                 isDarkMode={isDarkMode}
+                isRTL={isRTL}
                 error={validationErrors['email']}
               />
               <GlassInput
-                label="Summary Description"
+                label={t.labels.summary}
                 value={cvData.summary}
                 onChangeText={(val: string) => updateField('summary', val)}
-                placeholder="Brief professional profile..."
+                placeholder={t.labels.summary}
                 multiline
                 numberOfLines={3}
                 isDarkMode={isDarkMode}
+                isRTL={isRTL}
                 error={validationErrors['summary']}
               />
             </SectionCard>
           )}
 
-          {/* STEP 2: Work Experience preview list */}
           {activeStep === 1 && (
-            <SectionCard title={`Work Experience (${cvData.workExperience.length} items)`} theme={theme}>
-              <ExperiencePreview workExperience={cvData.workExperience} theme={theme} />
+            <SectionCard
+              title={`${t.steps.experience} (${cvData.workExperience.length} items)`}
+              theme={theme}
+              isRTL={isRTL}
+            >
+              <ExperiencePreview workExperience={cvData.workExperience} theme={theme} isRTL={isRTL} />
             </SectionCard>
           )}
 
-          {/* STEP 3: Education & Skills */}
           {activeStep === 2 && (
             <View>
-              <SectionCard title="Education" theme={theme}>
+              <SectionCard title={t.steps.education} theme={theme} isRTL={isRTL}>
                 <GlassInput
-                  label="Degree Title"
+                  label={t.labels.degree}
                   value={cvData.education[0]?.degree || ''}
                   onChangeText={(val: string) => handleUpdateEducation('degree', val)}
-                  placeholder="e.g. Bachelors"
+                  placeholder={t.labels.degree}
                   isDarkMode={isDarkMode}
+                  isRTL={isRTL}
                 />
                 <GlassInput
-                  label="Institution"
+                  label={t.labels.institution}
                   value={cvData.education[0]?.institution || ''}
                   onChangeText={(val: string) => handleUpdateEducation('institution', val)}
-                  placeholder="e.g. Southern University"
+                  placeholder={t.labels.institution}
                   isDarkMode={isDarkMode}
+                  isRTL={isRTL}
                 />
                 <GlassInput
-                  label="Graduation Year"
+                  label={t.labels.graduationYear}
                   value={cvData.education[0]?.year || ''}
                   onChangeText={(val: string) => handleUpdateEducation('year', val)}
-                  placeholder="e.g. 2025"
+                  placeholder={t.labels.graduationYear}
                   isDarkMode={isDarkMode}
+                  isRTL={isRTL}
                 />
                 <GlassInput
-                  label="Academic Honors Notes"
+                  label={t.labels.honors}
                   value={cvData.education[0]?.notes || ''}
                   onChangeText={(val: string) => handleUpdateEducation('notes', val)}
-                  placeholder="e.g. Graduated top of class..."
+                  placeholder={t.labels.honors}
                   isDarkMode={isDarkMode}
+                  isRTL={isRTL}
                 />
               </SectionCard>
-              <SectionCard title="Skills & Training" theme={theme}>
+              <SectionCard title={t.steps.skills} theme={theme} isRTL={isRTL}>
                 <GlassInput
-                  label="Technical Skills (Comma Separated)"
+                  label={t.labels.skills}
                   value={activeSkillsText}
                   onChangeText={updateSkillsString}
-                  placeholder="e.g. Supervisor, AutoCAD"
+                  placeholder={t.labels.skills}
                   isDarkMode={isDarkMode}
+                  isRTL={isRTL}
                 />
                 <GlassInput
-                  label="Courses (Comma Separated)"
+                  label={t.labels.courses}
                   value={activeCoursesText}
                   onChangeText={updateCoursesString}
-                  placeholder="e.g. HVAC, NEBOSH Course"
+                  placeholder={t.labels.courses}
                   isDarkMode={isDarkMode}
+                  isRTL={isRTL}
                 />
               </SectionCard>
             </View>
           )}
 
-          {/* STEP 4: Settings & Print */}
           {activeStep === 3 && (
             <View>
-              <SectionCard title="Language Details" theme={theme}>
+              <SectionCard title={t.steps.language} theme={theme} isRTL={isRTL}>
                 <GlassInput
-                  label="Arabic Level"
+                  label={t.labels.arabicLevel}
                   value={cvData.languages[0]?.level || ''}
                   onChangeText={(val: string) => handleUpdateLanguage(0, val)}
-                  placeholder="e.g. Native language"
+                  placeholder={t.labels.arabicLevel}
                   isDarkMode={isDarkMode}
+                  isRTL={isRTL}
                 />
                 <GlassInput
-                  label="English Level"
+                  label={t.labels.englishLevel}
                   value={cvData.languages[1]?.level || ''}
                   onChangeText={(val: string) => handleUpdateLanguage(1, val)}
-                  placeholder="e.g. Reading, writing"
+                  placeholder={t.labels.englishLevel}
                   isDarkMode={isDarkMode}
+                  isRTL={isRTL}
                 />
               </SectionCard>
 
@@ -279,21 +297,28 @@ export default function App() {
                 onPress={() => handleGeneratePDF(isDarkMode, pdfLang)}
                 disabled={isLoading}
               >
-                <Text style={[styles.primaryButtonText, { color: theme.buttonText }]}>
-                  {isLoading ? 'GENERATING...' : 'COMPILE & EXPORT PDF'}
+                <Text style={[
+                  styles.primaryButtonText,
+                  { color: theme.buttonText, fontFamily: getFontFamily(isRTL, 800) }
+                ]}>
+                  {isLoading ? t.buttons.generating : t.buttons.export}
                 </Text>
               </TouchableOpacity>
             </View>
           )}
 
-          {/* Stepper Navigation Buttons */}
-          <View style={styles.navRow}>
+          <View style={[styles.navRow, rtlRow]}>
             {activeStep > 0 && (
               <TouchableOpacity
                 style={[styles.navButton, { backgroundColor: theme.borderMuted }]}
                 onPress={() => setActiveStep((prev) => prev - 1)}
               >
-                <Text style={[styles.navButtonText, { color: theme.textSecondary }]}>BACK</Text>
+                <Text style={[
+                  styles.navButtonText,
+                  { color: theme.textSecondary, fontFamily: getFontFamily(isRTL, 800) }
+                ]}>
+                  {t.buttons.back}
+                </Text>
               </TouchableOpacity>
             )}
             {activeStep < 3 && (
@@ -301,14 +326,18 @@ export default function App() {
                 style={[styles.navButton, { backgroundColor: theme.buttonBackground, flex: 1 }]}
                 onPress={() => setActiveStep((prev) => prev + 1)}
               >
-                <Text style={[styles.navButtonText, { color: theme.buttonText }]}>NEXT</Text>
+                <Text style={[
+                  styles.navButtonText,
+                  { color: theme.buttonText, fontFamily: getFontFamily(isRTL, 800) }
+                ]}>
+                  {t.buttons.next}
+                </Text>
               </TouchableOpacity>
             )}
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
 
-      {/* Android/Web Fallback Bottom Action Sheet Modal */}
       <Modal
         visible={isSettingsVisible}
         transparent
@@ -326,28 +355,48 @@ export default function App() {
               { backgroundColor: theme.cardBackground, borderColor: theme.cardBorder },
             ]}
           >
-            <Text style={[styles.sheetTitle, { color: theme.textPrimary }]}>PREFERENCES</Text>
+            <Text style={[
+              styles.sheetTitle,
+              { color: theme.textPrimary, fontFamily: getFontFamily(isRTL, 800) }
+            ]}>
+              {t.preferences.title}
+            </Text>
             <TouchableOpacity
               style={[styles.sheetButton, { backgroundColor: theme.inputBackground }]}
               onPress={() => setIsDarkMode((prev) => !prev)}
             >
-              <Text style={[styles.sheetButtonText, { color: theme.textPrimary }]}>
-                TOGGLE {isDarkMode ? 'LIGHT' : 'DARK'} MODE
+              <Text style={[
+                styles.sheetButtonText,
+                { color: theme.textPrimary, fontFamily: getFontFamily(isRTL, 700) }
+              ]}>
+                {t.preferences.toggleTheme}
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={[styles.sheetButton, { backgroundColor: theme.inputBackground }]}
-              onPress={() => setPdfLang((prev) => (prev === 'en' ? 'ar' : 'en'))}
+              onPress={() => {
+                const nextLang = activeLanguage === 'en' ? 'ar' : 'en';
+                setActiveLanguage(nextLang);
+                setPdfLang(nextLang);
+              }}
             >
-              <Text style={[styles.sheetButtonText, { color: theme.textPrimary }]}>
-                PDF LANGUAGE: {pdfLang.toUpperCase()}
+              <Text style={[
+                styles.sheetButtonText,
+                { color: theme.textPrimary, fontFamily: getFontFamily(isRTL, 700) }
+              ]}>
+                {isRTL ? t.preferences.pdfLangAr : t.preferences.pdfLang}
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={[styles.cancelButton, { backgroundColor: theme.buttonBackground }]}
               onPress={() => setIsSettingsVisible(false)}
             >
-              <Text style={[styles.cancelButtonText, { color: theme.buttonText }]}>CLOSE</Text>
+              <Text style={[
+                styles.cancelButtonText,
+                { color: theme.buttonText, fontFamily: getFontFamily(isRTL, 800) }
+              ]}>
+                {t.buttons.close}
+              </Text>
             </TouchableOpacity>
           </View>
         </TouchableOpacity>

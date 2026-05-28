@@ -1,21 +1,21 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { SPACING, BORDER_RADIUS, TYPOGRAPHY } from '../constants/tokens';
+import { SPACING, BORDER_RADIUS, TYPOGRAPHY, getFontFamily } from '../constants/tokens';
 
 interface SectionCardProps {
   title: string;
   theme: any;
   children: React.ReactNode;
+  isRTL?: boolean;
 }
 
-/**
- * Reusable card wrapper displaying a premium glassmorphic border,
- * dynamic theme matching, and drop shadow.
- */
-export const SectionCard = ({ title, theme, children }: SectionCardProps) => {
+export const SectionCard = ({ title, theme, children, isRTL = false }: SectionCardProps) => {
   return (
     <View style={[styles.glassCard, { backgroundColor: theme.cardBackground, borderColor: theme.cardBorder }]}>
-      <Text style={[styles.sectionHeading, { color: theme.textPrimary }]}>
+      <Text style={[
+        styles.sectionHeading,
+        { color: theme.textPrimary, textAlign: isRTL ? 'right' : 'left', fontFamily: getFontFamily(isRTL, 800) }
+      ]}>
         {title}
       </Text>
       {children}
