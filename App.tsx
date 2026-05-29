@@ -1,16 +1,15 @@
 import React, { useState } from 'react';
 import {
   View, ScrollView, Text, TouchableOpacity, KeyboardAvoidingView,
-  Platform, Modal, Animated, StyleSheet, StatusBar as RNStatusBar,
+  Platform, Animated,
 } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
-import { BlurView } from 'expo-blur';
 import { Ionicons } from '@expo/vector-icons';
 import { useFonts, Cairo_400Regular, Cairo_700Bold, Cairo_900Black } from '@expo-google-fonts/cairo';
-import { COLORS, SPACING, getFontFamily } from './src/constants/tokens';
+import { SPACING, getFontFamily } from './src/constants/tokens';
 import { CVProvider, useCVContext } from './src/context/CVContext';
-import { sharedStyles, FLOATING_HEADER_HEIGHT } from './src/styles/shared.styles';
+import { sharedStyles } from './src/styles/shared.styles';
 import { Header } from './src/components/Header';
 import { StatusBanner } from './src/components/StatusBanner';
 import { Step0Personal } from './src/screens/Step0Personal';
@@ -29,34 +28,20 @@ function AppShell() {
   } = useCVContext();
 
   const insets = useSafeAreaInsets();
-  const headerTopPadding = FLOATING_HEADER_HEIGHT + insets.top + SPACING.sm;
 
   return (
     <View style={[sharedStyles.root, { backgroundColor: theme.background }]}>
-      <StatusBar translucent style={isDarkMode ? 'light' : 'dark'} />
+      <StatusBar translucent={true} style={isDarkMode ? 'light' : 'dark'} />
 
-      <View style={[sharedStyles.floatingHeader, { top: 0 }]}>
-        <BlurView intensity={90} tint={isDarkMode ? 'dark' : 'light'} style={sharedStyles.floatingBlur}>
-          <View style={{ paddingTop: insets.top }}>
-            <Header isDarkMode={isDarkMode} onOpenSettings={handleOpenSettings} onOpenAIPrompt={handleOpenAIPrompt} theme={theme} isRTL={isRTL} t={t} />
-            <View style={[sharedStyles.stepperInsetCard, { backgroundColor: theme.inputBackground }]}>
-              <View style={[sharedStyles.stepperTrack, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
-                {[0, 1, 2, 3].map((i) => (
-                  <View key={i} style={[sharedStyles.stepIndicator, { backgroundColor: i <= activeStep ? theme.accent : (isDarkMode ? '#2C2C2E' : '#E5E5EA') }]} />
-                ))}
-              </View>
-            </View>
-          </View>
-        </BlurView>
-      </View>
+      <Header isDarkMode={isDarkMode} onOpenSettings={handleOpenSettings} onOpenAIPrompt={handleOpenAIPrompt} theme={theme} isRTL={isRTL} t={t} activeStep={activeStep} />
 
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={[sharedStyles.flex, { backgroundColor: theme.background }]}>
         <ScrollView
           style={{ backgroundColor: theme.background }}
           contentContainerStyle={{
-            paddingTop: headerTopPadding,
+            paddingTop: 130,
             paddingBottom: insets.bottom + 20 + SPACING.lg + SPACING.md,
-            paddingHorizontal: SPACING.lg,
+            paddingHorizontal: 16,
             flexGrow: 1,
           }}
           showsVerticalScrollIndicator={false}
@@ -72,7 +57,7 @@ function AppShell() {
       </KeyboardAvoidingView>
 
       <View style={{
-        position: 'absolute', bottom: insets.bottom + SPACING.lg,
+        position: 'absolute', bottom: insets.bottom + SPACING.sm,
         right: SPACING.lg, left: SPACING.lg,
         flexDirection: isRTL ? 'row-reverse' : 'row', alignItems: 'center', zIndex: 50, pointerEvents: 'box-none',
       }}>
@@ -142,11 +127,6 @@ function AppGate({ fontsLoaded, showSplash, setShowSplash }: { fontsLoaded: bool
 
   return (
     <View style={{ flex: 1, backgroundColor: effectiveBg }}>
-      <RNStatusBar
-        translucent
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={effectiveBg}
-      />
       {themeLoaded && <AppShell />}
       {showSplash && (
         <IntroScreen

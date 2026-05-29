@@ -3,10 +3,10 @@ import { View, Text, TouchableOpacity, Modal, Platform, ScrollView } from 'react
 import { Ionicons } from '@expo/vector-icons';
 import * as Clipboard from 'expo-clipboard';
 import { useCVContext } from '../context/CVContext';
-import { sharedStyles } from '../styles/shared.styles';
-import { getFontFamily, SPACING } from '../constants/tokens';
+import { getFontFamily } from '../constants/tokens';
 import { SheetHeader } from './SheetHeader';
 import { GlassInput } from './GlassInput';
+import { GlassicView } from './Glassic';
 
 export const AIPromptSheet = () => {
   const {
@@ -18,6 +18,7 @@ export const AIPromptSheet = () => {
     cvData,
     importCVData,
     showSnack,
+    t,
   } = useCVContext();
 
   const [activeTab, setActiveTab] = useState<'prompt' | 'import'>('prompt');
@@ -134,7 +135,7 @@ Start now by welcoming me warmly on behalf of "Raqeem CV" and asking the first q
 
   const handleImport = () => {
     if (!jsonText.trim()) {
-      showSnack(isRTL ? "الرجاء إدخال كود الـ JSON أولاً!" : "Please paste the JSON code first!");
+      showSnack(t.errors.importEmpty);
       return;
     }
 
@@ -165,11 +166,11 @@ Start now by welcoming me warmly on behalf of "Raqeem CV" and asking the first q
       };
 
       importCVData(merged);
-      showSnack(isRTL ? " تم استيراد وتعبئة السيرة الذاتية بنجاح!" : "  Successfully importedCV data imported and populated successfully!");
+      showSnack(t.errors.importSuccess);
       setIsAIPromptVisible(false); // Close modal
       setJsonText(''); // Reset field
     } catch (err) {
-      showSnack(isRTL ? " خطأ: كود الـ JSON المدخل غير صالح" : " Error: Invalid JSON code entered");
+      showSnack(t.errors.importInvalidJSON);
     }
   };
 
@@ -219,24 +220,14 @@ Start now by welcoming me warmly on behalf of "Raqeem CV" and asking the first q
                 },
           ]}
         >
-          {/* iOS Grabber */}
-          <View
-            style={{
-              width: 40,
-              height: 5,
-              borderRadius: 2.5,
-              backgroundColor: isDarkMode ? '#48484A' : '#E5E5EA',
-              alignSelf: 'center',
-              marginBottom: 20,
-            }}
-          />
 
-          <SheetHeader title={isRTL ? 'مساعد رقيم الذكي (AI)' : 'Raqeem AI Assistant'} onClose={() => setIsAIPromptVisible(false)} isRTL={isRTL} isDarkMode={isDarkMode} theme={theme} />
+          <SheetHeader title={isRTL ? 'مساعد رقيم الذكي (AI)' : 'Raqeem AI Assistant'} onClose={() => setIsAIPromptVisible(false)} isRTL={isRTL} isDarkMode={isDarkMode} theme={theme} showGrabber />
+
 
           <View
             style={{
               flexDirection: isRTL ? 'row-reverse' : 'row',
-              backgroundColor: isDarkMode ? 'rgba(255,255,255,0.08)' : '#E5E5EA',
+              backgroundColor: isDarkMode ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.05)',
               borderRadius: 9999,
               padding: 4,
               marginBottom: 20,
@@ -245,24 +236,18 @@ Start now by welcoming me warmly on behalf of "Raqeem CV" and asking the first q
             {([['prompt', 'sparkles', isRTL ? 'البرومبت ' : ' Prompt'] as const,
               ['import', 'cloud-download-outline', isRTL ? 'استيراد البيانات' : 'Import JSON'] as const]).map(([key, icon, label]) => {
               const isActive = activeTab === key;
-              return (
+              const pillContent = (
                 <TouchableOpacity
-                  key={key}
                   activeOpacity={0.7}
                   style={{
-                    flex: 1,
                     flexDirection: isRTL ? 'row-reverse' : 'row',
                     alignItems: 'center',
                     justifyContent: 'center',
                     gap: 6,
                     paddingVertical: 10,
+                    paddingHorizontal: 8,
+                    minHeight: 40,
                     borderRadius: 9999,
-                    backgroundColor: isActive ? theme.cardBackground : 'transparent',
-                    shadowColor: '#000',
-                    shadowOffset: { width: 0, height: 1 },
-                    shadowOpacity: isActive ? 0.08 : 0,
-                    shadowRadius: 2,
-                    elevation: isActive ? 1 : 0,
                   }}
                   onPress={() => setActiveTab(key)}
                 >
@@ -276,47 +261,56 @@ Start now by welcoming me warmly on behalf of "Raqeem CV" and asking the first q
                   </Text>
                 </TouchableOpacity>
               );
+
+              return isActive ? (
+                <GlassicView key={key} cornerRadius={9999} glassEffectStyle="regular" isDarkMode={isDarkMode} style={{ flex: 1 }}>
+                  {pillContent}
+                </GlassicView>
+              ) : (
+                <View key={key} style={{ flex: 1 }}>
+                  {pillContent}
+                </View>
+              );
             })}
           </View>
 
           {activeTab === 'prompt' ? (
             <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 40 }}>
               {/* Guide Card */}
-              <View
-                style={{
-                  backgroundColor: theme.inputBackground,
-                  borderRadius: 16,
-                  padding: 16,
-                  marginBottom: 20,
-                  borderWidth: 1,
-                  borderColor: theme.cardBorder,
-                }}
+              <GlassicView
+                cornerRadius={16}
+                glassEffectStyle="regular"
+                isDarkMode={isDarkMode}
+                style={{ marginBottom: 20 }}
               >
-                <View style={{ flexDirection: isRTL ? 'row-reverse' : 'row', alignItems: 'center', gap: 8, marginBottom: 8 }}>
-                  <Ionicons name="sparkles" size={18} color={theme.accent} />
-                  <Text style={{ color: theme.textPrimary, fontFamily: getFontFamily(isRTL, 700), fontSize: 15 }}>
-                    {isRTL ? 'كيف تستخدم مساعد رقيم الذكي؟' : 'How to use Raqeem AI Assistant?'}
+                <View style={{ padding: 16 }}>
+                  <View style={{ flexDirection: isRTL ? 'row-reverse' : 'row', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+                    <Ionicons name="sparkles" size={18} color={theme.accent} />
+                    <Text style={{ color: theme.textPrimary, fontFamily: getFontFamily(isRTL, 700), fontSize: 15 }}>
+                      {isRTL ? 'كيف تستخدم مساعد رقيم الذكي؟' : 'How to use Raqeem AI Assistant?'}
+                    </Text>
+                  </View>
+                  <Text style={{ color: theme.textSecondary, fontFamily: getFontFamily(isRTL, 400), fontSize: 13, lineHeight: 20, textAlign: isRTL ? 'right' : 'left' }}>
+                    {isRTL
+                      ? 'انسخ البرومبت المخصص أدناه، ثم قم بلصقه في أي نموذج ذكاء اصطناعي (مثل ChatGPT أو Claude أو Gemini). سيقوم الذكاء الاصطناعي بإجراء مقابلة تفاعلية ذكية معك، وتجهيز النصوص وصياغتها باحترافية كاملة، ثم سيعطيك كود جاهز يمكنك استخدامه لتعبئة سيرتك الذاتية بلمسة واحدة!'
+                      : 'Copy the custom prompt below and paste it into any AI model (like ChatGPT, Claude, or Gemini). The AI will interview you interactively, write professional descriptions for your CV, and generate a clean code format you can copy and use immediately!'}
                   </Text>
                 </View>
-                <Text style={{ color: theme.textSecondary, fontFamily: getFontFamily(isRTL, 400), fontSize: 13, lineHeight: 20, textAlign: isRTL ? 'right' : 'left' }}>
-                  {isRTL
-                    ? 'انسخ البرومبت المخصص أدناه، ثم قم بلصقه في أي نموذج ذكاء اصطناعي (مثل ChatGPT أو Claude أو Gemini). سيقوم الذكاء الاصطناعي بإجراء مقابلة تفاعلية ذكية معك، وتجهيز النصوص وصياغتها باحترافية كاملة، ثم سيعطيك كود جاهز يمكنك استخدامه لتعبئة سيرتك الذاتية بلمسة واحدة!'
-                    : 'Copy the custom prompt below and paste it into any AI model (like ChatGPT, Claude, or Gemini). The AI will interview you interactively, write professional descriptions for your CV, and generate a clean code format you can copy and use immediately!'}
-                </Text>
-              </View>
+              </GlassicView>
 
               {/* Prompt View Box — tappable to copy */}
-              <TouchableOpacity
-                activeOpacity={0.85}
-                onPress={handleCopy}
-                style={{
-                  backgroundColor: isDarkMode ? '#1C1C1E' : '#F2F2F7',
-                  borderRadius: 16,
-                  padding: 16,
-                  borderWidth: 1,
-                  borderColor: theme.cardBorder,
-                }}
+              <GlassicView
+                cornerRadius={16}
+                glassEffectStyle="regular"
+                isDarkMode={isDarkMode}
               >
+                <TouchableOpacity
+                  activeOpacity={0.85}
+                  onPress={handleCopy}
+                  style={{
+                    padding: 16,
+                  }}
+                >
                 <View style={{ flexDirection: isRTL ? 'row-reverse' : 'row', alignItems: 'center', gap: 6, marginBottom: 8 }}>
                   <Ionicons name={copied ? 'checkmark-circle' : 'copy-outline'} size={16} color={copied ? theme.success : theme.accent} />
                   <Text style={{ color: copied ? theme.success : theme.accent, fontFamily: getFontFamily(isRTL, 700), fontSize: 13 }}>
@@ -327,6 +321,7 @@ Start now by welcoming me warmly on behalf of "Raqeem CV" and asking the first q
                   {promptText}
                 </Text>
               </TouchableOpacity>
+            </GlassicView>
             </ScrollView>
           ) : (
             <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 40 }}>
@@ -342,29 +337,31 @@ Start now by welcoming me warmly on behalf of "Raqeem CV" and asking the first q
                 placeholder={isRTL ? 'الصق كود الـ JSON أو رد الذكاء الاصطناعي هنا...' : 'Paste JSON or AI response here...'}
               />
 
-              <TouchableOpacity
-                activeOpacity={0.8}
-                onPress={handleImport}
-                style={{
-                  backgroundColor: theme.accent,
-                  borderRadius: 9999,
-                  paddingVertical: 14,
-                  flexDirection: isRTL ? 'row-reverse' : 'row',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: 8,
-                  shadowColor: theme.accent,
-                  shadowOffset: { width: 0, height: 4 },
-                  shadowOpacity: 0.25,
-                  shadowRadius: 8,
-                  elevation: 4,
-                }}
+              <GlassicView
+                cornerRadius={9999}
+                glassEffectStyle="regular"
+                isDarkMode={isDarkMode}
+                isInteractive={false}
               >
-                <Ionicons name="download-outline" size={18} color="#FFFFFF" />
-                <Text style={{ color: '#FFFFFF', fontFamily: getFontFamily(isRTL, 800), fontSize: 15 }}>
-                  {isRTL ? 'توليد ' : 'Auto-Fill CV'}
-                </Text>
-              </TouchableOpacity>
+                <TouchableOpacity
+                  activeOpacity={0.8}
+                  onPress={handleImport}
+                  style={{
+                    backgroundColor: theme.accent,
+                    borderRadius: 9999,
+                    paddingVertical: 14,
+                    flexDirection: isRTL ? 'row-reverse' : 'row',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: 8,
+                  }}
+                >
+                  <Ionicons name="download-outline" size={18} color="#FFFFFF" />
+                  <Text style={{ color: '#FFFFFF', fontFamily: getFontFamily(isRTL, 800), fontSize: 15 }}>
+                    {isRTL ? 'توليد ' : 'Auto-Fill CV'}
+                  </Text>
+                </TouchableOpacity>
+              </GlassicView>
             </ScrollView>
           )}
         </View>

@@ -2,54 +2,121 @@ import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { getFontFamily } from '../constants/tokens';
+import { GlassicView } from './Glassic';
 
 interface SheetHeaderProps {
   title: string;
   onClose: () => void;
   isRTL?: boolean;
   isDarkMode?: boolean;
-  theme: { textPrimary: string; textSecondary: string };
+  theme: { textPrimary: string; textSecondary: string; cardBackground?: string };
+  showGrabber?: boolean;
+  headerAction?: React.ReactNode;
 }
 
-export const SheetHeader = ({ title, onClose, isRTL = false, isDarkMode = false, theme }: SheetHeaderProps) => {
+export const SheetHeader = ({
+  title,
+  onClose,
+  isRTL = false,
+  isDarkMode = false,
+  theme,
+  showGrabber = true,
+  headerAction,
+}: SheetHeaderProps) => {
+  // iOS 26 native close button is a 30pt circular glass pill with xmark icon
+  // GlassicView provides the blur/glass background cross-platform
+  const CLOSE_SIZE = 40;
+  const ICON_SIZE = 20;
+
   return (
-    <View style={[styles.headerRow, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
-      <Text style={[styles.title, { color: theme.textPrimary, fontFamily: getFontFamily(isRTL, 900) }]}>
-        {title}
-      </Text>
-      <TouchableOpacity
-        onPress={onClose}
-        activeOpacity={0.7}
-        hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-        style={[styles.closeButton, { backgroundColor: isDarkMode ? 'rgba(255,255,255,0.08)' : '#E5E5EA' }]}
-      >
-        <Ionicons name="close-outline" size={18} color={theme.textSecondary} />
-      </TouchableOpacity>
+    <View style={styles.wrapper}>
+      {/* iOS-style grabber indicator at the top center */}
+      {showGrabber && (
+        <View
+          style={[
+            styles.grabber,
+            { backgroundColor: isDarkMode ? '#48484A' : '#C7C7CC' },
+          ]}
+        />
+      )}
+
+      {/* Header row: title centered, action + close at edges */}
+      <View style={styles.headerRow}>
+        <View style={{ width: CLOSE_SIZE + 12, alignItems: 'flex-start' }}>
+          {headerAction}
+        </View>
+
+        <Text
+          style={[
+            styles.title,
+            {
+              color: theme.textPrimary,
+              fontFamily: getFontFamily(isRTL, 900),
+            },
+          ]}
+          numberOfLines={1}
+          adjustsFontSizeToFit
+        >
+          {title}
+        </Text>
+
+        <View style={{ width: CLOSE_SIZE + 12, alignItems: 'flex-end' }}>
+          <GlassicView
+            cornerRadius={9999}
+            glassEffectStyle="regular"
+            isDarkMode={isDarkMode}
+            style={{ width: CLOSE_SIZE, height: CLOSE_SIZE }}
+          >
+            <TouchableOpacity
+              onPress={onClose}
+              activeOpacity={0.65}
+              hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+              accessibilityLabel="Close"
+              accessibilityRole="button"
+              style={styles.closeButtonInner}
+            >
+              <Ionicons
+                name="close"
+                size={ICON_SIZE}
+                color={isDarkMode ? 'rgba(235,235,245,0.85)' : 'rgba(60,60,67,0.8)'}
+              />
+            </TouchableOpacity>
+          </GlassicView>
+        </View>
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  wrapper: {
+    marginBottom: 20,
+  },
+  grabber: {
+    width: 36,
+    height: 5,
+    borderRadius: 2.5,
+    alignSelf: 'center',
+    marginBottom: 16,
+    // iOS 26: grabber is slightly more prominent
+    opacity: 0.45,
+  },
   headerRow: {
-    justifyContent: 'space-between',
+    flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 24,
+    justifyContent: 'space-between',
   },
   title: {
+    flex: 1,
     fontSize: 22,
-    fontWeight: '900',
-    letterSpacing: -0.5,
+    letterSpacing: -0.4,
+    textAlign: 'center',
   },
-  closeButton: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
+  closeButtonInner: {
+    width: 40,
+    height: 40,
+    borderRadius: 9999,
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.08,
-    shadowRadius: 4,
-    elevation: 2,
   },
 });

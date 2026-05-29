@@ -81,6 +81,15 @@ export interface TranslationSet {
     workExperienceRequired: string;
     educationRequired: string;
   };
+  errors: {
+    validationFailed: string;
+    sharingUnavailable: string;
+    compilationError: string;
+    sharingFailed: string;
+    importSuccess: string;
+    importInvalidJSON: string;
+    importEmpty: string;
+  };
 }
 
 export type Language = 'en' | 'ar';
@@ -169,6 +178,15 @@ export const translations: Record<Language, TranslationSet> = {
       workExperienceRequired: 'Please add at least one valid Work Experience entry',
       educationRequired: 'Please add at least one valid Education entry',
     },
+    errors: {
+      validationFailed: 'Validation failed. Please check the marked fields.',
+      sharingUnavailable: 'Sharing is not available on this platform.',
+      compilationError: 'An unexpected error occurred during PDF compilation.',
+      sharingFailed: 'Sharing failed.',
+      importSuccess: 'CV data imported successfully!',
+      importInvalidJSON: 'Invalid JSON code entered.',
+      importEmpty: 'Please paste the JSON code first!',
+    },
   },
   ar: {
     app: {
@@ -252,6 +270,15 @@ export const translations: Record<Language, TranslationSet> = {
       summaryLength: 'يرجى كتابة ملخص لا يقل عن 20 حرفًا',
       workExperienceRequired: 'يرجى إضافة خبرة مهنية واحدة على الأقل',
       educationRequired: 'يرجى إضافة مؤهل تعليمي واحد على الأقل',
+    },
+    errors: {
+      validationFailed: 'فشل التحقق. يرجى مراجعة الحقول المحددة.',
+      sharingUnavailable: 'المشاركة غير متوفرة على هذا النظام.',
+      compilationError: 'حدث خطأ غير متوقع أثناء إنشاء PDF.',
+      sharingFailed: 'فشلت المشاركة.',
+      importSuccess: 'تم استيراد بيانات السيرة الذاتية بنجاح!',
+      importInvalidJSON: 'كود الـ JSON المدخل غير صالح.',
+      importEmpty: 'الرجاء إدخال كود الـ JSON أولاً!',
     },
   },
 };

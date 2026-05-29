@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { View, Text, TouchableOpacity, Animated, StyleSheet } from 'react-native';
 import Svg, { Circle } from 'react-native-svg';
 import { Ionicons } from '@expo/vector-icons';
-import { SPACING } from '../constants/tokens';
+import { SPACING, BORDER_RADIUS } from '../constants/tokens';
 
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
   pill: {
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: 14,
+    borderRadius: BORDER_RADIUS.full,
     paddingVertical: SPACING.md,
     paddingHorizontal: SPACING.xl,
     shadowColor: '#000',

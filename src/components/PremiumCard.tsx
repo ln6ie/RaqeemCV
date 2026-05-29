@@ -1,7 +1,8 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { Text, Platform } from 'react-native';
 import { useCVContext } from '../context/CVContext';
 import { getFontFamily } from '../constants/tokens';
+import { GlassicView } from './Glassic';
 
 interface PremiumCardProps {
   children: React.ReactNode;
@@ -12,23 +13,19 @@ export const PremiumCard = ({ children, title }: PremiumCardProps) => {
   const { isDarkMode, isRTL, theme } = useCVContext();
 
   return (
-    <View
+    <GlassicView
+      cornerRadius={24}
+      glassEffectStyle="regular"
+      isDarkMode={isDarkMode}
       style={{
-        borderRadius: 24,
-        padding: 24,
         marginBottom: 16,
-        ...(isDarkMode
-          ? {
-              backgroundColor: 'rgba(255, 255, 255, 0.035)',
-            }
-          : {
-              backgroundColor: '#FFFFFF',
-              shadowColor: '#000',
-              shadowOpacity: 0.03,
-              shadowRadius: 20,
-              shadowOffset: { width: 0, height: 6 },
-              elevation: 2,
-            }),
+        padding: 24,
+        ...Platform.select({
+          android: {
+            elevation: 2,
+          },
+          default: {},
+        }),
       }}
     >
       {title && (
@@ -47,6 +44,6 @@ export const PremiumCard = ({ children, title }: PremiumCardProps) => {
         </Text>
       )}
       {children}
-    </View>
+    </GlassicView>
   );
 };

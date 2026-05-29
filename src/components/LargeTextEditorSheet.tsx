@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, Modal, TextInput, Platform, KeyboardAvoidingView, ScrollView } from 'react-native';
+import { View, TouchableOpacity, Modal, TextInput, Platform, KeyboardAvoidingView, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useCVContext } from '../context/CVContext';
-import { sharedStyles } from '../styles/shared.styles';
 import { getFontFamily } from '../constants/tokens';
 import { SheetHeader } from './SheetHeader';
 
@@ -71,19 +70,33 @@ export const LargeTextEditorSheet = ({
                 },
           ]}
         >
-          {/* iOS top drag bar indicator */}
-          <View
-            style={{
-              width: 40,
-              height: 5,
-              borderRadius: 2.5,
-              backgroundColor: isDarkMode ? '#48484A' : '#E5E5EA',
-              alignSelf: 'center',
-              marginBottom: 20,
-            }}
+
+          <SheetHeader
+            title={label}
+            onClose={onClose}
+            isRTL={isRTL}
+            isDarkMode={isDarkMode}
+            theme={theme}
+            showGrabber
+            headerAction={
+              <TouchableOpacity
+                onPress={handleSave}
+                activeOpacity={0.8}
+                style={{
+                  width: 40,
+                  height: 40,
+                  borderRadius: 9999,
+                  backgroundColor: theme.accent,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  marginEnd: 12,
+                }}
+              >
+                <Ionicons name="checkmark-outline" size={20} color="#FFFFFF" />
+              </TouchableOpacity>
+            }
           />
 
-          <SheetHeader title={label} onClose={onClose} isRTL={isRTL} isDarkMode={isDarkMode} theme={theme} />
 
           {/* Text Area Card - borderless, stretches to margins naturally */}
           <ScrollView
@@ -119,25 +132,7 @@ export const LargeTextEditorSheet = ({
             </View>
           </ScrollView>
 
-          <TouchableOpacity
-            onPress={handleSave}
-            activeOpacity={0.8}
-            style={{
-              backgroundColor: theme.accent,
-              borderRadius: 16,
-              paddingVertical: 14,
-              flexDirection: isRTL ? 'row-reverse' : 'row',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: 8,
-              marginBottom: Platform.OS === 'ios' ? 0 : 16,
-            }}
-          >
-            <Ionicons name="checkmark-outline" size={18} color="#FFFFFF" />
-            <Text style={{ color: '#FFFFFF', fontFamily: getFontFamily(isRTL, 800), fontSize: 15 }}>
-              {isRTL ? 'حفظ التعديلات' : 'Save Changes'}
-            </Text>
-          </TouchableOpacity>
+
         </View>
       </KeyboardAvoidingView>
     </Modal>

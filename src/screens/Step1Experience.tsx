@@ -41,24 +41,9 @@ export const Step1Experience = () => {
         }
 
         return (
-          <View
-            key={`exp-card-${expIdx}`}
-            style={[
-              isDarkMode
-                ? { backgroundColor: 'rgba(255,255,255,0.035)' }
-                : {
-                    backgroundColor: '#FFFFFF',
-                    shadowColor: '#000',
-                    shadowOpacity: 0.03,
-                    shadowRadius: 20,
-                    shadowOffset: { width: 0, height: 6 },
-                    elevation: 2,
-                  },
-              { borderRadius: 24, padding: 24, marginBottom: 16 },
-            ]}
-          >
+          <PremiumCard key={`exp-card-${expIdx}`}>
             <ExpContent exp={exp} expIdx={expIdx} />
-          </View>
+          </PremiumCard>
         );
       })}
 
@@ -67,14 +52,17 @@ export const Step1Experience = () => {
           sharedStyles.addButton, 
           { 
             backgroundColor: theme.accent, 
-            borderRadius: 14, 
-            paddingVertical: 14, 
+            borderRadius: 9999,
+            paddingVertical: 12,
+            paddingHorizontal: 20,
             shadowColor: theme.accent,
             shadowOffset: { width: 0, height: 4 },
             shadowOpacity: 0.2,
             shadowRadius: 6,
             elevation: 3,
             marginTop: SPACING.xs,
+            alignSelf: 'center',
+            width: 'auto',
           }
         ]} 
         onPress={addWorkExperience}

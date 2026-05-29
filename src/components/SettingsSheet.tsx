@@ -2,9 +2,9 @@ import React from 'react';
 import { View, Text, TouchableOpacity, Modal, Platform, Linking } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useCVContext } from '../context/CVContext';
-import { sharedStyles } from '../styles/shared.styles';
 import { getFontFamily } from '../constants/tokens';
 import { SheetHeader } from './SheetHeader';
+import { GlassicView } from './Glassic';
 import appJson from '../../app.json';
 
 export const SettingsSheet = () => {
@@ -68,25 +68,16 @@ export const SettingsSheet = () => {
                 },
           ]}
         >
-          {/* Grabber indicator (pure iOS style) */}
-          <View
-            style={{
-              width: 40,
-              height: 5,
-              borderRadius: 2.5,
-              backgroundColor: isDarkMode ? '#48484A' : '#E5E5EA',
-              alignSelf: 'center',
-              marginBottom: 20,
-            }}
-          />
 
-          <SheetHeader title={t.preferences.title} onClose={() => setIsSettingsVisible(false)} isRTL={isRTL} isDarkMode={isDarkMode} theme={theme} />
+          <SheetHeader title={t.preferences.title} onClose={() => setIsSettingsVisible(false)} isRTL={isRTL} isDarkMode={isDarkMode} theme={theme} showGrabber />
+
 
           <View style={{ marginBottom: 16 }}>
-            <View
+            {/* Bar: subtle background — no glass, so active pill can pop */}
+          <View
               style={{
                 flexDirection: isRTL ? 'row-reverse' : 'row',
-                backgroundColor: isDarkMode ? 'rgba(255,255,255,0.08)' : '#E5E5EA',
+                backgroundColor: isDarkMode ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.05)',
                 borderRadius: 9999,
                 padding: 4,
               }}
@@ -95,24 +86,18 @@ export const SettingsSheet = () => {
                 ['system', 'phone-portrait-outline', isRTL ? 'النظام' : 'System'],
                 ['dark', 'moon-outline', isRTL ? 'داكن' : 'Dark']] as const).map(([mode, icon, label]) => {
                 const isActive = themePreference === mode;
-                return (
+                const pillContent = (
                   <TouchableOpacity
-                    key={mode}
                     activeOpacity={0.7}
                     style={{
-                      flex: 1,
                       flexDirection: isRTL ? 'row-reverse' : 'row',
                       alignItems: 'center',
                       justifyContent: 'center',
                       gap: 4,
                       paddingVertical: 10,
+                      paddingHorizontal: 4,
+                      minHeight: 40,
                       borderRadius: 9999,
-                      backgroundColor: isActive ? theme.cardBackground : 'transparent',
-                      shadowColor: '#000',
-                      shadowOffset: { width: 0, height: 1 },
-                      shadowOpacity: isActive ? 0.08 : 0,
-                      shadowRadius: 2,
-                      elevation: isActive ? 1 : 0,
                     }}
                     onPress={() => setThemePreference(mode)}
                   >
@@ -124,6 +109,16 @@ export const SettingsSheet = () => {
                     }} numberOfLines={1} adjustsFontSizeToFit>{label}</Text>
                   </TouchableOpacity>
                 );
+
+                return isActive ? (
+                  <GlassicView key={mode} cornerRadius={9999} glassEffectStyle="regular" isDarkMode={isDarkMode} style={{ flex: 1 }}>
+                    {pillContent}
+                  </GlassicView>
+                ) : (
+                  <View key={mode} style={{ flex: 1 }}>
+                    {pillContent}
+                  </View>
+                );
               })}
             </View>
           </View>
@@ -132,7 +127,7 @@ export const SettingsSheet = () => {
             <View
               style={{
                 flexDirection: isRTL ? 'row-reverse' : 'row',
-                backgroundColor: isDarkMode ? 'rgba(255,255,255,0.08)' : '#E5E5EA',
+                backgroundColor: isDarkMode ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.05)',
                 borderRadius: 9999,
                 padding: 4,
               }}
@@ -140,22 +135,16 @@ export const SettingsSheet = () => {
               {([['en', isRTL ? 'إنجليزي' : 'English'],
                 ['ar', isRTL ? 'عربي' : 'العربية']] as const).map(([lang, label]) => {
                 const isActive = activeLanguage === lang;
-                return (
+                const pillContent = (
                   <TouchableOpacity
-                    key={lang}
                     activeOpacity={0.7}
                     style={{
-                      flex: 1,
                       alignItems: 'center',
                       justifyContent: 'center',
                       paddingVertical: 10,
+                      paddingHorizontal: 4,
+                      minHeight: 40,
                       borderRadius: 9999,
-                      backgroundColor: isActive ? theme.cardBackground : 'transparent',
-                      shadowColor: '#000',
-                      shadowOffset: { width: 0, height: 1 },
-                      shadowOpacity: isActive ? 0.08 : 0,
-                      shadowRadius: 2,
-                      elevation: isActive ? 1 : 0,
                     }}
                     onPress={() => {
                       setActiveLanguage(lang);
@@ -168,6 +157,16 @@ export const SettingsSheet = () => {
                       fontSize: 13,
                     }}>{label}</Text>
                   </TouchableOpacity>
+                );
+
+                return isActive ? (
+                  <GlassicView key={lang} cornerRadius={9999} glassEffectStyle="regular" isDarkMode={isDarkMode} style={{ flex: 1 }}>
+                    {pillContent}
+                  </GlassicView>
+                ) : (
+                  <View key={lang} style={{ flex: 1 }}>
+                    {pillContent}
+                  </View>
                 );
               })}
             </View>
@@ -194,20 +193,23 @@ export const SettingsSheet = () => {
               {isRTL ? 'برمجة وتطوير: عبدالله كريم' : 'Developed by: Abdullah Kareem'}
             </Text>
 
-            <TouchableOpacity
-              activeOpacity={0.7}
-              onPress={() => Linking.openURL('https://www.instagram.com/elcom.lab/').catch(() => {})}
-              style={{
-                flexDirection: isRTL ? 'row-reverse' : 'row',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: 6,
-                paddingVertical: 8,
-                paddingHorizontal: 16,
-                borderRadius: 100,
-                backgroundColor: isDarkMode ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.04)',
-              }}
+            <GlassicView
+              cornerRadius={100}
+              glassEffectStyle="regular"
+              isDarkMode={isDarkMode}
             >
+              <TouchableOpacity
+                activeOpacity={0.7}
+                onPress={() => Linking.openURL('https://www.instagram.com/elcom.lab/').catch(() => {})}
+                style={{
+                  flexDirection: isRTL ? 'row-reverse' : 'row',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: 6,
+                  paddingVertical: 8,
+                  paddingHorizontal: 16,
+                }}
+              >
               <Ionicons name="logo-instagram" size={16} color={isDarkMode ? '#EBEBF5' : '#3C3C43'} />
               <Text style={{
                 color: isDarkMode ? '#EBEBF5' : '#3C3C43',
@@ -217,6 +219,7 @@ export const SettingsSheet = () => {
                 @elcom.lab
               </Text>
             </TouchableOpacity>
+            </GlassicView>
           </View>
         </View>
       </View>

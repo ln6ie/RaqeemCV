@@ -433,7 +433,7 @@ export function CVProvider({ children }: { children: React.ReactNode }) {
           errors[issue.path.join('.')] = issue.message;
         });
         setValidationErrors(errors);
-        setSystemError('Validation failed. Please check the marked fields.');
+        setSystemError(t.errors.validationFailed);
         setExportStatus('idle');
         setIsLoading(false);
         return;
@@ -447,16 +447,16 @@ export function CVProvider({ children }: { children: React.ReactNode }) {
       if (available) {
         await Sharing.shareAsync(uri);
       } else {
-        setSystemError('Sharing is not available on this platform. PDF saved locally.');
+        setSystemError(t.errors.sharingUnavailable);
       }
       setExportStatus('completed');
     } catch (err: any) {
-      setSystemError(err?.message || 'An unexpected error occurred during PDF compilation.');
+      setSystemError(err?.message || t.errors.compilationError);
       setExportStatus('idle');
     } finally {
       setIsLoading(false);
     }
-  }, [cvData]);
+  }, [cvData, t]);
 
   const handleExportAction = useCallback(async () => {
     setSnackMessage(null);
@@ -471,12 +471,12 @@ export function CVProvider({ children }: { children: React.ReactNode }) {
       if (available) {
         await Sharing.shareAsync(cachedPdfUri);
       } else {
-        setSystemError('Sharing is not available on this platform.');
+        setSystemError(t.errors.sharingUnavailable);
       }
     } catch (err: any) {
-      setSystemError(err?.message || 'Sharing failed.');
+      setSystemError(err?.message || t.errors.sharingFailed);
     }
-  }, [cachedPdfUri]);
+  }, [cachedPdfUri, t]);
 
   const handleOpenSettings = useCallback(() => {
     setIsSettingsVisible(true);
