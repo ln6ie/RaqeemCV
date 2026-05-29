@@ -8,14 +8,6 @@ export interface GlassInputProps extends TextInputProps {
   isRTL?: boolean;
 }
 
-export interface SectionCardProps {
-  title: string;
-  theme: ThemeColors;
-  children: React.ReactNode;
-  isRTL?: boolean;
-  isDarkMode?: boolean;
-}
-
 export interface ExportButtonProps {
   theme: ThemeColors;
   isRTL: boolean;

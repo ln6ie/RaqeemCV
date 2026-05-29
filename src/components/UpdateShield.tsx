@@ -5,6 +5,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useCVContext } from '../context/CVContext';
 import { getFontFamily } from '../constants/tokens';
 import { RaqeemLogo } from './RaqeemLogo';
+import { PremiumCard } from './PremiumCard';
 
 export const UpdateShield = () => {
   const { remoteConfig, versionBlocked, updateAvailable, isDarkMode, isRTL, theme } = useCVContext();
@@ -76,24 +77,23 @@ export const UpdateShield = () => {
         <View style={{ flex: 1 }} />
 
         {/* Developer Attribution Card */}
-        <View style={[styles.creditCard, {
-          backgroundColor: isDarkMode ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.03)',
-        }]}>
-          <Text style={[styles.developerName, { color: isDarkMode ? '#EBEBF5' : '#3C3C43', fontFamily: getFontFamily(isRTL, 400) }]}>
-            {isRTL ? 'تطوير وبناء: المهندس عبدالله كريم' : 'Developed by: Eng. Abdullah Kareem'}
-          </Text>
-
-          <TouchableOpacity
-            activeOpacity={0.7}
-            onPress={() => Linking.openURL('https://www.instagram.com/elcom.lab/').catch(() => {})}
-            style={[styles.instagramButton, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}
-          >
-            <Ionicons name="logo-instagram" size={18} color={theme.accent} />
-            <Text style={[styles.instagramHandle, { color: theme.accent, fontFamily: getFontFamily(isRTL, 700) }]}>
-              @elcom.lab
+        <PremiumCard isDarkMode={isDarkMode} isRTL={isRTL}>
+          <View style={{ alignItems: 'center', gap: 12 }}>
+            <Text style={{ color: isDarkMode ? '#EBEBF5' : '#3C3C43', fontFamily: getFontFamily(isRTL, 400), fontSize: 13, textAlign: 'center', opacity: 0.7 }}>
+              {isRTL ? 'تطوير وبناء: المهندس عبدالله كريم' : 'Developed by: Eng. Abdullah Kareem'}
             </Text>
-          </TouchableOpacity>
-        </View>
+            <TouchableOpacity
+              activeOpacity={0.7}
+              onPress={() => Linking.openURL('https://www.instagram.com/elcom.lab/').catch(() => {})}
+              style={{ flexDirection: isRTL ? 'row-reverse' : 'row', alignItems: 'center', justifyContent: 'center', gap: 8, paddingVertical: 8, paddingHorizontal: 16, borderRadius: 100 }}
+            >
+              <Ionicons name="logo-instagram" size={18} color={theme.accent} />
+              <Text style={{ color: theme.accent, fontFamily: getFontFamily(isRTL, 700), fontSize: 14 }}>
+                @elcom.lab
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </PremiumCard>
       </ScrollView>
     </View>
   );
@@ -161,32 +161,5 @@ const styles = StyleSheet.create({
     fontSize: 17,
     fontWeight: '800',
     letterSpacing: 0.5,
-  },
-  creditCard: {
-    width: '100%',
-    maxWidth: 340,
-    borderRadius: 24,
-    padding: 16,
-    alignItems: 'center',
-    gap: 12,
-    alignSelf: 'center',
-  },
-  developerName: {
-    fontSize: 13,
-    fontWeight: '400',
-    textAlign: 'center',
-    opacity: 0.7,
-  },
-  instagramButton: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 8,
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    borderRadius: 100,
-  },
-  instagramHandle: {
-    fontSize: 14,
-    fontWeight: '700',
   },
 });
