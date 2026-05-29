@@ -6,6 +6,7 @@ export interface GlassInputProps extends TextInputProps {
   isDarkMode: boolean;
   error?: string;
   isRTL?: boolean;
+  inlineMultiline?: boolean;
 }
 
 export interface ExportButtonProps {

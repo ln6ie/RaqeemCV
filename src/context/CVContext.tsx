@@ -238,19 +238,26 @@ export function CVProvider({ children }: { children: React.ReactNode }) {
     })();
   }, [cvData, themeLoaded]);
 
-  const setThemePreference = useCallback(async (mode: 'light' | 'dark' | 'system') => {
-    try {
-      setThemePreferenceState(mode);
-      if (mode === 'system') {
-        await AsyncStorage.removeItem('@Raqeem_Theme');
-        setIsDarkMode(systemScheme === 'dark');
-      } else {
-        await AsyncStorage.setItem('@Raqeem_Theme', mode);
-        setIsDarkMode(mode === 'dark');
-      }
-    } catch (e) {
-      console.error("Failed to save theme preference", e);
+  const setThemePreference = useCallback((mode: 'light' | 'dark' | 'system') => {
+    // Fire both state updates synchronously before any async I/O
+    setThemePreferenceState(mode);
+    if (mode === 'system') {
+      setIsDarkMode(systemScheme === 'dark');
+    } else {
+      setIsDarkMode(mode === 'dark');
     }
+    // Persist async — non-blocking, won't affect render correctness
+    (async () => {
+      try {
+        if (mode === 'system') {
+          await AsyncStorage.removeItem('@Raqeem_Theme');
+        } else {
+          await AsyncStorage.setItem('@Raqeem_Theme', mode);
+        }
+      } catch (e) {
+        console.error("Failed to save theme preference", e);
+      }
+    })();
   }, [systemScheme]);
 
   const toggleDarkMode = useCallback(async (dark: boolean) => {

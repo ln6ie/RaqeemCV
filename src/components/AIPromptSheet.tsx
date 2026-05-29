@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, Modal, Platform, ScrollView, TextInput } from 'react-native';
+import { View, Text, TouchableOpacity, Modal, Platform, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import * as Clipboard from 'expo-clipboard';
 import { useCVContext } from '../context/CVContext';
 import { sharedStyles } from '../styles/shared.styles';
 import { getFontFamily, SPACING } from '../constants/tokens';
 import { SheetHeader } from './SheetHeader';
+import { GlassInput } from './GlassInput';
 
 export const AIPromptSheet = () => {
   const {
@@ -329,58 +330,17 @@ Start now by welcoming me warmly on behalf of "Raqeem CV" and asking the first q
             </ScrollView>
           ) : (
             <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 40 }}>
-              {/* Paste JSON Box */}
-              <View style={{ position: 'relative', marginBottom: 16 }}>
-                <TextInput
-                  multiline
-                  numberOfLines={12}
-                  value={jsonText}
-                  onChangeText={setJsonText}
-                  placeholder={isRTL ? 'الصق كود الـ JSON أو رد الذكاء الاصطناعي هنا...' : 'Paste JSON or AI response here...'}
-                  placeholderTextColor={isDarkMode ? '#636366' : '#C7C7CC'}
-                  style={{
-                    backgroundColor: isDarkMode ? '#1C1C1E' : '#FFFFFF',
-                    color: theme.textPrimary,
-                    fontFamily: getFontFamily(isRTL, 400),
-                    fontSize: 13,
-                    lineHeight: 18,
-                    padding: 16,
-                    borderRadius: 16,
-                    minHeight: 200,
-                    textAlignVertical: 'top',
-                    textAlign: isRTL ? 'right' : 'left',
-                    borderWidth: 1,
-                    borderColor: theme.cardBorder,
-                  }}
-                />
-                {!jsonText.trim() && (
-                  <TouchableOpacity
-                    activeOpacity={0.7}
-                    onPress={async () => {
-                      const text = await Clipboard.getStringAsync();
-                      if (text.trim()) setJsonText(text.trim());
-                    }}
-                    style={{
-                      position: 'absolute',
-                      bottom: 12,
-                      right: isRTL ? undefined : 12,
-                      left: isRTL ? 12 : undefined,
-                      backgroundColor: theme.accent,
-                      borderRadius: 9999,
-                      paddingVertical: 8,
-                      paddingHorizontal: 14,
-                      flexDirection: isRTL ? 'row-reverse' : 'row',
-                      alignItems: 'center',
-                      gap: 6,
-                    }}
-                  >
-                    <Ionicons name="clipboard-outline" size={14} color="#FFFFFF" />
-                    <Text style={{ color: '#FFFFFF', fontFamily: getFontFamily(isRTL, 700), fontSize: 12 }}>
-                      {isRTL ? 'لصق' : 'Paste'}
-                    </Text>
-                  </TouchableOpacity>
-                )}
-              </View>
+              <GlassInput
+                label={isRTL ? 'بيانات JSON' : 'JSON Data'}
+                isDarkMode={isDarkMode}
+                isRTL={isRTL}
+                multiline
+                inlineMultiline
+                numberOfLines={12}
+                value={jsonText}
+                onChangeText={setJsonText}
+                placeholder={isRTL ? 'الصق كود الـ JSON أو رد الذكاء الاصطناعي هنا...' : 'Paste JSON or AI response here...'}
+              />
 
               <TouchableOpacity
                 activeOpacity={0.8}

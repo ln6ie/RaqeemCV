@@ -16,12 +16,13 @@ export const GlassInput = ({
   value = '',
   onChangeText,
   placeholder,
+  inlineMultiline,
   ...props
 }: GlassInputProps) => {
   const theme = isDarkMode ? COLORS.app.dark : COLORS.app.light;
   const [editorVisible, setEditorVisible] = useState(false);
 
-  if (multiline) {
+  if (multiline && !inlineMultiline) {
     return (
       <View style={styles.container}>
         <Text style={[
@@ -90,6 +91,58 @@ export const GlassInput = ({
             }
           }}
         />
+      </View>
+    );
+  }
+
+  if (multiline && inlineMultiline) {
+    return (
+      <View style={styles.container}>
+        <Text style={[
+          styles.label,
+          { color: theme.textSecondary, textAlign: isRTL ? 'right' : 'left', fontFamily: getFontFamily(isRTL, 600) }
+        ]}>
+          {label}
+        </Text>
+
+        <View
+          style={[
+            styles.inputWrapper,
+            styles.inputWrapperMultiline,
+            {
+              backgroundColor: theme.inputBackground,
+              borderColor: error ? theme.error : isDarkMode ? theme.inputBorder : 'rgba(0,0,0,0.05)',
+            },
+          ]}
+        >
+          <TextInput
+            multiline
+            numberOfLines={numberOfLines || 8}
+            placeholderTextColor={isDarkMode ? '#636366' : '#C7C7CC'}
+            value={value}
+            onChangeText={onChangeText}
+            placeholder={placeholder}
+            textAlignVertical="top"
+            style={[
+              styles.input,
+              { color: theme.textBody, textAlign: isRTL ? 'right' : 'left', fontFamily: getFontFamily(isRTL, 400) },
+              style,
+            ]}
+            {...props}
+          />
+        </View>
+
+        {error && (
+          <View style={[styles.errorRow, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
+            <Ionicons name="alert-circle" size={14} color={theme.error} />
+            <Text style={[
+              styles.errorText,
+              { color: theme.error, textAlign: isRTL ? 'right' : 'left', fontFamily: getFontFamily(isRTL, 400) }
+            ]}>
+              {error}
+            </Text>
+          </View>
+        )}
       </View>
     );
   }

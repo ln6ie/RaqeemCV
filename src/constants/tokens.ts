@@ -1,11 +1,3 @@
-import { Platform, PlatformColor, ColorValue } from 'react-native';
-
-const system = (iosName: string, fallback: string): ColorValue =>
-  Platform.select<ColorValue>({
-    ios: PlatformColor(iosName),
-    default: fallback as ColorValue,
-  })!;
-
 export const COLORS = {
   pdf: {
     light: {
@@ -23,22 +15,22 @@ export const COLORS = {
   },
   app: {
     light: {
-      background: system('systemGroupedBackground', '#F2F2F7'),
-      cardBackground: system('secondarySystemGroupedBackground', '#FFFFFF'),
-      cardBorder: system('separator', 'rgba(60, 60, 67, 0.18)'),
-      textPrimary: system('label', '#000000'),
-      textSecondary: system('secondaryLabel', '#3C3C43'),
-      textBody: system('label', '#000000'),
-      placeholderText: system('placeholderText', '#C7C7CC'),
-      inputBackground: system('systemGray6', '#E5E5EA'),
-      inputBorder: system('separator', 'rgba(60, 60, 67, 0.18)'),
-      buttonBackground: system('systemBlue', '#007AFF'),
+      background: '#F2F2F7',
+      cardBackground: '#FFFFFF',
+      cardBorder: 'rgba(60, 60, 67, 0.18)',
+      textPrimary: '#000000',
+      textSecondary: '#3C3C43',
+      textBody: '#000000',
+      placeholderText: '#C7C7CC',
+      inputBackground: '#E5E5EA',
+      inputBorder: 'rgba(60, 60, 67, 0.18)',
+      buttonBackground: '#007AFF',
       buttonText: '#FFFFFF',
-      accent: system('systemBlue', '#007AFF'),
+      accent: '#007AFF',
       shadow: 'rgba(0, 0, 0, 0.05)',
-      error: system('systemRed', '#FF3B30'),
-      success: system('systemGreen', '#34C759'),
-      borderMuted: system('separator', '#C6C6C8'),
+      error: '#FF3B30',
+      success: '#34C759',
+      borderMuted: '#C6C6C8',
     },
     dark: {
       background: '#000000',
