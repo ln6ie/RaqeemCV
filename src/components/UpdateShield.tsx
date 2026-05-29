@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, Linking, StyleSheet, StatusBar } from 'react-native';
+import React from 'react';
+import { View, Text, TouchableOpacity, Linking, StyleSheet, StatusBar, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useCVContext } from '../context/CVContext';
@@ -9,15 +9,12 @@ import { RaqeemLogo } from './RaqeemLogo';
 export const UpdateShield = () => {
   const { remoteConfig, versionBlocked, updateAvailable, isDarkMode, isRTL, theme } = useCVContext();
   const insets = useSafeAreaInsets();
-  const [dismissed, setDismissed] = useState(false);
 
   if (!remoteConfig) return null;
-  if (dismissed) return null;
 
   const showShield = versionBlocked || updateAvailable;
   if (!showShield) return null;
 
-  const isForced = versionBlocked;
   const cfg = remoteConfig;
   const features = isRTL ? cfg.features.ar : cfg.features.en;
 
@@ -25,29 +22,16 @@ export const UpdateShield = () => {
     <View style={[StyleSheet.absoluteFill, { zIndex: 99999, backgroundColor: theme.background }]} pointerEvents="auto">
       <StatusBar translucent barStyle={isDarkMode ? 'light-content' : 'dark-content'} backgroundColor={theme.background} />
 
-      {!isForced && (
-        <TouchableOpacity
-          activeOpacity={0.7}
-          onPress={() => setDismissed(true)}
-          style={{
-            position: 'absolute',
-            top: insets.top + 16,
-            right: isRTL ? undefined : 20,
-            left: isRTL ? 20 : undefined,
-            width: 40,
-            height: 40,
-            borderRadius: 9999,
-            backgroundColor: isDarkMode ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.06)',
-            alignItems: 'center',
-            justifyContent: 'center',
-            zIndex: 100000,
-          }}
-        >
-          <Ionicons name="close-outline" size={22} color={isDarkMode ? '#FFFFFF' : '#000000'} />
-        </TouchableOpacity>
-      )}
-
-      <View style={styles.container}>
+      <ScrollView
+        contentContainerStyle={{
+          flexGrow: 1,
+          paddingHorizontal: 32,
+          paddingTop: insets.top + 20,
+          paddingBottom: insets.bottom + 20,
+        }}
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
+      >
         <View style={styles.logoSection}>
           <RaqeemLogo
             width={240}
@@ -89,30 +73,33 @@ export const UpdateShield = () => {
           </Text>
         </TouchableOpacity>
 
-        {!isForced && (
+        <View style={{ flex: 1 }} />
+
+        {/* Developer Attribution Card */}
+        <View style={[styles.creditCard, {
+          backgroundColor: isDarkMode ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.03)',
+        }]}>
+          <Text style={[styles.developerName, { color: isDarkMode ? '#EBEBF5' : '#3C3C43', fontFamily: getFontFamily(isRTL, 400) }]}>
+            {isRTL ? 'تطوير وبناء: المهندس عبدالله كريم' : 'Developed by: Eng. Abdullah Kareem'}
+          </Text>
+
           <TouchableOpacity
             activeOpacity={0.7}
-            onPress={() => setDismissed(true)}
-            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+            onPress={() => Linking.openURL('https://www.instagram.com/elcom.lab/').catch(() => {})}
+            style={[styles.instagramButton, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}
           >
-            <Text style={[styles.laterText, { color: isDarkMode ? '#636366' : '#8E8E93', fontFamily: getFontFamily(isRTL, 400) }]}>
-              {isRTL ? 'ربما لاحقاً' : 'Maybe Later'}
+            <Ionicons name="logo-instagram" size={18} color={theme.accent} />
+            <Text style={[styles.instagramHandle, { color: theme.accent, fontFamily: getFontFamily(isRTL, 700) }]}>
+              @elcom.lab
             </Text>
           </TouchableOpacity>
-        )}
-      </View>
+        </View>
+      </ScrollView>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: 32,
-    paddingBottom: 40,
-  },
   logoSection: {
     marginBottom: 24,
     alignItems: 'center',
@@ -168,7 +155,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 12,
     elevation: 6,
-    marginBottom: 20,
   },
   actionButtonText: {
     color: '#FFFFFF',
@@ -176,9 +162,31 @@ const styles = StyleSheet.create({
     fontWeight: '800',
     letterSpacing: 0.5,
   },
-  laterText: {
-    fontSize: 15,
+  creditCard: {
+    width: '100%',
+    maxWidth: 340,
+    borderRadius: 24,
+    padding: 16,
+    alignItems: 'center',
+    gap: 12,
+    alignSelf: 'center',
+  },
+  developerName: {
+    fontSize: 13,
     fontWeight: '400',
     textAlign: 'center',
+    opacity: 0.7,
+  },
+  instagramButton: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 100,
+  },
+  instagramHandle: {
+    fontSize: 14,
+    fontWeight: '700',
   },
 });

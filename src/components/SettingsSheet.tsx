@@ -1,10 +1,11 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, Modal, Platform } from 'react-native';
+import { View, Text, TouchableOpacity, Modal, Platform, Linking } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useCVContext } from '../context/CVContext';
 import { sharedStyles } from '../styles/shared.styles';
 import { getFontFamily } from '../constants/tokens';
 import { SheetHeader } from './SheetHeader';
+import appJson from '../../app.json';
 
 export const SettingsSheet = () => {
   const {
@@ -168,6 +169,52 @@ export const SettingsSheet = () => {
                 );
               })}
             </View>
+          </View>
+
+          {/* App Info Section */}
+          <View style={{ marginTop: 8, alignItems: 'center', gap: 10, paddingBottom: 32 }}>
+            <Text style={{
+              color: isDarkMode ? '#636366' : '#8E8E93',
+              fontFamily: getFontFamily(isRTL, 400),
+              fontSize: 13,
+              textAlign: 'center',
+            }}>
+              {isRTL ? `إصدار التطبيق: ${appJson.expo.version}` : `App Version: ${appJson.expo.version}`}
+            </Text>
+
+            <Text style={{
+              color: isDarkMode ? '#636366' : '#8E8E93',
+              fontFamily: getFontFamily(isRTL, 400),
+              fontSize: 13,
+              textAlign: 'center',
+              opacity: 0.7,
+            }}>
+              {isRTL ? 'برمجة وتطوير: عبدالله كريم' : 'Developed by: Abdullah Kareem'}
+            </Text>
+
+            <TouchableOpacity
+              activeOpacity={0.7}
+              onPress={() => Linking.openURL('https://www.instagram.com/elcom.lab/').catch(() => {})}
+              style={{
+                flexDirection: isRTL ? 'row-reverse' : 'row',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: 6,
+                paddingVertical: 8,
+                paddingHorizontal: 16,
+                borderRadius: 100,
+                backgroundColor: isDarkMode ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.04)',
+              }}
+            >
+              <Ionicons name="logo-instagram" size={16} color={isDarkMode ? '#EBEBF5' : '#3C3C43'} />
+              <Text style={{
+                color: isDarkMode ? '#EBEBF5' : '#3C3C43',
+                fontFamily: getFontFamily(isRTL, 700),
+                fontSize: 13,
+              }}>
+                @elcom.lab
+              </Text>
+            </TouchableOpacity>
           </View>
         </View>
       </View>

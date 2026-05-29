@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, useRef, useCallback, useMemo } from 'react';
-import { Animated, useColorScheme, Platform, ActionSheetIOS } from 'react-native';
+import { Animated, useColorScheme, AppState, Platform, ActionSheetIOS } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Print from 'expo-print';
 import * as Sharing from 'expo-sharing';
@@ -10,9 +10,9 @@ import { COLORS } from '../constants/tokens';
 import { translations, Language } from '../constants/translations';
 import { generateCVTemplate } from '../services/cvTemplate';
 import { useCVState } from '../hooks/useCVState';
-import appJson from '../../app.json';
+import Constants from 'expo-constants';
 
-const CURRENT_VERSION = appJson.expo.version;
+const CURRENT_VERSION = Constants.expoConfig?.version || '1.0.0';
 const VERSION_CACHE_KEY = '@Raqeem_VersionCache';
 const CACHE_TTL_MS = 60 * 60 * 1000; // 1 hour
 
@@ -142,11 +142,11 @@ export function CVProvider({ children }: { children: React.ReactNode }) {
     })();
   }, [dispatch, systemScheme]);
 
-  useEffect(() => {
-    if (!themeLoaded) return;
-    (async () => {
-      try {
-        // Try cache first
+  const VERSION_URL = 'https://raqeem.elcomlab.site/version.json';
+
+  const checkVersion = useCallback(async (skipCache: boolean = false) => {
+    try {
+      if (!skipCache) {
         const cachedRaw = await AsyncStorage.getItem(VERSION_CACHE_KEY);
         if (cachedRaw) {
           const cached: VersionCache = JSON.parse(cachedRaw);
@@ -156,33 +156,53 @@ export function CVProvider({ children }: { children: React.ReactNode }) {
             return;
           }
         }
-
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 5000);
-        const response = await fetch('https://raqeem.elcomlab.site/version.json', {
-          signal: controller.signal,
-        });
-        clearTimeout(timeoutId);
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
-        const data: RemoteConfig = await response.json();
-
-        await AsyncStorage.setItem(VERSION_CACHE_KEY, JSON.stringify({ data, timestamp: Date.now() }));
-        setRemoteConfig(data);
-      } catch (e) {
-        console.error('Version check failed, using cached data if available', e);
-        // Try stale cache as fallback
-        try {
-          const cachedRaw = await AsyncStorage.getItem(VERSION_CACHE_KEY);
-          if (cachedRaw) {
-            const cached: VersionCache = JSON.parse(cachedRaw);
-            setRemoteConfig(cached.data);
-          }
-        } catch {}
-      } finally {
-        setVersionCheckComplete(true);
       }
-    })();
-  }, [themeLoaded]);
+
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 5000);
+      const url = VERSION_URL + '?cb=' + Date.now();
+      const response = await fetch(url, {
+        signal: controller.signal,
+        headers: {
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache',
+          'Expires': '0',
+        },
+      });
+      clearTimeout(timeoutId);
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const data: RemoteConfig = await response.json();
+
+      await AsyncStorage.setItem(VERSION_CACHE_KEY, JSON.stringify({ data, timestamp: Date.now() }));
+      setRemoteConfig(data);
+    } catch (e) {
+      console.error('Version check failed, using cached data if available', e);
+      try {
+        const cachedRaw = await AsyncStorage.getItem(VERSION_CACHE_KEY);
+        if (cachedRaw) {
+          const cached: VersionCache = JSON.parse(cachedRaw);
+          setRemoteConfig(cached.data);
+        }
+      } catch {}
+    } finally {
+      setVersionCheckComplete(true);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!themeLoaded) return;
+    checkVersion();
+  }, [themeLoaded, checkVersion]);
+
+  useEffect(() => {
+    if (!themeLoaded) return;
+    const sub = AppState.addEventListener('change', (state) => {
+      if (state === 'active') {
+        checkVersion(true);
+      }
+    });
+    return () => sub.remove();
+  }, [themeLoaded, checkVersion]);
 
   const versionBlocked = useMemo(() => {
     if (!remoteConfig) return false;
