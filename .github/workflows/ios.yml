@@ -7,7 +7,7 @@ on:
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-  APP_NAME: raqeem
+  APP_NAME: RaqeemCV
   BUNDLE_ID: com.elcomlab.raqeem
 
 jobs:
