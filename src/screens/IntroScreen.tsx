@@ -22,6 +22,7 @@ export const IntroScreen = ({ onFinish, isThemeReady }: IntroScreenProps) => {
 
   // Track if a minimum brand viewing duration has elapsed to ensure animation visibility
   const [minDurationElapsed, setMinDurationElapsed] = useState(false);
+  const [forceDismiss, setForceDismiss] = useState(false);
 
   useEffect(() => {
     // 1. Entrance spring animation for the logo
@@ -44,12 +45,20 @@ export const IntroScreen = ({ onFinish, isThemeReady }: IntroScreenProps) => {
       setMinDurationElapsed(true);
     }, 1500);
 
-    return () => clearTimeout(timer);
+    // Safety timeout: force dismiss splash after 3.0 seconds to prevent white screen hangs
+    const safetyTimer = setTimeout(() => {
+      setForceDismiss(true);
+    }, 3000);
+
+    return () => {
+      clearTimeout(timer);
+      clearTimeout(safetyTimer);
+    };
   }, []);
 
   useEffect(() => {
     // 2. Trigger exit transition: Entire screen view dissolves smoothly to reveal underlying app
-    if (isThemeReady && minDurationElapsed) {
+    if ((isThemeReady && minDurationElapsed) || forceDismiss) {
       Animated.parallel([
         Animated.timing(scale, {
           toValue: 1.05,
@@ -68,7 +77,7 @@ export const IntroScreen = ({ onFinish, isThemeReady }: IntroScreenProps) => {
         }),
       ]).start(onFinish);
     }
-  }, [isThemeReady, minDurationElapsed]);
+  }, [isThemeReady, minDurationElapsed, forceDismiss]);
 
   return (
     <Animated.View style={[StyleSheet.absoluteFillObject, styles.root, { backgroundColor: theme.background, opacity: bgOpacity }]} pointerEvents="none">

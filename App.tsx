@@ -109,16 +109,17 @@ function AppShell() {
 }
 
 function AppBoot() {
-  const [fontsLoaded] = useFonts({
+  const [fontsLoaded, fontError] = useFonts({
     'Cairo': Cairo_400Regular,
     'Cairo-Bold': Cairo_700Bold,
     'Cairo-Black': Cairo_900Black,
   });
   const [showSplash, setShowSplash] = useState(true);
 
+  // Safely fallback to true if there is a font error or if loading takes too long
   return (
     <CVProvider>
-      <AppGate fontsLoaded={fontsLoaded} showSplash={showSplash} setShowSplash={setShowSplash} />
+      <AppGate fontsLoaded={fontsLoaded || !!fontError} showSplash={showSplash} setShowSplash={setShowSplash} />
     </CVProvider>
   );
 }
