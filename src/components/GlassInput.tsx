@@ -84,8 +84,6 @@ export const GlassInput = ({
           label={label}
           value={value}
           placeholder={placeholder}
-          isDarkMode={isDarkMode}
-          isRTL={isRTL}
           onSave={(text) => {
             if (onChangeText) {
               onChangeText(text);

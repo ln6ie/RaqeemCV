@@ -4,6 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useCVContext } from '../context/CVContext';
 import { sharedStyles } from '../styles/shared.styles';
 import { getFontFamily } from '../constants/tokens';
+import { SheetHeader } from './SheetHeader';
 
 export const SettingsSheet = () => {
   const {
@@ -65,7 +66,7 @@ export const SettingsSheet = () => {
                 },
           ]}
         >
-          {/* Grabber indicator (pure iOS style) - always visible to allow interactive iOS swipe down to dismiss */}
+          {/* Grabber indicator (pure iOS style) */}
           <View
             style={{
               width: 40,
@@ -77,204 +78,95 @@ export const SettingsSheet = () => {
             }}
           />
 
-          {/* Modal Header Row (With Done/Save Button on Top-Right instead of Bottom Close Button) */}
-          <View
-            style={{
-              flexDirection: isRTL ? 'row-reverse' : 'row',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              marginBottom: 24,
-            }}
-          >
-            <Text
-              style={{
-                color: theme.textPrimary,
-                fontFamily: getFontFamily(isRTL, 900),
-                fontSize: 22,
-                letterSpacing: -0.5,
-              }}
-            >
-              {t.preferences.title}
-            </Text>
-            
-            <TouchableOpacity
-              onPress={() => setIsSettingsVisible(false)}
-              style={{
-                paddingVertical: 6,
-                paddingHorizontal: 12,
-                borderRadius: 99,
-                backgroundColor: theme.inputBackground,
-              }}
-            >
-              <Text style={{ color: theme.accent, fontFamily: getFontFamily(isRTL, 800), fontSize: 14 }}>
-                {isRTL ? 'تم' : 'Done'}
-              </Text>
-            </TouchableOpacity>
-          </View>
+          <SheetHeader title={t.preferences.title} onClose={() => setIsSettingsVisible(false)} isRTL={isRTL} isDarkMode={isDarkMode} theme={theme} />
 
-          {/* Theme Toggle Selection (System Style Switch/Button) */}
-          <View style={{ width: '100%', marginBottom: 20 }}>
-            <Text
-              style={{
-                color: theme.textSecondary,
-                fontFamily: getFontFamily(isRTL, 700),
-                fontSize: 13,
-                marginBottom: 8,
-                paddingHorizontal: 4,
-                textAlign: isRTL ? 'right' : 'left',
-                textTransform: 'uppercase',
-                letterSpacing: 0.5,
-              }}
-            >
-              {isRTL ? 'مظهر التطبيق' : 'App Theme'}
-            </Text>
+          <View style={{ marginBottom: 16 }}>
             <View
               style={{
                 flexDirection: isRTL ? 'row-reverse' : 'row',
-                backgroundColor: theme.inputBackground,
-                borderRadius: 16,
+                backgroundColor: isDarkMode ? 'rgba(255,255,255,0.08)' : '#E5E5EA',
+                borderRadius: 9999,
                 padding: 4,
               }}
             >
-              <TouchableOpacity
-                style={{
-                  flex: 1,
-                  paddingVertical: 10,
-                  alignItems: 'center',
-                  borderRadius: 12,
-                  backgroundColor: !isDarkMode ? theme.cardBackground : 'transparent',
-                  shadowColor: '#000',
-                  shadowOffset: { width: 0, height: 1 },
-                  shadowOpacity: !isDarkMode ? 0.08 : 0,
-                  shadowRadius: 2,
-                  elevation: !isDarkMode ? 1 : 0,
-                }}
-                onPress={() => setIsDarkMode(false)}
-              >
-                <View style={{ flexDirection: isRTL ? 'row-reverse' : 'row', alignItems: 'center', gap: 6 }}>
-                  <Ionicons name="sunny-outline" size={16} color={!isDarkMode ? theme.accent : theme.textSecondary} />
-                  <Text
+              {([['light', 'sunny-outline', isRTL ? 'فاتح' : 'Light'],
+                ['dark', 'moon-outline', isRTL ? 'داكن' : 'Dark']] as const).map(([mode, icon, label]) => {
+                const isActive = isDarkMode === (mode === 'dark');
+                return (
+                  <TouchableOpacity
+                    key={mode}
+                    activeOpacity={0.7}
                     style={{
-                      color: !isDarkMode ? theme.textPrimary : theme.textSecondary,
-                      fontFamily: getFontFamily(isRTL, 700),
-                      fontSize: 13,
+                      flex: 1,
+                      flexDirection: isRTL ? 'row-reverse' : 'row',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: 6,
+                      paddingVertical: 10,
+                      borderRadius: 9999,
+                      backgroundColor: isActive ? theme.cardBackground : 'transparent',
+                      shadowColor: '#000',
+                      shadowOffset: { width: 0, height: 1 },
+                      shadowOpacity: isActive ? 0.08 : 0,
+                      shadowRadius: 2,
+                      elevation: isActive ? 1 : 0,
                     }}
+                    onPress={() => setIsDarkMode(mode === 'dark')}
                   >
-                    {isRTL ? 'فاتح' : 'Light'}
-                  </Text>
-                </View>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={{
-                  flex: 1,
-                  paddingVertical: 10,
-                  alignItems: 'center',
-                  borderRadius: 12,
-                  backgroundColor: isDarkMode ? (isDarkMode ? '#2C2C2E' : '#FFFFFF') : 'transparent',
-                  shadowColor: '#000',
-                  shadowOffset: { width: 0, height: 1 },
-                  shadowOpacity: isDarkMode ? 0.2 : 0,
-                  shadowRadius: 2,
-                  elevation: isDarkMode ? 1 : 0,
-                }}
-                onPress={() => setIsDarkMode(true)}
-              >
-                <View style={{ flexDirection: isRTL ? 'row-reverse' : 'row', alignItems: 'center', gap: 6 }}>
-                  <Ionicons name="moon-outline" size={16} color={isDarkMode ? theme.accent : theme.textSecondary} />
-                  <Text
-                    style={{
-                      color: isDarkMode ? theme.textPrimary : theme.textSecondary,
-                      fontFamily: getFontFamily(isRTL, 700),
+                    <Ionicons name={icon} size={16} color={isActive ? theme.accent : theme.textSecondary} />
+                    <Text style={{
+                      color: isActive ? theme.accent : theme.textSecondary,
+                      fontFamily: getFontFamily(isRTL, 800),
                       fontSize: 13,
-                    }}
-                  >
-                    {isRTL ? 'داكن' : 'Dark'}
-                  </Text>
-                </View>
-              </TouchableOpacity>
+                    }}>{label}</Text>
+                  </TouchableOpacity>
+                );
+              })}
             </View>
           </View>
 
-          {/* Language Tabs Selector (iOS Segmented Tab Style) */}
-          <View style={{ width: '100%', marginBottom: 28 }}>
-            <Text
-              style={{
-                color: theme.textSecondary,
-                fontFamily: getFontFamily(isRTL, 700),
-                fontSize: 13,
-                marginBottom: 8,
-                paddingHorizontal: 4,
-                textAlign: isRTL ? 'right' : 'left',
-                textTransform: 'uppercase',
-                letterSpacing: 0.5,
-              }}
-            >
-              {isRTL ? 'لغة ملف الـ PDF' : 'PDF Document Language'}
-            </Text>
+          <View style={{ marginBottom: 16 }}>
             <View
               style={{
                 flexDirection: isRTL ? 'row-reverse' : 'row',
-                backgroundColor: theme.inputBackground,
-                borderRadius: 16,
+                backgroundColor: isDarkMode ? 'rgba(255,255,255,0.08)' : '#E5E5EA',
+                borderRadius: 9999,
                 padding: 4,
               }}
             >
-              <TouchableOpacity
-                style={{
-                  flex: 1,
-                  paddingVertical: 10,
-                  alignItems: 'center',
-                  borderRadius: 12,
-                  backgroundColor: activeLanguage === 'en' ? theme.cardBackground : 'transparent',
-                  shadowColor: '#000',
-                  shadowOffset: { width: 0, height: 1 },
-                  shadowOpacity: activeLanguage === 'en' ? 0.08 : 0,
-                  shadowRadius: 2,
-                  elevation: activeLanguage === 'en' ? 1 : 0,
-                }}
-                onPress={() => {
-                  setActiveLanguage('en');
-                  setPdfLang('en');
-                }}
-              >
-                <Text
-                  style={{
-                    color: activeLanguage === 'en' ? theme.accent : theme.textSecondary,
-                    fontFamily: getFontFamily(isRTL, 800),
-                    fontSize: 13,
-                  }}
-                >
-                  English (LTR)
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={{
-                  flex: 1,
-                  paddingVertical: 10,
-                  alignItems: 'center',
-                  borderRadius: 12,
-                  backgroundColor: activeLanguage === 'ar' ? (isDarkMode ? '#2C2C2E' : '#FFFFFF') : 'transparent',
-                  shadowColor: '#000',
-                  shadowOffset: { width: 0, height: 1 },
-                  shadowOpacity: activeLanguage === 'ar' ? 0.2 : 0,
-                  shadowRadius: 2,
-                  elevation: activeLanguage === 'ar' ? 1 : 0,
-                }}
-                onPress={() => {
-                  setActiveLanguage('ar');
-                  setPdfLang('ar');
-                }}
-              >
-                <Text
-                  style={{
-                    color: activeLanguage === 'ar' ? theme.accent : theme.textSecondary,
-                    fontFamily: getFontFamily(isRTL, 800),
-                    fontSize: 13,
-                  }}
-                >
-                  العربية (RTL)
-                </Text>
-              </TouchableOpacity>
+              {([['en', isRTL ? 'إنجليزي' : 'English'],
+                ['ar', isRTL ? 'عربي' : 'العربية']] as const).map(([lang, label]) => {
+                const isActive = activeLanguage === lang;
+                return (
+                  <TouchableOpacity
+                    key={lang}
+                    activeOpacity={0.7}
+                    style={{
+                      flex: 1,
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      paddingVertical: 10,
+                      borderRadius: 9999,
+                      backgroundColor: isActive ? theme.cardBackground : 'transparent',
+                      shadowColor: '#000',
+                      shadowOffset: { width: 0, height: 1 },
+                      shadowOpacity: isActive ? 0.08 : 0,
+                      shadowRadius: 2,
+                      elevation: isActive ? 1 : 0,
+                    }}
+                    onPress={() => {
+                      setActiveLanguage(lang);
+                      setPdfLang(lang);
+                    }}
+                  >
+                    <Text style={{
+                      color: isActive ? theme.accent : theme.textSecondary,
+                      fontFamily: getFontFamily(isRTL, 800),
+                      fontSize: 13,
+                    }}>{label}</Text>
+                  </TouchableOpacity>
+                );
+              })}
             </View>
           </View>
         </View>

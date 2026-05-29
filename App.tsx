@@ -19,6 +19,7 @@ import { Step2Education } from './src/screens/Step2Education';
 import { Step3Export } from './src/screens/Step3Export';
 import { SettingsSheet } from './src/components/SettingsSheet';
 import { AIPromptSheet } from './src/components/AIPromptSheet';
+import { UpdateShield } from './src/components/UpdateShield';
 
 function AppShell() {
   const {
@@ -139,11 +140,6 @@ function AppGate({ fontsLoaded, showSplash, setShowSplash }: { fontsLoaded: bool
 
   return (
     <View style={{ flex: 1, backgroundColor: initialBg }}>
-      {/* 
-        AppShell renders underneath the splash overlay once themes are loaded.
-        Since IntroScreen shares the same parent View from frame 1, React preserves
-        its state and animations perfectly when AppShell mounts!
-      */}
       {themeLoaded && <AppShell />}
       {showSplash && (
         <IntroScreen
@@ -151,6 +147,7 @@ function AppGate({ fontsLoaded, showSplash, setShowSplash }: { fontsLoaded: bool
           onFinish={handleSplashFinish}
         />
       )}
+      {themeLoaded && <UpdateShield />}
     </View>
   );
 }

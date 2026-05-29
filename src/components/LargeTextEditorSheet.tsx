@@ -4,6 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useCVContext } from '../context/CVContext';
 import { sharedStyles } from '../styles/shared.styles';
 import { getFontFamily } from '../constants/tokens';
+import { SheetHeader } from './SheetHeader';
 
 import { LargeTextEditorSheetProps } from '../types/components';
 
@@ -82,31 +83,7 @@ export const LargeTextEditorSheet = ({
             }}
           />
 
-          {/* Action Row */}
-          <View
-            style={{
-              flexDirection: isRTL ? 'row-reverse' : 'row',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              marginBottom: 20,
-            }}
-          >
-            <TouchableOpacity onPress={onClose} style={{ paddingVertical: 6, paddingHorizontal: 12, borderRadius: 99, backgroundColor: theme.inputBackground }}>
-              <Text style={{ color: theme.textSecondary, fontFamily: getFontFamily(isRTL, 700), fontSize: 14 }}>
-                {isRTL ? 'إلغاء' : 'Cancel'}
-              </Text>
-            </TouchableOpacity>
-
-            <Text style={{ color: theme.textPrimary, fontFamily: getFontFamily(isRTL, 900), fontSize: 18 }}>
-              {label}
-            </Text>
-
-            <TouchableOpacity onPress={handleSave} style={{ paddingVertical: 6, paddingHorizontal: 16, borderRadius: 99, backgroundColor: theme.accent }}>
-              <Text style={{ color: '#FFFFFF', fontFamily: getFontFamily(isRTL, 800), fontSize: 14 }}>
-                {isRTL ? 'حفظ' : 'Save'}
-              </Text>
-            </TouchableOpacity>
-          </View>
+          <SheetHeader title={label} onClose={onClose} isRTL={isRTL} isDarkMode={isDarkMode} theme={theme} />
 
           {/* Text Area Card - borderless, stretches to margins naturally */}
           <ScrollView
@@ -141,6 +118,26 @@ export const LargeTextEditorSheet = ({
               />
             </View>
           </ScrollView>
+
+          <TouchableOpacity
+            onPress={handleSave}
+            activeOpacity={0.8}
+            style={{
+              backgroundColor: theme.accent,
+              borderRadius: 16,
+              paddingVertical: 14,
+              flexDirection: isRTL ? 'row-reverse' : 'row',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: 8,
+              marginBottom: Platform.OS === 'ios' ? 0 : 16,
+            }}
+          >
+            <Ionicons name="checkmark-outline" size={18} color="#FFFFFF" />
+            <Text style={{ color: '#FFFFFF', fontFamily: getFontFamily(isRTL, 800), fontSize: 15 }}>
+              {isRTL ? 'حفظ التعديلات' : 'Save Changes'}
+            </Text>
+          </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>
     </Modal>

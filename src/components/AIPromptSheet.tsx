@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, Modal, Platform, ScrollView, StyleSheet, TextInput } from 'react-native';
+import { View, Text, TouchableOpacity, Modal, Platform, ScrollView, TextInput } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import * as Clipboard from 'expo-clipboard';
 import { useCVContext } from '../context/CVContext';
 import { sharedStyles } from '../styles/shared.styles';
 import { getFontFamily, SPACING } from '../constants/tokens';
+import { SheetHeader } from './SheetHeader';
 
 export const AIPromptSheet = () => {
   const {
@@ -229,93 +230,52 @@ Start now by welcoming me warmly on behalf of "Raqeem CV" and asking the first q
             }}
           />
 
-          {/* Modal Header */}
+          <SheetHeader title={isRTL ? 'مساعد رقيم الذكي (AI)' : 'Raqeem AI Assistant'} onClose={() => setIsAIPromptVisible(false)} isRTL={isRTL} isDarkMode={isDarkMode} theme={theme} />
+
           <View
             style={{
               flexDirection: isRTL ? 'row-reverse' : 'row',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              marginBottom: 16,
-            }}
-          >
-            <Text
-              style={{
-                color: theme.textPrimary,
-                fontFamily: getFontFamily(isRTL, 900),
-                fontSize: 22,
-                letterSpacing: -0.5,
-              }}
-            >
-              {isRTL ? 'مساعد رقيم الذكي (AI)' : 'Raqeem AI Assistant'}
-            </Text>
-
-            <TouchableOpacity
-              onPress={() => setIsAIPromptVisible(false)}
-              style={{
-                paddingVertical: 6,
-                paddingHorizontal: 12,
-                borderRadius: 99,
-                backgroundColor: theme.inputBackground,
-              }}
-            >
-              <Text style={{ color: theme.accent, fontFamily: getFontFamily(isRTL, 800), fontSize: 14 }}>
-                {isRTL ? 'إغلاق' : 'Close'}
-              </Text>
-            </TouchableOpacity>
-          </View>
-
-          {/* Premium Segmented Tab Bar */}
-          <View
-            style={{
-              flexDirection: isRTL ? 'row-reverse' : 'row',
-              backgroundColor: theme.inputBackground,
-              borderRadius: 16,
+              backgroundColor: isDarkMode ? 'rgba(255,255,255,0.08)' : '#E5E5EA',
+              borderRadius: 9999,
               padding: 4,
               marginBottom: 20,
-              borderWidth: 1,
-              borderColor: theme.cardBorder,
             }}
           >
-            <TouchableOpacity
-              style={{
-                flex: 1,
-                paddingVertical: 10,
-                alignItems: 'center',
-                borderRadius: 12,
-                backgroundColor: activeTab === 'prompt' ? theme.cardBackground : 'transparent',
-              }}
-              onPress={() => setActiveTab('prompt')}
-            >
-              <Text
-                style={{
-                  color: activeTab === 'prompt' ? theme.accent : theme.textSecondary,
-                  fontFamily: getFontFamily(isRTL, 800),
-                  fontSize: 13,
-                }}
-              >
-                {isRTL ? 'البرومبت الذكي' : 'Smart Prompt'}
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={{
-                flex: 1,
-                paddingVertical: 10,
-                alignItems: 'center',
-                borderRadius: 12,
-                backgroundColor: activeTab === 'import' ? (isDarkMode ? '#2C2C2E' : '#FFFFFF') : 'transparent',
-              }}
-              onPress={() => setActiveTab('import')}
-            >
-              <Text
-                style={{
-                  color: activeTab === 'import' ? theme.accent : theme.textSecondary,
-                  fontFamily: getFontFamily(isRTL, 800),
-                  fontSize: 13,
-                }}
-              >
-                {isRTL ? 'استيراد البيانات' : 'Import JSON'}
-              </Text>
-            </TouchableOpacity>
+            {([['prompt', 'sparkles', isRTL ? 'البرومبت ' : ' Prompt'] as const,
+              ['import', 'cloud-download-outline', isRTL ? 'استيراد البيانات' : 'Import JSON'] as const]).map(([key, icon, label]) => {
+              const isActive = activeTab === key;
+              return (
+                <TouchableOpacity
+                  key={key}
+                  activeOpacity={0.7}
+                  style={{
+                    flex: 1,
+                    flexDirection: isRTL ? 'row-reverse' : 'row',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: 6,
+                    paddingVertical: 10,
+                    borderRadius: 9999,
+                    backgroundColor: isActive ? theme.cardBackground : 'transparent',
+                    shadowColor: '#000',
+                    shadowOffset: { width: 0, height: 1 },
+                    shadowOpacity: isActive ? 0.08 : 0,
+                    shadowRadius: 2,
+                    elevation: isActive ? 1 : 0,
+                  }}
+                  onPress={() => setActiveTab(key)}
+                >
+                  <Ionicons name={icon} size={16} color={isActive ? theme.accent : theme.textSecondary} />
+                  <Text style={{
+                    color: isActive ? theme.accent : theme.textSecondary,
+                    fontFamily: getFontFamily(isRTL, 800),
+                    fontSize: 13,
+                  }}>
+                    {label}
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
           </View>
 
           {activeTab === 'prompt' ? (
@@ -344,106 +304,88 @@ Start now by welcoming me warmly on behalf of "Raqeem CV" and asking the first q
                 </Text>
               </View>
 
-              {/* Prompt View Box */}
-              <View
+              {/* Prompt View Box — tappable to copy */}
+              <TouchableOpacity
+                activeOpacity={0.85}
+                onPress={handleCopy}
                 style={{
                   backgroundColor: isDarkMode ? '#1C1C1E' : '#F2F2F7',
                   borderRadius: 16,
                   padding: 16,
                   borderWidth: 1,
                   borderColor: theme.cardBorder,
-                  position: 'relative',
-                  marginBottom: 20,
                 }}
               >
+                <View style={{ flexDirection: isRTL ? 'row-reverse' : 'row', alignItems: 'center', gap: 6, marginBottom: 8 }}>
+                  <Ionicons name={copied ? 'checkmark-circle' : 'copy-outline'} size={16} color={copied ? theme.success : theme.accent} />
+                  <Text style={{ color: copied ? theme.success : theme.accent, fontFamily: getFontFamily(isRTL, 700), fontSize: 13 }}>
+                    {copied ? (isRTL ? 'تم النسخ' : 'Copied') : (isRTL ? 'اضغط للنسخ' : 'Tap to copy')}
+                  </Text>
+                </View>
                 <Text style={{ color: theme.textPrimary, fontFamily: getFontFamily(isRTL, 400), fontSize: 12, lineHeight: 18, textAlign: isRTL ? 'right' : 'left' }}>
                   {promptText}
-                </Text>
-              </View>
-
-              {/* Copy Button */}
-              <TouchableOpacity
-                style={{
-                  backgroundColor: copied ? '#34C759' : theme.accent,
-                  borderRadius: 16,
-                  paddingVertical: 14,
-                  flexDirection: isRTL ? 'row-reverse' : 'row',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: 8,
-                  shadowColor: copied ? '#34C759' : theme.accent,
-                  shadowOffset: { width: 0, height: 4 },
-                  shadowOpacity: 0.25,
-                  shadowRadius: 8,
-                  elevation: 4,
-                }}
-                activeOpacity={0.8}
-                onPress={handleCopy}
-              >
-                <Ionicons name={copied ? 'checkmark-circle' : 'copy-outline'} size={18} color="#FFFFFF" />
-                <Text style={{ color: '#FFFFFF', fontFamily: getFontFamily(isRTL, 800), fontSize: 15 }}>
-                  {copied 
-                    ? (isRTL ? 'تم نسخ البرومبت بنجاح!' : 'Prompt Copied Successfully!') 
-                    : (isRTL ? 'نسخ البرومبت المخصص' : 'Copy Custom AI Prompt')}
                 </Text>
               </TouchableOpacity>
             </ScrollView>
           ) : (
             <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 40 }}>
-              {/* Import Guide Card */}
-              <View
-                style={{
-                  backgroundColor: theme.inputBackground,
-                  borderRadius: 16,
-                  padding: 16,
-                  marginBottom: 20,
-                  borderWidth: 1,
-                  borderColor: theme.cardBorder,
-                }}
-              >
-                <View style={{ flexDirection: isRTL ? 'row-reverse' : 'row', alignItems: 'center', gap: 8, marginBottom: 8 }}>
-                  <Ionicons name="cloud-download-outline" size={18} color={theme.accent} />
-                  <Text style={{ color: theme.textPrimary, fontFamily: getFontFamily(isRTL, 700), fontSize: 15 }}>
-                    {isRTL ? 'تعبئة البيانات تلقائياً بلمسة واحدة' : 'One-Touch CV Auto-Fill'}
-                  </Text>
-                </View>
-                <Text style={{ color: theme.textSecondary, fontFamily: getFontFamily(isRTL, 400), fontSize: 13, lineHeight: 20, textAlign: isRTL ? 'right' : 'left' }}>
-                  {isRTL
-                    ? 'بعد انتهاء محادثتك مع الذكاء الاصطناعي، انسخ الرد الكامل (أو كود الـ JSON فقط) والصفه في الصندوق أدناه، ثم اضغط على "استيراد وتعبئة السيرة الذاتية" ليتم تعبئة جميع النماذج والصفحات بالكامل فوراً!'
-                    : 'Once your AI interview is complete, copy the full AI response (or just the JSON block) and paste it below. Tap "Import & Auto-Fill CV" to instantly populate all forms across the app!'}
-                </Text>
+              {/* Paste JSON Box */}
+              <View style={{ position: 'relative', marginBottom: 16 }}>
+                <TextInput
+                  multiline
+                  numberOfLines={12}
+                  value={jsonText}
+                  onChangeText={setJsonText}
+                  placeholder={isRTL ? 'الصق كود الـ JSON أو رد الذكاء الاصطناعي هنا...' : 'Paste JSON or AI response here...'}
+                  placeholderTextColor={isDarkMode ? '#636366' : '#C7C7CC'}
+                  style={{
+                    backgroundColor: isDarkMode ? '#1C1C1E' : '#F2F2F7',
+                    color: theme.textPrimary,
+                    fontFamily: getFontFamily(isRTL, 400),
+                    fontSize: 13,
+                    lineHeight: 18,
+                    padding: 16,
+                    borderRadius: 16,
+                    minHeight: 200,
+                    textAlignVertical: 'top',
+                    textAlign: isRTL ? 'right' : 'left',
+                  }}
+                />
+                {!jsonText.trim() && (
+                  <TouchableOpacity
+                    activeOpacity={0.7}
+                    onPress={async () => {
+                      const text = await Clipboard.getStringAsync();
+                      if (text.trim()) setJsonText(text.trim());
+                    }}
+                    style={{
+                      position: 'absolute',
+                      bottom: 12,
+                      right: isRTL ? undefined : 12,
+                      left: isRTL ? 12 : undefined,
+                      backgroundColor: theme.accent,
+                      borderRadius: 9999,
+                      paddingVertical: 8,
+                      paddingHorizontal: 14,
+                      flexDirection: isRTL ? 'row-reverse' : 'row',
+                      alignItems: 'center',
+                      gap: 6,
+                    }}
+                  >
+                    <Ionicons name="clipboard-outline" size={14} color="#FFFFFF" />
+                    <Text style={{ color: '#FFFFFF', fontFamily: getFontFamily(isRTL, 700), fontSize: 12 }}>
+                      {isRTL ? 'لصق' : 'Paste'}
+                    </Text>
+                  </TouchableOpacity>
+                )}
               </View>
 
-              {/* Paste JSON Box */}
-              <TextInput
-                multiline
-                numberOfLines={15}
-                value={jsonText}
-                onChangeText={setJsonText}
-                placeholder={isRTL ? 'الصق كود الـ JSON أو رد الذكاء الاصطناعي هنا...' : 'Paste JSON or AI response here...'}
-                placeholderTextColor={isDarkMode ? '#636366' : '#C7C7CC'}
-                style={{
-                  backgroundColor: theme.inputBackground,
-                  color: theme.textPrimary,
-                  fontFamily: getFontFamily(isRTL, 400),
-                  fontSize: 13,
-                  lineHeight: 18,
-                  padding: 16,
-                  borderRadius: 16,
-                  borderWidth: 1,
-                  borderColor: theme.cardBorder,
-                  minHeight: 220,
-                  textAlignVertical: 'top',
-                  textAlign: isRTL ? 'right' : 'left',
-                  marginBottom: 20,
-                }}
-              />
-
-              {/* Import Action Button */}
               <TouchableOpacity
+                activeOpacity={0.8}
+                onPress={handleImport}
                 style={{
                   backgroundColor: theme.accent,
-                  borderRadius: 16,
+                  borderRadius: 9999,
                   paddingVertical: 14,
                   flexDirection: isRTL ? 'row-reverse' : 'row',
                   alignItems: 'center',
@@ -455,12 +397,10 @@ Start now by welcoming me warmly on behalf of "Raqeem CV" and asking the first q
                   shadowRadius: 8,
                   elevation: 4,
                 }}
-                activeOpacity={0.8}
-                onPress={handleImport}
               >
                 <Ionicons name="download-outline" size={18} color="#FFFFFF" />
                 <Text style={{ color: '#FFFFFF', fontFamily: getFontFamily(isRTL, 800), fontSize: 15 }}>
-                  {isRTL ? 'استيراد وتعبئة السيرة الذاتية' : 'Import & Auto-Fill CV'}
+                  {isRTL ? 'توليد ' : 'Auto-Fill CV'}
                 </Text>
               </TouchableOpacity>
             </ScrollView>

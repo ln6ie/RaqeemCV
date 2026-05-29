@@ -5,10 +5,28 @@ import * as Print from 'expo-print';
 import * as Sharing from 'expo-sharing';
 import { CVData, WorkExperience, Education } from '../types/cv';
 import { CVSchema } from '../types/cv';
+import { RemoteConfig, VersionCache } from '../types/version';
 import { COLORS } from '../constants/tokens';
 import { translations, Language } from '../constants/translations';
 import { generateCVTemplate } from '../services/cvTemplate';
 import { useCVState } from '../hooks/useCVState';
+import appJson from '../../app.json';
+
+const CURRENT_VERSION = appJson.expo.version;
+const VERSION_CACHE_KEY = '@Raqeem_VersionCache';
+const CACHE_TTL_MS = 60 * 60 * 1000; // 1 hour
+
+function compareVersions(a: string, b: string): number {
+  const ap = a.split('.').map(Number);
+  const bp = b.split('.').map(Number);
+  for (let i = 0; i < Math.max(ap.length, bp.length); i++) {
+    const an = ap[i] || 0;
+    const bn = bp[i] || 0;
+    if (an > bn) return 1;
+    if (an < bn) return -1;
+  }
+  return 0;
+}
 
 interface CVContextType {
   cvData: CVData;
@@ -22,6 +40,9 @@ interface CVContextType {
   exportStatus: 'idle' | 'generating' | 'completed';
   snackMessage: string | null;
   themeLoaded: boolean;
+  remoteConfig: RemoteConfig | null;
+  versionBlocked: boolean;
+  updateAvailable: boolean;
   isSettingsVisible: boolean;
   isAIPromptVisible: boolean;
   theme: any;
@@ -84,6 +105,8 @@ export function CVProvider({ children }: { children: React.ReactNode }) {
   const [cachedPdfUri, setCachedPdfUri] = useState<string | null>(null);
   const [snackMessage, setSnackMessage] = useState<string | null>(null);
   const [themeLoaded, setThemeLoaded] = useState(false);
+  const [remoteConfig, setRemoteConfig] = useState<RemoteConfig | null>(null);
+  const [versionCheckComplete, setVersionCheckComplete] = useState(false);
   const [isSettingsVisible, setIsSettingsVisible] = useState(false);
   const [isAIPromptVisible, setIsAIPromptVisible] = useState(false);
 
@@ -118,6 +141,58 @@ export function CVProvider({ children }: { children: React.ReactNode }) {
       }
     })();
   }, [dispatch, systemScheme]);
+
+  useEffect(() => {
+    if (!themeLoaded) return;
+    (async () => {
+      try {
+        // Try cache first
+        const cachedRaw = await AsyncStorage.getItem(VERSION_CACHE_KEY);
+        if (cachedRaw) {
+          const cached: VersionCache = JSON.parse(cachedRaw);
+          if (Date.now() - cached.timestamp < CACHE_TTL_MS) {
+            setRemoteConfig(cached.data);
+            setVersionCheckComplete(true);
+            return;
+          }
+        }
+
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 5000);
+        const response = await fetch('https://raqeem.elcomlab.site/version.json', {
+          signal: controller.signal,
+        });
+        clearTimeout(timeoutId);
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const data: RemoteConfig = await response.json();
+
+        await AsyncStorage.setItem(VERSION_CACHE_KEY, JSON.stringify({ data, timestamp: Date.now() }));
+        setRemoteConfig(data);
+      } catch (e) {
+        console.error('Version check failed, using cached data if available', e);
+        // Try stale cache as fallback
+        try {
+          const cachedRaw = await AsyncStorage.getItem(VERSION_CACHE_KEY);
+          if (cachedRaw) {
+            const cached: VersionCache = JSON.parse(cachedRaw);
+            setRemoteConfig(cached.data);
+          }
+        } catch {}
+      } finally {
+        setVersionCheckComplete(true);
+      }
+    })();
+  }, [themeLoaded]);
+
+  const versionBlocked = useMemo(() => {
+    if (!remoteConfig) return false;
+    return compareVersions(CURRENT_VERSION, remoteConfig.minimumRequiredVersion) < 0;
+  }, [remoteConfig]);
+
+  const updateAvailable = useMemo(() => {
+    if (!remoteConfig) return false;
+    return compareVersions(CURRENT_VERSION, remoteConfig.latestVersion) < 0 && !versionBlocked;
+  }, [remoteConfig, versionBlocked]);
 
   useEffect(() => {
     if (!themeLoaded) return;
@@ -378,6 +453,9 @@ export function CVProvider({ children }: { children: React.ReactNode }) {
     exportStatus,
     snackMessage,
     themeLoaded,
+    remoteConfig,
+    versionBlocked,
+    updateAvailable,
     isSettingsVisible,
     isAIPromptVisible,
     theme,
@@ -415,7 +493,8 @@ export function CVProvider({ children }: { children: React.ReactNode }) {
   }), [
     cvData, activeStep, isDarkMode, activeLanguage, pdfLang,
     validationErrors, isLoading, systemError, exportStatus,
-    snackMessage, themeLoaded, isSettingsVisible, isAIPromptVisible, theme, t, isRTL,
+    snackMessage, themeLoaded, remoteConfig, versionBlocked, updateAvailable,
+    isSettingsVisible, isAIPromptVisible, theme, t, isRTL,
     updateField, updateSkillsString, updateCoursesString,
     updateWorkExperience, updateWorkExperienceTask,
     addWorkExperienceTask, addWorkExperience, removeWorkExperience,

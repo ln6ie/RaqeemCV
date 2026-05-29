@@ -30,8 +30,6 @@ export interface LargeTextEditorSheetProps {
   visible: boolean;
   value: string;
   label: string;
-  isDarkMode: boolean;
-  isRTL: boolean;
   onSave: (val: string) => void;
   onClose: () => void;
   placeholder?: string;

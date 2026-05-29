@@ -1,0 +1,15 @@
+{
+  "latestVersion": "2.1.0",
+  "minimumRequiredVersion": "2.0.0",
+  "features": {
+    "en": [
+      "Brand new SVG typographic layout",
+      "Unified Sheet system integration"
+    ],
+    "ar": [
+      "تصميم برمي هيدر SVG جديد بالكامل",
+      "توحيد نظام القوائم السفلية Sheets"
+    ]
+  },
+  "updateUrl": "https://raqeem.elcomlab.site"
+}
