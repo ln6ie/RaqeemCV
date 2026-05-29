@@ -18,11 +18,12 @@ import { Step1Experience } from './src/screens/Step1Experience';
 import { Step2Education } from './src/screens/Step2Education';
 import { Step3Export } from './src/screens/Step3Export';
 import { SettingsSheet } from './src/components/SettingsSheet';
+import { AIPromptSheet } from './src/components/AIPromptSheet';
 
 function AppShell() {
   const {
     theme, isDarkMode, isRTL, t, activeStep,
-    handleNext, handlePrev, handleOpenSettings,
+    handleNext, handlePrev, handleOpenSettings, handleOpenAIPrompt,
     snackMessage, snackOpacity, snackTranslateY,
   } = useCVContext();
 
@@ -36,7 +37,7 @@ function AppShell() {
       <View style={[sharedStyles.floatingHeader, { top: 0 }]}>
         <BlurView intensity={90} tint={isDarkMode ? 'dark' : 'light'} style={sharedStyles.floatingBlur}>
           <View style={{ paddingTop: insets.top }}>
-            <Header isDarkMode={isDarkMode} onOpenSettings={handleOpenSettings} theme={theme} isRTL={isRTL} t={t} />
+            <Header isDarkMode={isDarkMode} onOpenSettings={handleOpenSettings} onOpenAIPrompt={handleOpenAIPrompt} theme={theme} isRTL={isRTL} t={t} />
             <View style={[sharedStyles.stepperInsetCard, { backgroundColor: theme.inputBackground }]}>
               <View style={[sharedStyles.stepperTrack, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
                 {[0, 1, 2, 3].map((i) => (
@@ -104,6 +105,7 @@ function AppShell() {
 
       {/* Render modular settings bottom sheet */}
       <SettingsSheet />
+      <AIPromptSheet />
     </View>
   );
 }

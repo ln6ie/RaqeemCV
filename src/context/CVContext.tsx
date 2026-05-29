@@ -23,6 +23,7 @@ interface CVContextType {
   snackMessage: string | null;
   themeLoaded: boolean;
   isSettingsVisible: boolean;
+  isAIPromptVisible: boolean;
   theme: any;
   t: any;
   isRTL: boolean;
@@ -32,6 +33,7 @@ interface CVContextType {
   setActiveLanguage: (lang: Language) => void;
   setPdfLang: (lang: Language) => void;
   setIsSettingsVisible: (v: boolean) => void;
+  setIsAIPromptVisible: (v: boolean) => void;
   setValidationErrors: (errors: Record<string, string>) => void;
   setSystemError: (err: string | null) => void;
   setSnackMessage: (msg: string | null) => void;
@@ -51,7 +53,9 @@ interface CVContextType {
   handleExportAction: () => Promise<void>;
   handleReShare: () => Promise<void>;
   handleOpenSettings: () => void;
+  handleOpenAIPrompt: () => void;
   showSnack: (msg: string) => void;
+  importCVData: (data: CVData) => void;
 
   snackOpacity: Animated.Value;
   snackTranslateY: Animated.Value;
@@ -81,6 +85,7 @@ export function CVProvider({ children }: { children: React.ReactNode }) {
   const [snackMessage, setSnackMessage] = useState<string | null>(null);
   const [themeLoaded, setThemeLoaded] = useState(false);
   const [isSettingsVisible, setIsSettingsVisible] = useState(false);
+  const [isAIPromptVisible, setIsAIPromptVisible] = useState(false);
 
   const snackOpacity = useRef(new Animated.Value(0)).current;
   const snackTranslateY = useRef(new Animated.Value(50)).current;
@@ -99,14 +104,31 @@ export function CVProvider({ children }: { children: React.ReactNode }) {
         } else {
           setIsDarkMode(systemScheme === 'dark');
         }
+
+        const storedCV = await AsyncStorage.getItem('@Raqeem_CV_Data');
+        if (storedCV) {
+          const parsed = JSON.parse(storedCV);
+          dispatch({ type: 'SET_CV_DATA', data: parsed });
+        }
       } catch (e) {
-        console.error("Failed to load theme preference", e);
+        console.error("Failed to load initial data", e);
         setIsDarkMode(systemScheme === 'dark');
       } finally {
         setThemeLoaded(true);
       }
     })();
-  }, []);
+  }, [dispatch, systemScheme]);
+
+  useEffect(() => {
+    if (!themeLoaded) return;
+    (async () => {
+      try {
+        await AsyncStorage.setItem('@Raqeem_CV_Data', JSON.stringify(cvData));
+      } catch (e) {
+        console.error("Failed to save CV data", e);
+      }
+    })();
+  }, [cvData, themeLoaded]);
 
   const toggleDarkMode = useCallback(async (dark: boolean) => {
     try {
@@ -335,6 +357,15 @@ export function CVProvider({ children }: { children: React.ReactNode }) {
     setIsSettingsVisible(true);
   }, []);
 
+  const handleOpenAIPrompt = useCallback(() => {
+    setIsAIPromptVisible(true);
+  }, []);
+
+  const importCVData = useCallback((data: CVData) => {
+    dispatch({ type: 'SET_CV_DATA', data });
+    clearExportCache();
+  }, [dispatch, clearExportCache]);
+
   const ctx = useMemo<CVContextType>(() => ({
     cvData,
     activeStep,
@@ -348,6 +379,7 @@ export function CVProvider({ children }: { children: React.ReactNode }) {
     snackMessage,
     themeLoaded,
     isSettingsVisible,
+    isAIPromptVisible,
     theme,
     t,
     isRTL,
@@ -356,6 +388,7 @@ export function CVProvider({ children }: { children: React.ReactNode }) {
     setActiveLanguage,
     setPdfLang,
     setIsSettingsVisible,
+    setIsAIPromptVisible,
     setValidationErrors,
     setSystemError,
     setSnackMessage,
@@ -374,19 +407,21 @@ export function CVProvider({ children }: { children: React.ReactNode }) {
     handleExportAction,
     handleReShare,
     handleOpenSettings,
+    handleOpenAIPrompt,
     showSnack,
+    importCVData,
     snackOpacity,
     snackTranslateY,
   }), [
     cvData, activeStep, isDarkMode, activeLanguage, pdfLang,
     validationErrors, isLoading, systemError, exportStatus,
-    snackMessage, themeLoaded, isSettingsVisible, theme, t, isRTL,
+    snackMessage, themeLoaded, isSettingsVisible, isAIPromptVisible, theme, t, isRTL,
     updateField, updateSkillsString, updateCoursesString,
     updateWorkExperience, updateWorkExperienceTask,
     addWorkExperienceTask, addWorkExperience, removeWorkExperience,
     handleUpdateEducation, handleUpdateLanguage,
     handleNext, handlePrev, handleExportAction, handleReShare,
-    handleOpenSettings, showSnack, snackOpacity, snackTranslateY,
+    handleOpenSettings, handleOpenAIPrompt, showSnack, importCVData, snackOpacity, snackTranslateY,
   ]);
 
   return <CVContext.Provider value={ctx}>{children}</CVContext.Provider>;

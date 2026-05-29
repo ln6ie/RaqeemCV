@@ -11,6 +11,7 @@ const STROKE = 3;
 const RADIUS = (SIZE - STROKE) / 2;
 const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
 
+import { getFontFamily } from '../constants/tokens';
 import { ExportButtonProps } from '../types/components';
 
 export const ExportButton = ({ theme, isRTL, t, exportStatus, onPress, onReShare }: ExportButtonProps) => {
@@ -39,10 +40,12 @@ export const ExportButton = ({ theme, isRTL, t, exportStatus, onPress, onReShare
     outputRange: [CIRCUMFERENCE, 0],
   });
 
+  const rowDirection = isRTL ? 'row-reverse' as const : 'row' as const;
+
   if (exportStatus === 'idle') {
     return (
       <TouchableOpacity
-        style={[styles.pill, { backgroundColor: theme.buttonBackground }]}
+        style={[styles.pill, { backgroundColor: theme.buttonBackground, flexDirection: rowDirection }]}
         activeOpacity={0.85}
         onPress={onPress}
       >
@@ -52,7 +55,7 @@ export const ExportButton = ({ theme, isRTL, t, exportStatus, onPress, onReShare
           color="#FFFFFF"
           style={{ marginRight: isRTL ? 0 : SPACING.sm, marginLeft: isRTL ? SPACING.sm : 0 }}
         />
-        <Text style={styles.pillText}>{t.buttons.export}</Text>
+        <Text style={[styles.pillText, { fontFamily: getFontFamily(isRTL, 800) }]}>{t.buttons.export}</Text>
       </TouchableOpacity>
     );
   }
@@ -76,7 +79,7 @@ export const ExportButton = ({ theme, isRTL, t, exportStatus, onPress, onReShare
           />
         </Svg>
         <View style={styles.labelWrap}>
-          <Text style={[styles.percent, { color: theme.textPrimary }]}>{display}%</Text>
+          <Text style={[styles.percent, { color: theme.textPrimary, fontFamily: getFontFamily(isRTL, 700) }]}>{display}%</Text>
         </View>
       </View>
     );
@@ -84,7 +87,7 @@ export const ExportButton = ({ theme, isRTL, t, exportStatus, onPress, onReShare
 
   return (
     <TouchableOpacity
-      style={[styles.pill, { backgroundColor: theme.success }]}
+      style={[styles.pill, { backgroundColor: theme.success, flexDirection: rowDirection }]}
       activeOpacity={0.85}
       onPress={onReShare}
     >
@@ -94,14 +97,13 @@ export const ExportButton = ({ theme, isRTL, t, exportStatus, onPress, onReShare
         color="#FFFFFF"
         style={{ marginRight: isRTL ? 0 : SPACING.sm, marginLeft: isRTL ? SPACING.sm : 0 }}
       />
-      <Text style={styles.pillText}>{t.buttons.shareAgain}</Text>
+      <Text style={[styles.pillText, { fontFamily: getFontFamily(isRTL, 800) }]}>{t.buttons.shareAgain}</Text>
     </TouchableOpacity>
   );
 };
 
 const styles = StyleSheet.create({
   pill: {
-    flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 14,
@@ -116,8 +118,7 @@ const styles = StyleSheet.create({
   pillText: {
     color: '#FFFFFF',
     fontSize: 14,
-    fontWeight: '800',
-    letterSpacing: 1,
+    letterSpacing: 0.5,
   },
   ringWrap: {
     width: SIZE,
@@ -134,7 +135,6 @@ const styles = StyleSheet.create({
   },
   percent: {
     fontSize: 18,
-    fontWeight: '700',
     fontVariant: ['tabular-nums'],
   },
 });

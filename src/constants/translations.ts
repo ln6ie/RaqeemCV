@@ -29,6 +29,25 @@ export interface TranslationSet {
     arabicLevel: string;
     englishLevel: string;
   };
+  placeholders: {
+    fullName: string;
+    address: string;
+    phone: string;
+    email: string;
+    summary: string;
+    degree: string;
+    institution: string;
+    graduationYear: string;
+    honors: string;
+    skills: string;
+    courses: string;
+    arabicLevel: string;
+    englishLevel: string;
+    jobTitle: string;
+    companyLocation: string;
+    dateRange: string;
+    task: string;
+  };
   buttons: {
     back: string;
     next: string;
@@ -93,10 +112,29 @@ export const translations: Record<Language, TranslationSet> = {
       institution: 'Institution',
       graduationYear: 'Graduation Year',
       honors: 'Academic Honors Notes',
-      skills: 'Technical Skills (Comma Separated)',
-      courses: 'Courses (Comma Separated)',
+      skills: 'Technical Skills',
+      courses: 'Courses & Training',
       arabicLevel: 'Arabic Level',
       englishLevel: 'English Level',
+    },
+    placeholders: {
+      fullName: 'e.g. Abdullah Karim Hussein',
+      address: 'e.g. Tanuma, Basra, Iraq',
+      phone: 'e.g. 07729375972',
+      email: 'e.g. info@domain.com',
+      summary: 'Describe your professional experience and objectives...',
+      degree: 'e.g. Bachelors of Electromechanical Engineering',
+      institution: 'e.g. Southern Technical University',
+      graduationYear: 'e.g. 2025',
+      honors: 'e.g. Top of my class, graduated with honors',
+      skills: 'e.g. AutoCAD, MATLAB, Python, Leadership (Comma separated)',
+      courses: 'e.g. NEBOSH Safety Course, Split AC Installation (Comma separated)',
+      arabicLevel: 'e.g. Native language',
+      englishLevel: 'e.g. Fluent (Reading, writing and speaking)',
+      jobTitle: 'e.g. Diesel Generator Mechanic',
+      companyLocation: 'e.g. Private Workshop - Basra, Iraq',
+      dateRange: 'e.g. 2019 - 2022',
+      task: 'e.g. Supervised daily safety compliance on-site',
     },
     buttons: {
       back: 'BACK',
@@ -158,10 +196,29 @@ export const translations: Record<Language, TranslationSet> = {
       institution: 'الجامعة / المؤسسة',
       graduationYear: 'سنة التخرج',
       honors: 'ملاحظات الشرف الأكاديمي',
-      skills: 'المهارات التقنية (مفصولة بفواصل)',
-      courses: 'الدورات (مفصولة بفواصل)',
+      skills: 'المهارات التقنية',
+      courses: 'الدورات التدريبية',
       arabicLevel: 'مستوى اللغة العربية',
       englishLevel: 'مستوى اللغة الإنجليزية',
+    },
+    placeholders: {
+      fullName: 'مثال: عبدالله كريم حسين',
+      address: 'مثال: شارع التنومة - البصرة - العراق',
+      phone: 'مثال: 0772xxxxxxx',
+      email: 'مثال: name@gmail.com',
+      summary: 'اكتب ملخصاً جذاباً لخبراتك وقدراتك وأهدافك المهنية...',
+      degree: 'مثال: بكالوريوس هندسة كهروميكانيكية',
+      institution: 'مثال: الجامعة التقنية الجنوبية',
+      graduationYear: 'مثال: 2025',
+      honors: 'مثال: من الطلبة الأوائل على القسم بتقدير امتياز',
+      skills: 'مثال: AutoCAD, MATLAB, Python, قيادة الفريق (مفصولة بفواصل)',
+      courses: 'مثال: دورة السلامة المهنية NEBOSH، صيانة المحركات (مفصولة بفواصل)',
+      arabicLevel: 'مثال: اللغة الأم',
+      englishLevel: 'مثال: ممتاز (قراءة وكتابة وتحدث)',
+      jobTitle: 'مثال: ميكانيكي مولدات ديزل',
+      companyLocation: 'مثال: ورشة خاصة - البصرة، العراق',
+      dateRange: 'مثال: 2019 - 2022',
+      task: 'مثال: الإشراف اليومي على تطبيق معايير السلامة المهنية بالموقع',
     },
     buttons: {
       back: 'السابق',

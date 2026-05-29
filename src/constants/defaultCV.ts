@@ -1,147 +1,34 @@
 import { CVData } from '../types/cv';
 
 /**
- * Prefilled CV data matching page 1 (image.png) and page 2 (photo_4956313490343791523_w.jpg) exactly.
- * No emojis, fully typed.
+ * Initial empty CV state with zero prefilled data, ready for clean user entry.
+ * Supported by beautiful localized placeholders.
  */
 export const DEFAULT_CV: CVData = {
-  fullName: 'Abdullah Karim Hussein',
-  address: 'Al - Aitifa street - Tanuma - Basra - Iraq',
-  phone: '07729375972',
-  email: 'barkiq.2002@gmail.com',
-  summary: 'A Electromechanical Engineer and I have a lot of experience in repairing mechanical and electrical equipment and one of the top students in the department and interested in learning, quick to learn and gain work experience.',
-  skills: [
-    'Supervisor',
-    'Excellent computer skills',
-    'Teamwork',
-    'Time Management',
-    'Digital Design',
-    'MATLAB',
-    'AutoCAD',
-    'Problem solving',
-    'Knowledge of Pump',
-    'Knowledge of HVAC',
-    'Knowledge of Transmission lines',
-    'Knowledge of Classic control and plc',
-    'Knowledge of Repair engine',
-    'Knowledge of Electrical device and mechanical device',
-    'Knowledge of Diesel engine',
-    'Knowledge of Turbine',
-    'Knowledge of Compressor',
-    'Knowledge of AC and DC motor and generator',
-    'Excellent Microsoft office',
-    'Python , JavaScript , HTML , CSS and C++ programming',
-    'Logical Thinking',
-    'Knowledge of read piping diagram',
-    'Bicycle mechanic',
-    'Bike and E-bike mechanic',
-  ],
-  workExperience: [
-    {
-      jobTitle: 'Mechanic, Blacksmith, and Carpenter',
-      companyLocation: 'Private Workshop - Basra, Iraq',
-      dateRange: '2014 - 2021',
-      mainTasks: [
-        'Repaired motorcycles, bicycles, and e-bikes (engine, brakes, electrical).',
-        'Welded metal parts for frames, gates, and custom jobs.',
-        'Built and fixed wood items like shelves and furniture.',
-        'Operated various mechanical and carpentry tools.',
-        'Handled customer requests and technical tasks.',
-        'Delivered safe and durable results.',
-      ],
-    },
-    {
-      jobTitle: 'Health, Safety and Environment (HSE) Supervisor',
-      companyLocation: 'Aljidar Alsaanid - Emirati Company',
-      dateRange: 'Basra, Iraq - June 2023',
-      mainTasks: [
-        'Supervised daily HSE compliance on-site to ensure a safe working environment.',
-        'Conducted safety inspections and risk assessments for all site activities.',
-        'Delivered safety briefings and toolbox talks to workers.',
-        'Monitored use of Personal Protective Equipment (PPE) and ensured proper distribution.',
-        'Reported incidents and near-misses, and followed up on corrective actions.',
-        'Ensured emergency procedures and evacuation plans were clearly communicated.',
-      ],
-    },
-    {
-      jobTitle: 'Diesel Generator Mechanic',
-      companyLocation: 'Private Work - Basra, Iraq',
-      dateRange: '2019 - 2022',
-      mainTasks: [
-        'Diagnosed and repaired diesel generators of various capacities.',
-        'Performed regular maintenance: oil changes, fuel system checks, and filter replacements.',
-        'Inspected electrical connections and ensured proper voltage output.',
-        'Responded to emergency breakdowns and restored generator operation.',
-        'Rebuilt and cleaned engines and replaced damaged components.',
-        'Ensured all work followed safety and operational standards.',
-      ],
-    },
-    {
-      jobTitle: 'Air Conditioner Installer',
-      companyLocation: 'Self-employed - Basra, Iraq',
-      dateRange: '2023',
-      mainTasks: [
-        'Installed split and window air conditioning units for residential clients.',
-        'Performed basic wiring and piping for indoor and outdoor units.',
-        'Checked system functionality and ensured proper cooling performance.',
-        'Provided maintenance advice and usage tips to customers.',
-        'Used appropriate tools and safety measures during installation.',
-      ],
-    },
-    {
-      jobTitle: 'Designer and Fabricator of Student Graduation Projects',
-      companyLocation: 'Freelance / Academic Support - Basra, Iraq',
-      dateRange: '2023',
-      mainTasks: [
-        'Designed and built custom mechanical and electromechanical graduation projects.',
-        'Assisted students in selecting components and developing technical drawings.',
-        'Provided guidance on control systems, wiring, and assembly techniques.',
-        'Used tools like AutoCAD, SolidWorks, and Arduino-based systems.',
-        'Ensured functionality, safety, and aesthetic quality of finished models.',
-        'Delivered projects on time, ready for academic evaluation.',
-      ],
-    },
-    {
-      jobTitle: 'Tech Content Creator & Developer',
-      companyLocation: 'Social Media Content Creator - @elcomengineering | Freelance Work',
-      dateRange: '2024 - Present',
-      mainTasks: [
-        'Created and shared engaging tech content on social Media, reaching over 20,000 followers.',
-        'Built websites and mobile applications using modern technologies (e.g. Python, React Native, Node.js).',
-        'Set up and managed private servers for hosting bots, models, and client solutions.',
-        'Provided tutorials and tech tips covering AI tools, development workflows, and automation.',
-        'Collaborated with clients and followers to build personalized tech solutions.',
-        'Focused on combining educational content with real-world applications.',
-      ],
-    },
-  ],
+  fullName: '',
+  address: '',
+  phone: '',
+  email: '',
+  summary: '',
+  skills: [],
+  workExperience: [],
   education: [
     {
-      degree: 'Bachelors of electromechanical Engineering',
-      institution: 'Southern Technical University',
-      year: '2025',
-      notes: 'Achieved a high academic standing among the top students in the department.',
-    },
+      degree: '',
+      institution: '',
+      year: '',
+      notes: '',
+    }
   ],
-  courses: [
-    'Safety of Warehouses from Risks, Organization and Arrangement of Stories',
-    'Diesel Engine and how it\'s work',
-    'HVAC',
-    'NEBOSH Complete Course',
-    'Generators Works',
-    'Microsoft Office',
-    'Complete Course about Wind turbine and Solar photovoltaic',
-    'Electric vehicle',
-    'Python - JavaScript',
-  ],
+  courses: [],
   languages: [
     {
       name: 'Arabic',
-      level: 'Native language',
+      level: '',
     },
     {
       name: 'English',
-      level: 'Reading, writing and speaking',
-    },
+      level: '',
+    }
   ],
 };

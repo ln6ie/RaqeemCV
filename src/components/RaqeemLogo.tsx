@@ -5,7 +5,7 @@ interface RaqeemLogoProps {
   width?: number;
   height?: number;
   isDarkMode?: boolean;
-  layout?: 'horizontal' | 'vertical';
+  layout?: 'horizontal' | 'vertical' | 'iconOnly';
   isRTL?: boolean;
 }
 
@@ -22,6 +22,27 @@ export const RaqeemLogo = ({
   isRTL = false
 }: RaqeemLogoProps) => {
   const brandBlue = isDarkMode ? '#0A84FF' : '#007AFF';
+
+  if (layout === 'iconOnly') {
+    return (
+      <Svg width={width} height={height} viewBox="0 0 60 60" fill="none">
+        <Circle cx="30" cy="30" r="24" stroke={brandBlue} strokeWidth="2.5" />
+        <Path
+          d="M21,17 C21,17 33,10 38,20 C42,28 36,35 30,36 C38,39 41,48 41,48"
+          stroke={brandBlue}
+          strokeWidth="3.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <Path
+          d="M23,15 L23,48"
+          stroke={brandBlue}
+          strokeWidth="3.5"
+          strokeLinecap="round"
+        />
+      </Svg>
+    );
+  }
 
   if (layout === 'vertical') {
     return (

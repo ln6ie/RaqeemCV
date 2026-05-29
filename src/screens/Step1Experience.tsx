@@ -47,9 +47,9 @@ export const Step1Experience = () => {
               )}
             </View>
 
-            <GlassInput label="Job Title" value={exp.jobTitle} onChangeText={(v: string) => updateWorkExperience(expIdx, 'jobTitle', v)} placeholder="e.g. Software Engineer" isDarkMode={isDarkMode} isRTL={isRTL} />
-            <GlassInput label="Company / Location" value={exp.companyLocation} onChangeText={(v: string) => updateWorkExperience(expIdx, 'companyLocation', v)} placeholder="e.g. Tech Corp - New York" isDarkMode={isDarkMode} isRTL={isRTL} />
-            <GlassInput label="Date Range" value={exp.dateRange} onChangeText={(v: string) => updateWorkExperience(expIdx, 'dateRange', v)} placeholder="e.g. Jan 2020 - Present" isDarkMode={isDarkMode} isRTL={isRTL} />
+            <GlassInput label={isRTL ? 'المسمى الوظيفي' : 'Job Title'} value={exp.jobTitle} onChangeText={(v: string) => updateWorkExperience(expIdx, 'jobTitle', v)} placeholder={t.placeholders.jobTitle} isDarkMode={isDarkMode} isRTL={isRTL} />
+            <GlassInput label={isRTL ? 'الشركة / الموقع' : 'Company / Location'} value={exp.companyLocation} onChangeText={(v: string) => updateWorkExperience(expIdx, 'companyLocation', v)} placeholder={t.placeholders.companyLocation} isDarkMode={isDarkMode} isRTL={isRTL} />
+            <GlassInput label={isRTL ? 'الفترة الزمنية' : 'Date Range'} value={exp.dateRange} onChangeText={(v: string) => updateWorkExperience(expIdx, 'dateRange', v)} placeholder={t.placeholders.dateRange} isDarkMode={isDarkMode} isRTL={isRTL} />
 
             <Text style={{
               color: theme.textSecondary, fontSize: 12, fontWeight: '700', letterSpacing: 0.5,
@@ -60,9 +60,9 @@ export const Step1Experience = () => {
             </Text>
 
             {exp.mainTasks.map((task, taskIdx) => (
-              <GlassInput key={`t-${expIdx}-${taskIdx}`} label={`Task ${taskIdx + 1}`} value={task}
+              <GlassInput key={`t-${expIdx}-${taskIdx}`} label={isRTL ? `المهمة ${taskIdx + 1}` : `Task ${taskIdx + 1}`} value={task}
                 onChangeText={(v: string) => updateWorkExperienceTask(expIdx, taskIdx, v)}
-                placeholder="Describe a responsibility or achievement" isDarkMode={isDarkMode} isRTL={isRTL} multiline numberOfLines={2}
+                placeholder={t.placeholders.task} isDarkMode={isDarkMode} isRTL={isRTL} multiline numberOfLines={2}
               />
             ))}
 
