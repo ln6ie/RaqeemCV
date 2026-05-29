@@ -1,15 +1,16 @@
 import React from 'react';
 import { View, Text } from 'react-native';
+import { useCVContext } from '../context/CVContext';
 import { getFontFamily } from '../constants/tokens';
 
 interface PremiumCardProps {
   children: React.ReactNode;
-  isDarkMode: boolean;
-  isRTL?: boolean;
   title?: string;
 }
 
-export const PremiumCard = ({ children, isDarkMode, isRTL = false, title }: PremiumCardProps) => {
+export const PremiumCard = ({ children, title }: PremiumCardProps) => {
+  const { isDarkMode, isRTL, theme } = useCVContext();
+
   return (
     <View
       style={{
@@ -33,7 +34,7 @@ export const PremiumCard = ({ children, isDarkMode, isRTL = false, title }: Prem
       {title && (
         <Text
           style={{
-            color: isDarkMode ? '#FFFFFF' : '#000000',
+            color: theme.textPrimary,
             fontSize: 18,
             fontWeight: '800',
             letterSpacing: 0.5,

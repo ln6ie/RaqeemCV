@@ -12,7 +12,8 @@ export const SettingsSheet = () => {
     isSettingsVisible,
     setIsSettingsVisible,
     isDarkMode,
-    setIsDarkMode,
+    themePreference,
+    setThemePreference,
     activeLanguage,
     setActiveLanguage,
     setPdfLang,
@@ -91,8 +92,9 @@ export const SettingsSheet = () => {
               }}
             >
               {([['light', 'sunny-outline', isRTL ? 'فاتح' : 'Light'],
+                ['system', 'phone-portrait-outline', isRTL ? 'النظام' : 'System'],
                 ['dark', 'moon-outline', isRTL ? 'داكن' : 'Dark']] as const).map(([mode, icon, label]) => {
-                const isActive = isDarkMode === (mode === 'dark');
+                const isActive = themePreference === mode;
                 return (
                   <TouchableOpacity
                     key={mode}
@@ -102,7 +104,7 @@ export const SettingsSheet = () => {
                       flexDirection: isRTL ? 'row-reverse' : 'row',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      gap: 6,
+                      gap: 4,
                       paddingVertical: 10,
                       borderRadius: 9999,
                       backgroundColor: isActive ? theme.cardBackground : 'transparent',
@@ -112,14 +114,14 @@ export const SettingsSheet = () => {
                       shadowRadius: 2,
                       elevation: isActive ? 1 : 0,
                     }}
-                    onPress={() => setIsDarkMode(mode === 'dark')}
+                    onPress={() => setThemePreference(mode)}
                   >
-                    <Ionicons name={icon} size={16} color={isActive ? theme.accent : theme.textSecondary} />
+                    <Ionicons name={icon} size={14} color={isActive ? theme.accent : theme.textSecondary} />
                     <Text style={{
                       color: isActive ? theme.accent : theme.textSecondary,
                       fontFamily: getFontFamily(isRTL, 800),
-                      fontSize: 13,
-                    }}>{label}</Text>
+                      fontSize: 12,
+                    }} numberOfLines={1} adjustsFontSizeToFit>{label}</Text>
                   </TouchableOpacity>
                 );
               })}

@@ -4,10 +4,10 @@ import { GlassInput } from '../components/GlassInput';
 import { PremiumCard } from '../components/PremiumCard';
 
 export const Step2Education = () => {
-  const { cvData, handleUpdateEducation, updateSkillsString, updateCoursesString, isRTL, isDarkMode, t } = useCVContext();
+  const { cvData, handleUpdateEducation, updateSkillsString, updateCoursesString, isDarkMode, isRTL, t } = useCVContext();
   return (
     <>
-      <PremiumCard title={t.steps.education} isDarkMode={isDarkMode} isRTL={isRTL}>
+      <PremiumCard title={t.steps.education}>
         <GlassInput label={t.labels.degree} value={cvData.education[0]?.degree || ''}
           onChangeText={(v: string) => handleUpdateEducation('degree', v)} placeholder={t.placeholders.degree}
           isDarkMode={isDarkMode} isRTL={isRTL} />
@@ -21,7 +21,7 @@ export const Step2Education = () => {
           onChangeText={(v: string) => handleUpdateEducation('notes', v)} placeholder={t.placeholders.honors}
           isDarkMode={isDarkMode} isRTL={isRTL} />
       </PremiumCard>
-      <PremiumCard title={t.steps.skills} isDarkMode={isDarkMode} isRTL={isRTL}>
+      <PremiumCard title={t.steps.skills}>
         <GlassInput label={t.labels.skills} value={cvData.skills.join(', ')} onChangeText={updateSkillsString}
           placeholder={t.placeholders.skills} isDarkMode={isDarkMode} isRTL={isRTL} />
         <GlassInput label={t.labels.courses} value={cvData.courses.join(', ')} onChangeText={updateCoursesString}

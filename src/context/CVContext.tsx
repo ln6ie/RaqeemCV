@@ -43,6 +43,7 @@ interface CVContextType {
   remoteConfig: RemoteConfig | null;
   versionBlocked: boolean;
   updateAvailable: boolean;
+  themePreference: 'light' | 'dark' | 'system';
   isSettingsVisible: boolean;
   isAIPromptVisible: boolean;
   theme: any;
@@ -50,6 +51,7 @@ interface CVContextType {
   isRTL: boolean;
 
   setActiveStep: (step: number) => void;
+  setThemePreference: (mode: 'light' | 'dark' | 'system') => void;
   setIsDarkMode: (dark: boolean) => void;
   setActiveLanguage: (lang: Language) => void;
   setPdfLang: (lang: Language) => void;
@@ -96,6 +98,7 @@ export function CVProvider({ children }: { children: React.ReactNode }) {
 
   const [activeStep, setActiveStep] = useState(0);
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const [themePreference, setThemePreferenceState] = useState<'light' | 'dark' | 'system'>('system');
   const [activeLanguage, setActiveLanguage] = useState<Language>('en');
   const [pdfLang, setPdfLang] = useState<Language>('en');
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
@@ -124,8 +127,10 @@ export function CVProvider({ children }: { children: React.ReactNode }) {
         const stored = await AsyncStorage.getItem('@Raqeem_Theme');
         if (stored === 'dark' || stored === 'light') {
           setIsDarkMode(stored === 'dark');
+          setThemePreferenceState(stored);
         } else {
           setIsDarkMode(systemScheme === 'dark');
+          setThemePreferenceState('system');
         }
 
         const storedCV = await AsyncStorage.getItem('@Raqeem_CV_Data');
@@ -136,11 +141,19 @@ export function CVProvider({ children }: { children: React.ReactNode }) {
       } catch (e) {
         console.error("Failed to load initial data", e);
         setIsDarkMode(systemScheme === 'dark');
+        setThemePreferenceState('system');
       } finally {
         setThemeLoaded(true);
       }
     })();
   }, [dispatch, systemScheme]);
+
+  // Sync system scheme when in follow-system mode
+  useEffect(() => {
+    if (themeLoaded && themePreference === 'system') {
+      setIsDarkMode(systemScheme === 'dark');
+    }
+  }, [systemScheme, themePreference, themeLoaded]);
 
   const VERSION_URL = 'https://raqeem.elcomlab.site/version.json';
 
@@ -225,14 +238,24 @@ export function CVProvider({ children }: { children: React.ReactNode }) {
     })();
   }, [cvData, themeLoaded]);
 
-  const toggleDarkMode = useCallback(async (dark: boolean) => {
+  const setThemePreference = useCallback(async (mode: 'light' | 'dark' | 'system') => {
     try {
-      setIsDarkMode(dark);
-      await AsyncStorage.setItem('@Raqeem_Theme', dark ? 'dark' : 'light');
+      setThemePreferenceState(mode);
+      if (mode === 'system') {
+        await AsyncStorage.removeItem('@Raqeem_Theme');
+        setIsDarkMode(systemScheme === 'dark');
+      } else {
+        await AsyncStorage.setItem('@Raqeem_Theme', mode);
+        setIsDarkMode(mode === 'dark');
+      }
     } catch (e) {
       console.error("Failed to save theme preference", e);
     }
-  }, []);
+  }, [systemScheme]);
+
+  const toggleDarkMode = useCallback(async (dark: boolean) => {
+    await setThemePreference(dark ? 'dark' : 'light');
+  }, [setThemePreference]);
 
   const clearExportCache = useCallback(() => {
     setCachedPdfUri(null);
@@ -476,12 +499,14 @@ export function CVProvider({ children }: { children: React.ReactNode }) {
     remoteConfig,
     versionBlocked,
     updateAvailable,
+    themePreference,
     isSettingsVisible,
     isAIPromptVisible,
     theme,
     t,
     isRTL,
     setActiveStep,
+    setThemePreference,
     setIsDarkMode: toggleDarkMode,
     setActiveLanguage,
     setPdfLang,
@@ -513,7 +538,7 @@ export function CVProvider({ children }: { children: React.ReactNode }) {
   }), [
     cvData, activeStep, isDarkMode, activeLanguage, pdfLang,
     validationErrors, isLoading, systemError, exportStatus,
-    snackMessage, themeLoaded, remoteConfig, versionBlocked, updateAvailable,
+    snackMessage, themeLoaded, remoteConfig, versionBlocked, updateAvailable, themePreference,
     isSettingsVisible, isAIPromptVisible, theme, t, isRTL,
     updateField, updateSkillsString, updateCoursesString,
     updateWorkExperience, updateWorkExperienceTask,

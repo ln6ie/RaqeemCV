@@ -77,7 +77,7 @@ export const UpdateShield = () => {
         <View style={{ flex: 1 }} />
 
         {/* Developer Attribution Card */}
-        <PremiumCard isDarkMode={isDarkMode} isRTL={isRTL}>
+        <PremiumCard>
           <View style={{ alignItems: 'center', gap: 12 }}>
             <Text style={{ color: isDarkMode ? '#EBEBF5' : '#3C3C43', fontFamily: getFontFamily(isRTL, 400), fontSize: 13, textAlign: 'center', opacity: 0.7 }}>
               {isRTL ? 'تطوير وبناء: المهندس عبدالله كريم' : 'Developed by: Eng. Abdullah Kareem'}

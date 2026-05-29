@@ -21,11 +21,7 @@ export const Step1Experience = () => {
   return (
     <View style={{ gap: SPACING.md }}>
       {cvData.workExperience.length === 0 && (
-        <PremiumCard
-          title={`${t.steps.experience} (0)`}
-          isDarkMode={isDarkMode}
-          isRTL={isRTL}
-        >
+        <PremiumCard title={`${t.steps.experience} (0)`}>
           <Text style={{ color: theme.textSecondary, textAlign: 'center', marginVertical: SPACING.lg, fontFamily: getFontFamily(isRTL, 400) }}>
             No experience entries yet. Add one below.
           </Text>
@@ -38,8 +34,6 @@ export const Step1Experience = () => {
             <PremiumCard
               key={`exp-card-${expIdx}`}
               title={`${t.steps.experience} (${cvData.workExperience.length})`}
-              isDarkMode={isDarkMode}
-              isRTL={isRTL}
             >
               <ExpContent exp={exp} expIdx={expIdx} />
             </PremiumCard>

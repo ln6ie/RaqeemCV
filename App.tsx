@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import {
   View, ScrollView, Text, TouchableOpacity, KeyboardAvoidingView,
-  Platform, Modal, Animated, StyleSheet,
+  Platform, Modal, Animated, StyleSheet, StatusBar as RNStatusBar,
 } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -50,8 +50,9 @@ function AppShell() {
         </BlurView>
       </View>
 
-      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={sharedStyles.flex}>
+      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={[sharedStyles.flex, { backgroundColor: theme.background }]}>
         <ScrollView
+          style={{ backgroundColor: theme.background }}
           contentContainerStyle={{
             paddingTop: headerTopPadding,
             paddingBottom: insets.bottom + 20 + SPACING.lg + SPACING.md,
@@ -130,16 +131,22 @@ function AppBoot() {
 import { IntroScreen } from './src/screens/IntroScreen';
 
 function AppGate({ fontsLoaded, showSplash, setShowSplash }: { fontsLoaded: boolean; showSplash: boolean; setShowSplash: (v: boolean) => void }) {
-  const { themeLoaded, theme } = useCVContext();
+  const { themeLoaded, theme, isDarkMode } = useCVContext();
+  const activeTheme = isDarkMode ? 'dark' : 'light';
 
   const handleSplashFinish = () => {
     setShowSplash(false);
   };
 
-  const initialBg = theme?.background || '#0A0A0C';
+  const effectiveBg = theme?.background || '#0A0A0C';
 
   return (
-    <View style={{ flex: 1, backgroundColor: initialBg }}>
+    <View style={{ flex: 1, backgroundColor: effectiveBg }}>
+      <RNStatusBar
+        translucent
+        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
+        backgroundColor={effectiveBg}
+      />
       {themeLoaded && <AppShell />}
       {showSplash && (
         <IntroScreen
