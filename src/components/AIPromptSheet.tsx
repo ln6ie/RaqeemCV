@@ -19,6 +19,7 @@ export const AIPromptSheet = () => {
     importCVData,
     showSnack,
     t,
+    setIsPDFImporterVisible,
   } = useCVContext();
 
   const [activeTab, setActiveTab] = useState<'prompt' | 'import'>('prompt');
@@ -363,6 +364,26 @@ Start now by welcoming me warmly on behalf of "Raqeem CV" and asking the first q
                   </Text>
                 </TouchableOpacity>
               </GlassicView>
+
+              <TouchableOpacity
+                activeOpacity={0.8}
+                onPress={() => setIsPDFImporterVisible(true)}
+                style={{
+                  flexDirection: isRTL ? 'row-reverse' : 'row',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: 8,
+                  paddingVertical: 14,
+                  borderRadius: 9999,
+                  borderWidth: 1,
+                  borderColor: theme.accent,
+                }}
+              >
+                <Ionicons name="document-text-outline" size={18} color={theme.accent} />
+                <Text style={{ color: theme.accent, fontFamily: getFontFamily(isRTL, 800), fontSize: 15 }}>
+                  {isRTL ? 'استيراد من ملف PDF' : 'Import from PDF'}
+                </Text>
+              </TouchableOpacity>
             </ScrollView>
           )}
         </View>

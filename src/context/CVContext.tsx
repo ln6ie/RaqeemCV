@@ -48,6 +48,7 @@ interface CVContextType {
   isSettingsVisible: boolean;
   isAIPromptVisible: boolean;
   isCVManagerVisible: boolean;
+  isPDFImporterVisible: boolean;
   theme: any;
   t: any;
   isRTL: boolean;
@@ -59,6 +60,7 @@ interface CVContextType {
   setPdfLang: (lang: Language) => void;
   setIsSettingsVisible: (v: boolean) => void;
   setIsAIPromptVisible: (v: boolean) => void;
+  setIsPDFImporterVisible: (v: boolean) => void;
   setValidationErrors: (errors: Record<string, string>) => void;
   setSystemError: (err: string | null) => void;
   setSnackMessage: (msg: string | null) => void;
@@ -118,6 +120,7 @@ export function CVProvider({ children }: { children: React.ReactNode }) {
   const [isSettingsVisible, setIsSettingsVisible] = useState(false);
   const [isAIPromptVisible, setIsAIPromptVisible] = useState(false);
   const [isCVManagerVisible, setIsCVManagerVisible] = useState(false);
+  const [isPDFImporterVisible, setIsPDFImporterVisible] = useState(false);
 
   const snackOpacity = useRef(new Animated.Value(0)).current;
   const snackTranslateY = useRef(new Animated.Value(50)).current;
@@ -535,6 +538,7 @@ export function CVProvider({ children }: { children: React.ReactNode }) {
     isSettingsVisible,
     isAIPromptVisible,
     isCVManagerVisible,
+    isPDFImporterVisible,
     theme,
     t,
     isRTL,
@@ -545,6 +549,7 @@ export function CVProvider({ children }: { children: React.ReactNode }) {
     setPdfLang,
     setIsSettingsVisible,
     setIsAIPromptVisible,
+    setIsPDFImporterVisible,
     setValidationErrors,
     setSystemError,
     setSnackMessage,
@@ -575,7 +580,7 @@ export function CVProvider({ children }: { children: React.ReactNode }) {
     cvData, activeStep, isDarkMode, activeLanguage, pdfLang,
     validationErrors, isLoading, systemError, exportStatus,
     snackMessage, themeLoaded, remoteConfig, versionBlocked, updateAvailable, themePreference,
-    isSettingsVisible, isAIPromptVisible, isCVManagerVisible, theme, t, isRTL,
+    isSettingsVisible, isAIPromptVisible, isCVManagerVisible, isPDFImporterVisible, theme, t, isRTL,
     updateField, updateSkillsString, updateCoursesString,
     updateWorkExperience, updateWorkExperienceTask,
     addWorkExperienceTask, addWorkExperience, removeWorkExperience,

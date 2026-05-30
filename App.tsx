@@ -21,13 +21,14 @@ import { Step3Export } from './src/screens/Step3Export';
 import { SettingsSheet } from './src/components/SettingsSheet';
 import { AIPromptSheet } from './src/components/AIPromptSheet';
 import { CVManager } from './src/components/CVManager';
+import { PDFImporter } from './src/components/PDFImporter';
 import { UpdateShield } from './src/components/UpdateShield';
 
 function AppShell() {
   const {
     theme, isDarkMode, isRTL, t, activeStep,
     handleNext, handlePrev, handleOpenSettings, handleOpenAIPrompt, handleOpenCVManager,
-    loadSampleCV,
+    loadSampleCV, isPDFImporterVisible, setIsPDFImporterVisible,
     snackMessage, snackOpacity, snackTranslateY,
   } = useCVContext();
 
@@ -111,6 +112,7 @@ function AppShell() {
       <SettingsSheet />
       <AIPromptSheet />
       <CVManager />
+      <PDFImporter visible={isPDFImporterVisible} onClose={() => setIsPDFImporterVisible(false)} />
     </View>
   );
 }

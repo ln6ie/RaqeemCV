@@ -112,6 +112,19 @@ export interface TranslationSet {
     importSuccess: string;
     importInvalidJSON: string;
     importEmpty: string;
+    pdfPickFailed: string;
+    pdfExtractFailed: string;
+    pdfNoText: string;
+  };
+  pdfImporter: {
+    title: string;
+    pickPDF: string;
+    preview: string;
+    extracting: string;
+    extractedText: string;
+    importToCV: string;
+    noFile: string;
+    loading: string;
   };
   cvManager: {
     title: string;
@@ -240,6 +253,19 @@ export const translations: Record<Language, TranslationSet> = {
       importSuccess: 'CV data imported successfully!',
       importInvalidJSON: 'Invalid JSON code entered.',
       importEmpty: 'Please paste the JSON code first!',
+      pdfPickFailed: 'Failed to pick PDF file.',
+      pdfExtractFailed: 'Failed to extract text from PDF.',
+      pdfNoText: 'No text could be extracted from this PDF.',
+    },
+    pdfImporter: {
+      title: 'Import from PDF',
+      pickPDF: 'Pick a PDF File',
+      preview: 'PDF Preview',
+      extracting: 'Extracting text...',
+      extractedText: 'Extracted Text',
+      importToCV: 'Import to CV',
+      noFile: 'No file selected',
+      loading: 'Loading PDF...',
     },
     cvManager: {
       title: 'My CVs',
@@ -364,6 +390,19 @@ export const translations: Record<Language, TranslationSet> = {
       importSuccess: 'تم استيراد بيانات السيرة الذاتية بنجاح!',
       importInvalidJSON: 'كود الـ JSON المدخل غير صالح.',
       importEmpty: 'الرجاء إدخال كود الـ JSON أولاً!',
+      pdfPickFailed: 'فشل اختيار ملف PDF.',
+      pdfExtractFailed: 'فشل استخراج النص من ملف PDF.',
+      pdfNoText: 'لم يتم العثور على نصوص في هذا الملف.',
+    },
+    pdfImporter: {
+      title: 'استيراد من PDF',
+      pickPDF: 'اختيار ملف PDF',
+      preview: 'معاينة PDF',
+      extracting: 'جارٍ استخراج النص...',
+      extractedText: 'النص المستخرج',
+      importToCV: 'استيراد إلى السيرة الذاتية',
+      noFile: 'لم يتم اختيار ملف',
+      loading: 'جارٍ تحميل PDF...',
     },
     cvManager: {
       title: 'سيرتي الذاتية',
