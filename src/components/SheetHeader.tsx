@@ -1,7 +1,7 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { View, Text, StyleSheet } from 'react-native';
 import { getFontFamily } from '../constants/tokens';
+import { NativeButton } from './NativeButton';
 
 interface SheetHeaderProps {
   title: string;
@@ -22,14 +22,10 @@ export const SheetHeader = ({
   showGrabber = true,
   headerAction,
 }: SheetHeaderProps) => {
-  // iOS 26 native close button is a 30pt circular glass pill with xmark icon
-  // GlassicView provides the blur/glass background cross-platform
   const CLOSE_SIZE = 40;
-  const ICON_SIZE = 20;
 
   return (
     <View style={styles.wrapper}>
-      {/* iOS-style grabber indicator at the top center */}
       {showGrabber && (
         <View
           style={[
@@ -39,7 +35,6 @@ export const SheetHeader = ({
         />
       )}
 
-      {/* Header row: title centered, action + close at edges */}
       <View style={styles.headerRow}>
         <View style={{ width: CLOSE_SIZE + 12, alignItems: 'flex-start' }}>
           {headerAction}
@@ -60,26 +55,13 @@ export const SheetHeader = ({
         </Text>
 
         <View style={{ width: CLOSE_SIZE + 12, alignItems: 'flex-end' }}>
-          <View style={{
-            width: CLOSE_SIZE, height: CLOSE_SIZE, borderRadius: 9999,
-            backgroundColor: isDarkMode ? 'rgba(255,255,255,0.08)' : '#E5E5EA',
-            alignItems: 'center', justifyContent: 'center',
-          }}>
-            <TouchableOpacity
-              onPress={onClose}
-              activeOpacity={0.65}
-              hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-              accessibilityLabel="Close"
-              accessibilityRole="button"
-              style={styles.closeButtonInner}
-            >
-              <Ionicons
-                name="close"
-                size={ICON_SIZE}
-                color={isDarkMode ? 'rgba(235,235,245,0.85)' : 'rgba(60,60,67,0.8)'}
-              />
-            </TouchableOpacity>
-          </View>
+          <NativeButton
+            onPress={onClose}
+            accessibilityLabel="Close"
+            variant="glassProminent"
+            systemImage="xmark"
+            style={styles.closeButtonInner}
+          />
         </View>
       </View>
     </View>
@@ -96,7 +78,6 @@ const styles = StyleSheet.create({
     borderRadius: 2.5,
     alignSelf: 'center',
     marginBottom: 16,
-    // iOS 26: grabber is slightly more prominent
     opacity: 0.45,
   },
   headerRow: {

@@ -21,7 +21,7 @@ export const CVPreview = ({ visible, onClose, onExport }: CVPreviewProps) => {
   useEffect(() => {
     if (visible) {
       const result = PreviewCVSchema.safeParse(cvData);
-      setHtml(generateCVTemplate(result.data as any, isDarkMode, pdfLang));
+      setHtml(generateCVTemplate(result.data as any, pdfLang));
     }
   }, [visible, cvData, isDarkMode, pdfLang]);
 

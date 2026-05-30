@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import {
-  View, ScrollView, Text, TouchableOpacity, KeyboardAvoidingView,
+  View, ScrollView, Text, KeyboardAvoidingView,
   Platform, Animated,
 } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
@@ -11,6 +11,7 @@ import { SPACING, getFontFamily } from './src/constants/tokens';
 import { CVProvider, useCVContext } from './src/context/CVContext';
 import { sharedStyles } from './src/styles/shared.styles';
 import { Header } from './src/components/Header';
+import { NativeButton } from './src/components/NativeButton';
 import { StatusBanner } from './src/components/StatusBanner';
 import { Step0Template } from './src/screens/Step0Template';
 import { Step0Personal } from './src/screens/Step0Personal';
@@ -66,15 +67,27 @@ function AppShell() {
         flexDirection: isRTL ? 'row-reverse' : 'row', alignItems: 'center', zIndex: 50, pointerEvents: 'box-none',
       }}>
         {activeStep > 0 && (
-          <TouchableOpacity style={[sharedStyles.fab, { backgroundColor: theme.buttonBackground }]} activeOpacity={0.7} onPress={handlePrev}>
+          <NativeButton
+            onPress={handlePrev}
+            systemImage="chevron.left"
+            style={[sharedStyles.fab, { backgroundColor: theme.buttonBackground }]}
+            accessibilityLabel={isRTL ? 'السابق' : 'Previous'}
+            color={theme.buttonBackground}
+          >
             <Ionicons name={isRTL ? 'chevron-forward' : 'chevron-back'} size={24} color={theme.buttonText} />
-          </TouchableOpacity>
+          </NativeButton>
         )}
         <View style={{ flex: 1 }} />
         {activeStep < 4 && (
-          <TouchableOpacity style={[sharedStyles.fab, { backgroundColor: theme.buttonBackground }]} activeOpacity={0.7} onPress={handleNext}>
+          <NativeButton
+            onPress={handleNext}
+            systemImage="chevron.right"
+            style={[sharedStyles.fab, { backgroundColor: theme.buttonBackground }]}
+            accessibilityLabel={isRTL ? 'التالي' : 'Next'}
+            color={theme.buttonBackground}
+          >
             <Ionicons name={isRTL ? 'chevron-back' : 'chevron-forward'} size={24} color={theme.buttonText} />
-          </TouchableOpacity>
+          </NativeButton>
         )}
       </View>
 

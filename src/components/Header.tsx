@@ -1,10 +1,11 @@
 import React from 'react';
-import { View, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { SPACING, BORDER_RADIUS } from '../constants/tokens';
 import { TranslationSet } from '../constants/translations';
 import { RaqeemLogo } from './RaqeemLogo';
 import { GlassicView } from './Glassic';
+import { NativeButton } from './NativeButton';
 
 interface HeaderProps {
   isDarkMode: boolean;
@@ -18,7 +19,17 @@ interface HeaderProps {
   activeStep: number;
 }
 
-export const Header = ({ isDarkMode, onOpenSettings, onOpenAIPrompt, onOpenCVManager, onLoadSample, theme, isRTL, t, activeStep }: HeaderProps) => {
+export const Header = ({
+  isDarkMode,
+  onOpenSettings,
+  onOpenAIPrompt,
+  onOpenCVManager,
+  onLoadSample,
+  theme,
+  isRTL,
+  t,
+  activeStep,
+}: HeaderProps) => {
   return (
     <GlassicView
       cornerRadius={24}
@@ -42,56 +53,68 @@ export const Header = ({ isDarkMode, onOpenSettings, onOpenAIPrompt, onOpenCVMan
             marginBottom: 12,
           }}
         >
-          <RaqeemLogo width={60} height={40} layout="iconOnly" isDarkMode={isDarkMode} isRTL={isRTL} />
+          {/* Logo */}
+          <View style={{ marginLeft: isRTL ? 0 : 12, marginRight: isRTL ? 12 : 0 }}>
+            <RaqeemLogo width={60} height={40} layout="iconOnly" isDarkMode={isDarkMode} isRTL={isRTL} />
+          </View>
 
-          <View style={{ flexDirection: isRTL ? 'row-reverse' : 'row', gap: SPACING.sm, alignItems: 'center', marginRight: isRTL ? 0 : 12, marginLeft: isRTL ? 12 : 0 }}>
-            <TouchableOpacity
+          {/* Right action buttons */}
+          <View
+            style={{
+              flexDirection: isRTL ? 'row-reverse' : 'row',
+              gap: SPACING.sm,
+              alignItems: 'center',
+              marginRight: isRTL ? 0 : 12,
+              marginLeft: isRTL ? 12 : 0,
+            }}
+          >
+            {/* CV Manager */}
+            <NativeButton
               onPress={onOpenCVManager}
-              activeOpacity={0.85}
-              style={[
-                styles.headerButton,
-                { backgroundColor: 'rgba(150, 150, 150, 0.15)' },
-              ]}
+              systemImage="folder"
+              style={styles.headerButton}
+              accessibilityLabel="CV Manager"
+              color={theme.textPrimary}
             >
               <Ionicons name="folder-outline" size={18} color={theme.textPrimary} />
-            </TouchableOpacity>
+            </NativeButton>
 
-            <TouchableOpacity
+            {/* Sample CV loader */}
+            <NativeButton
               onPress={onLoadSample}
-              activeOpacity={0.85}
-              style={[
-                styles.headerButton,
-                { backgroundColor: 'rgba(150, 150, 150, 0.15)' },
-              ]}
+              systemImage="flask"
+              style={styles.headerButton}
+              accessibilityLabel="Load Sample CV"
+              color={theme.textSecondary}
             >
               <Ionicons name="flask-outline" size={18} color={theme.textSecondary} />
-            </TouchableOpacity>
+            </NativeButton>
 
-            <TouchableOpacity
+            {/* AI Prompt */}
+            <NativeButton
               onPress={onOpenAIPrompt}
-              activeOpacity={0.85}
-              style={[
-                styles.headerButton,
-                { backgroundColor: 'rgba(150, 150, 150, 0.15)' },
-              ]}
+              systemImage="sparkles"
+              style={styles.headerButton}
+              accessibilityLabel="AI Prompt"
+              color={theme.accent}
             >
               <Ionicons name="sparkles" size={18} color={theme.accent} />
-            </TouchableOpacity>
+            </NativeButton>
 
-            <TouchableOpacity
+            {/* Settings */}
+            <NativeButton
               onPress={onOpenSettings}
-              activeOpacity={0.85}
-              style={[
-                styles.headerButton,
-                { backgroundColor: 'rgba(150, 150, 150, 0.15)' },
-              ]}
+              systemImage="gearshape"
+              style={styles.headerButton}
+              accessibilityLabel="Settings"
+              color={theme.textPrimary}
             >
               <Ionicons name="settings-outline" size={18} color={theme.textPrimary} />
-            </TouchableOpacity>
+            </NativeButton>
           </View>
         </View>
 
-        {/* Stepper */}
+        {/* Progress stepper */}
         <View style={{ flexDirection: isRTL ? 'row-reverse' : 'row', gap: 4, paddingHorizontal: 12 }}>
           {[0, 1, 2, 3, 4].map((i) => (
             <View
@@ -100,7 +123,12 @@ export const Header = ({ isDarkMode, onOpenSettings, onOpenAIPrompt, onOpenCVMan
                 flex: 1,
                 height: 4,
                 borderRadius: 4,
-                backgroundColor: i <= activeStep ? theme.accent : (isDarkMode ? '#2C2C2E' : '#E5E5EA'),
+                backgroundColor:
+                  i <= activeStep
+                    ? theme.accent
+                    : isDarkMode
+                    ? '#2C2C2E'
+                    : '#E5E5EA',
               }}
             />
           ))}

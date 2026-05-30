@@ -24,7 +24,7 @@ export const TemplatePreviewSheet = ({ template, onClose }: Props) => {
     prevTemplate.current = template;
     const previewData = { ...cvData, template };
     const result = PreviewCVSchema.safeParse(previewData);
-    setHtml(generateCVTemplate(result.data as any, isDarkMode, pdfLang));
+    setHtml(generateCVTemplate(result.data as any, pdfLang));
   }, [template, cvData, isDarkMode, pdfLang]);
 
   const visible = template !== null;

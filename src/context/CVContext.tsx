@@ -449,7 +449,7 @@ export function CVProvider({ children }: { children: React.ReactNode }) {
         return;
       }
 
-      const html = generateCVTemplate(validation.data, isDark, lang);
+      const html = generateCVTemplate(validation.data, lang);
       const { uri } = await Print.printToFileAsync({ html });
       setCachedPdfUri(uri);
 

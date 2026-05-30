@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text } from 'react-native';
+import { BouncyPressable } from '../components/BouncyPressable';
 import { CVTemplate, TEMPLATE_NAMES, TEMPLATE_DESCRIPTIONS } from '../types/cv';
 import { useCVContext } from '../context/CVContext';
 import { TemplatePreviewSheet } from '../components/TemplatePreviewSheet';
 import { SPACING, getFontFamily } from '../constants/tokens';
 
-const ALL_TEMPLATES: CVTemplate[] = ['classic', 'engineering', 'hospitality', 'executive'];
+const ALL_TEMPLATES: CVTemplate[] = ['classic', 'engineering', 'hospitality', 'executive', 'zenith', 'creative-edge', 'profile-elegance'];
 
 export const Step0Template = () => {
   const { cvData, updateField, isDarkMode, isRTL, theme, t } = useCVContext();
@@ -46,12 +47,12 @@ export const Step0Template = () => {
           const isActive = current === tmpl;
           const desc = TEMPLATE_DESCRIPTIONS[tmpl][lang];
           return (
-            <TouchableOpacity
+            <BouncyPressable
               key={tmpl}
               onPress={() => updateField('template', tmpl)}
               onLongPress={() => setPreviewTarget(tmpl)}
-              delayLongPress={400}
-              activeOpacity={0.7}
+              pressDepth={0.96}
+              haptic={false}
               style={{
                 flexDirection: isRTL ? 'row-reverse' : 'row',
                 alignItems: 'center',
@@ -59,8 +60,12 @@ export const Step0Template = () => {
                 paddingHorizontal: SPACING.md,
                 paddingVertical: 16,
                 backgroundColor: isActive
-                  ? (isDarkMode ? 'rgba(255,255,255,0.06)' : 'rgba(0,122,255,0.06)')
+                  ? (isDarkMode ? 'rgba(255,255,255,0.1)' : 'rgba(0,122,255,0.12)')
                   : 'transparent',
+                borderLeftWidth: isActive ? (isRTL ? 0 : 3) : 0,
+                borderRightWidth: isActive ? (isRTL ? 3 : 0) : 0,
+                borderLeftColor: isActive ? theme.accent : 'transparent',
+                borderRightColor: isActive ? theme.accent : 'transparent',
               }}
             >
               <View style={{
@@ -91,7 +96,7 @@ export const Step0Template = () => {
                   {desc}
                 </Text>
               </View>
-            </TouchableOpacity>
+            </BouncyPressable>
           );
         })}
       </View>

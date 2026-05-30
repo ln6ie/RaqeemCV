@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
+import { NativeButton } from '../components/NativeButton';
 import { Ionicons } from '@expo/vector-icons';
 import { useCVContext } from '../context/CVContext';
 import { WorkExperience } from '../types/cv';
@@ -99,8 +100,9 @@ export const Step1Experience = () => {
                     noCard tip={t.tips.task}
                   />
                   {task.trim() && (
-                    <TouchableOpacity
+                    <NativeButton
                       onPress={() => openAI(PROMPTS.task(task, exp.jobTitle || 'N/A', activeLanguage))}
+                      variant="plain"
                       style={{
                         flexDirection: isRTL ? 'row-reverse' : 'row',
                         alignItems: 'center',
@@ -114,44 +116,41 @@ export const Step1Experience = () => {
                       <Text style={{ fontSize: 11, fontWeight: '600', color: theme.accent, fontFamily: getFontFamily(isRTL, 600) }}>
                         {isRTL ? 'تحسين' : 'Improve'}
                       </Text>
-                    </TouchableOpacity>
+                    </NativeButton>
                   )}
                 </View>
               </View>
             ))}
           </View>
 
-          <TouchableOpacity
-            style={{ flexDirection: isRTL ? 'row-reverse' : 'row', alignItems: 'center', gap: SPACING.xs, paddingVertical: 4 }}
+          <NativeButton
             onPress={() => addWorkExperienceTask(expIdx)}
+            variant="plain"
+            style={{ flexDirection: isRTL ? 'row-reverse' : 'row', alignItems: 'center', gap: SPACING.xs, paddingVertical: 4 }}
           >
             <Ionicons name="add-circle-outline" size={18} color={theme.accent} />
             <Text style={{ color: theme.accent, fontSize: 13, fontWeight: '700', fontFamily: getFontFamily(isRTL, 700) }}>
               {isRTL ? 'إضافة مهمة' : 'Add Task'}
             </Text>
-          </TouchableOpacity>
+          </NativeButton>
         </View>
       ))}
 
-      <TouchableOpacity 
+      <NativeButton 
+        onPress={addWorkExperience}
+        variant="borderedProminent"
+        color={theme.accent}
         style={[
           sharedStyles.addButton, 
           { 
-            backgroundColor: theme.accent, 
             borderRadius: 9999,
             paddingVertical: 12,
             paddingHorizontal: 20,
-            shadowColor: theme.accent,
-            shadowOffset: { width: 0, height: 4 },
-            shadowOpacity: 0.2,
-            shadowRadius: 6,
-            elevation: 3,
             marginTop: SPACING.xs,
             alignSelf: 'center',
             width: 'auto',
           }
-        ]} 
-        onPress={addWorkExperience}
+        ]}
       >
         <View style={{ flexDirection: isRTL ? 'row-reverse' : 'row', alignItems: 'center', gap: SPACING.xs }}>
           <Ionicons name="add" size={20} color="#FFFFFF" />
@@ -159,7 +158,7 @@ export const Step1Experience = () => {
             {isRTL ? 'إضافة خبرة مهنية جديدة' : 'Add New Experience'}
           </Text>
         </View>
-      </TouchableOpacity>
+      </NativeButton>
 
       <AIServiceSheet
         visible={aiSheetVisible}
