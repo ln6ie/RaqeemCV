@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, ScrollView, Dimensions } from 'react-native';
 import { BouncyPressable } from '../components/BouncyPressable';
+import { Ionicons } from '@expo/vector-icons';
 import { CVTemplate, TEMPLATE_NAMES, TEMPLATE_DESCRIPTIONS } from '../types/cv';
 import { useCVContext } from '../context/CVContext';
 import { TemplatePreviewSheet } from '../components/TemplatePreviewSheet';
 import { SPACING, getFontFamily } from '../constants/tokens';
+import { GlassicView } from '../components/Glassic';
 
 const ALL_TEMPLATES: CVTemplate[] = ['classic', 'engineering', 'hospitality', 'executive', 'zenith', 'creative-edge', 'profile-elegance'];
 
@@ -36,70 +38,84 @@ export const Step0Template = () => {
         {isRTL ? 'اختر القالب المناسب لسيرتك الذاتية. اضغط مطولاً لمعاينته.' : 'Choose your CV template. Long-press to preview.'}
       </Text>
 
-      <View style={{
-        borderRadius: 14,
-        backgroundColor: isDarkMode ? '#1C1C1E' : '#FFFFFF',
-        borderColor: isDarkMode ? 'rgba(255,255,255,0.08)' : 'rgba(60,60,67,0.03)',
-        borderWidth: 0.5,
-        overflow: 'hidden',
-      }}>
-        {ALL_TEMPLATES.map((tmpl, idx) => {
-          const isActive = current === tmpl;
-          const desc = TEMPLATE_DESCRIPTIONS[tmpl][lang];
-          return (
-            <BouncyPressable
-              key={tmpl}
-              onPress={() => updateField('template', tmpl)}
-              onLongPress={() => setPreviewTarget(tmpl)}
-              pressDepth={0.96}
-              haptic={false}
-              style={{
-                flexDirection: isRTL ? 'row-reverse' : 'row',
-                alignItems: 'center',
-                gap: 10,
-                paddingHorizontal: SPACING.md,
-                paddingVertical: 16,
-                backgroundColor: isActive
-                  ? (isDarkMode ? 'rgba(255,255,255,0.1)' : 'rgba(0,122,255,0.12)')
-                  : 'transparent',
-                borderLeftWidth: isActive ? (isRTL ? 0 : 3) : 0,
-                borderRightWidth: isActive ? (isRTL ? 3 : 0) : 0,
-                borderLeftColor: isActive ? theme.accent : 'transparent',
-                borderRightColor: isActive ? theme.accent : 'transparent',
-              }}
-            >
-              <View style={{
-                width: 20, height: 20, borderRadius: 10,
-                borderWidth: 2,
-                borderColor: isActive ? theme.accent : (isDarkMode ? 'rgba(255,255,255,0.2)' : 'rgba(60,60,67,0.2)'),
-                alignItems: 'center', justifyContent: 'center',
-              }}>
-                {isActive && <View style={{
-                  width: 10, height: 10, borderRadius: 5,
-                  backgroundColor: theme.accent,
-                }} />}
-              </View>
-              <View style={{ flex: 1 }}>
-                <Text style={{
-                  fontSize: 15, fontWeight: '600',
-                  color: isActive ? theme.accent : theme.textPrimary,
-                  fontFamily: getFontFamily(isRTL, 600),
-                  textAlign: isRTL ? 'right' : 'left',
-                }}>
-                  {TEMPLATE_NAMES[tmpl][lang]}
-                </Text>
-                <Text style={{
-                  fontSize: 11, color: theme.textSecondary, marginTop: 2,
-                  fontFamily: getFontFamily(isRTL, 400),
-                  textAlign: isRTL ? 'right' : 'left',
-                }} numberOfLines={1}>
-                  {desc}
-                </Text>
-              </View>
-            </BouncyPressable>
-          );
-        })}
-      </View>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{
+          paddingVertical: 8,
+          paddingHorizontal: 4,
+        }}
+      >
+        <View style={{
+          flexDirection: isRTL ? 'row-reverse' : 'row',
+          flexWrap: 'wrap',
+          gap: 12,
+        }}>
+          {ALL_TEMPLATES.map((tmpl) => {
+            const isActive = current === tmpl;
+            const name = TEMPLATE_NAMES[tmpl][lang];
+            const cardWidth = (Dimensions.get('window').width - 32 - 8 - 12) / 2;
+
+            return (
+              <BouncyPressable
+                key={tmpl}
+                onPress={() => updateField('template', tmpl)}
+                onLongPress={() => setPreviewTarget(tmpl)}
+                pressDepth={0.96}
+                haptic={false}
+                style={{ width: cardWidth }}
+              >
+                <GlassicView
+                  cornerRadius={16}
+                  glassEffectStyle={isActive ? 'prominent' : 'regular'}
+                  isDarkMode={isDarkMode}
+                  style={{
+                    padding: 14,
+                    minHeight: 120,
+                    justifyContent: 'space-between',
+                    borderWidth: isActive ? 2 : 0.5,
+                    borderColor: isActive ? theme.accent : (isDarkMode ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.08)'),
+                  }}
+                >
+                  <View style={{ flexDirection: isRTL ? 'row-reverse' : 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <Ionicons
+                      name={isActive ? "checkmark-circle" : "ellipse-outline"}
+                      size={20}
+                      color={isActive ? theme.accent : theme.textSecondary}
+                    />
+                    <Ionicons
+                      name="eye-outline"
+                      size={16}
+                      color={theme.textSecondary}
+                      style={{ opacity: 0.6 }}
+                    />
+                  </View>
+
+                  <View>
+                    <Text style={{
+                      fontSize: 14,
+                      fontWeight: '700',
+                      color: isActive ? theme.accent : theme.textPrimary,
+                      fontFamily: getFontFamily(isRTL, 700),
+                      textAlign: isRTL ? 'right' : 'left',
+                    }} numberOfLines={2}>
+                      {name}
+                    </Text>
+                    <Text style={{
+                      fontSize: 10,
+                      color: theme.textSecondary,
+                      fontFamily: getFontFamily(isRTL, 400),
+                      textAlign: isRTL ? 'right' : 'left',
+                      marginTop: 2,
+                    }} numberOfLines={2}>
+                      {TEMPLATE_DESCRIPTIONS[tmpl][lang]}
+                    </Text>
+                  </View>
+                </GlassicView>
+              </BouncyPressable>
+            );
+          })}
+        </View>
+      </ScrollView>
 
       <TemplatePreviewSheet
         template={previewTarget}

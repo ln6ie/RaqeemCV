@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
-import { NativeButton } from '../components/NativeButton';
+import { BouncyPressable } from '../components/BouncyPressable';
 import { Ionicons } from '@expo/vector-icons';
 import { useCVContext } from '../context/CVContext';
 import { GlassInput } from '../components/GlassInput';
@@ -32,10 +32,9 @@ export const Step3Export = () => {
         onChangeText={(v: string) => handleUpdateLanguage(1, v)} placeholder={t.placeholders.englishLevel}
         isDarkMode={isDarkMode} isRTL={isRTL} tip={t.tips.englishLevel} />
 
-      <NativeButton
+      <BouncyPressable
         onPress={() => setPreviewVisible(true)}
-        variant="bordered"
-        color={theme.accent}
+        pressDepth={0.93}
         style={{
           flexDirection: isRTL ? 'row-reverse' : 'row',
           alignItems: 'center',
@@ -55,7 +54,7 @@ export const Step3Export = () => {
         }}>
           {isRTL ? 'معاينة السيرة الذاتية' : 'Preview CV'}
         </Text>
-      </NativeButton>
+      </BouncyPressable>
 
       <Text style={{
         color: theme.textPrimary,

@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
-import { NativeButton } from '../components/NativeButton';
+import { BouncyPressable } from '../components/BouncyPressable';
 import { Ionicons } from '@expo/vector-icons';
 import { useCVContext } from '../context/CVContext';
 import { WorkExperience } from '../types/cv';
 import { GlassInput } from '../components/GlassInput';
 import { AIServiceSheet } from '../components/AIServiceSheet';
-import { sharedStyles } from '../styles/shared.styles';
 import { SPACING, getFontFamily } from '../constants/tokens';
 import { PROMPTS } from '../constants/ai';
 
@@ -100,65 +99,76 @@ export const Step1Experience = () => {
                     noCard tip={t.tips.task}
                   />
                   {task.trim() && (
-                    <NativeButton
+                    <BouncyPressable
                       onPress={() => openAI(PROMPTS.task(task, exp.jobTitle || 'N/A', activeLanguage))}
-                      variant="plain"
+                      pressDepth={0.94}
                       style={{
                         flexDirection: isRTL ? 'row-reverse' : 'row',
+                        alignSelf: 'flex-end',
                         alignItems: 'center',
-                        justifyContent: 'flex-end',
                         gap: 4,
                         paddingVertical: 4,
-                        paddingHorizontal: 4,
+                        paddingHorizontal: 8,
+                        borderRadius: 9999,
+                        borderWidth: 1,
+                        borderColor: theme.accent,
                       }}
                     >
-                      <Ionicons name="sparkles" size={14} color={theme.accent} />
+                      <Ionicons name="sparkles" size={12} color={theme.accent} />
                       <Text style={{ fontSize: 11, fontWeight: '600', color: theme.accent, fontFamily: getFontFamily(isRTL, 600) }}>
                         {isRTL ? 'تحسين' : 'Improve'}
                       </Text>
-                    </NativeButton>
+                    </BouncyPressable>
                   )}
                 </View>
               </View>
             ))}
           </View>
 
-          <NativeButton
+          <BouncyPressable
             onPress={() => addWorkExperienceTask(expIdx)}
-            variant="plain"
-            style={{ flexDirection: isRTL ? 'row-reverse' : 'row', alignItems: 'center', gap: SPACING.xs, paddingVertical: 4 }}
+            pressDepth={0.94}
+            style={{
+              flexDirection: isRTL ? 'row-reverse' : 'row',
+              alignItems: 'center',
+              alignSelf: 'flex-start',
+              gap: 4,
+              paddingVertical: 6,
+              paddingHorizontal: 12,
+              borderRadius: 9999,
+              borderWidth: 1,
+              borderColor: theme.accent,
+            }}
           >
-            <Ionicons name="add-circle-outline" size={18} color={theme.accent} />
-            <Text style={{ color: theme.accent, fontSize: 13, fontWeight: '700', fontFamily: getFontFamily(isRTL, 700) }}>
+            <Ionicons name="add-circle-outline" size={16} color={theme.accent} />
+            <Text style={{ color: theme.accent, fontSize: 12, fontWeight: '700', fontFamily: getFontFamily(isRTL, 700) }}>
               {isRTL ? 'إضافة مهمة' : 'Add Task'}
             </Text>
-          </NativeButton>
+          </BouncyPressable>
         </View>
       ))}
 
-      <NativeButton 
+      <BouncyPressable
         onPress={addWorkExperience}
-        variant="borderedProminent"
-        color={theme.accent}
-        style={[
-          sharedStyles.addButton, 
-          { 
-            borderRadius: 9999,
-            paddingVertical: 12,
-            paddingHorizontal: 20,
-            marginTop: SPACING.xs,
-            alignSelf: 'center',
-            width: 'auto',
-          }
-        ]}
+        pressDepth={0.92}
+        style={{
+          flexDirection: isRTL ? 'row-reverse' : 'row',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: SPACING.xs,
+          borderRadius: 9999,
+          paddingVertical: 12,
+          paddingHorizontal: 24,
+          marginTop: SPACING.xs,
+          alignSelf: 'center',
+          backgroundColor: theme.accent,
+        }}
       >
-        <View style={{ flexDirection: isRTL ? 'row-reverse' : 'row', alignItems: 'center', gap: SPACING.xs }}>
-          <Ionicons name="add" size={20} color="#FFFFFF" />
-          <Text style={[sharedStyles.addButtonText, { color: '#FFFFFF', fontFamily: getFontFamily(isRTL, 800), fontSize: 14 }]}>
-            {isRTL ? 'إضافة خبرة مهنية جديدة' : 'Add New Experience'}
-          </Text>
-        </View>
-      </NativeButton>
+        <Ionicons name="add" size={20} color="#FFFFFF" />
+        <Text style={{ color: '#FFFFFF', fontFamily: getFontFamily(isRTL, 800), fontSize: 14 }}>
+          {isRTL ? 'إضافة خبرة مهنية جديدة' : 'Add New Experience'}
+        </Text>
+      </BouncyPressable>
 
       <AIServiceSheet
         visible={aiSheetVisible}

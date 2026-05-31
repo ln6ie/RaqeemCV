@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, StyleProp, ViewStyle, GestureResponderEvent } from 'react-native';
+import { StyleSheet, StyleProp, ViewStyle, GestureResponderEvent, Text, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { BouncyPressable } from './BouncyPressable';
 import { GlassicView } from './Glassic';
@@ -18,6 +18,7 @@ interface NativeButtonProps {
   color?: string;
   size?: 'mini' | 'small' | 'regular' | 'large' | 'extraLarge';
   systemImage?: string;
+  label?: string;
 }
 
 const ICON_MAP: Record<string, string> = {
@@ -28,6 +29,8 @@ const ICON_MAP: Record<string, string> = {
   'flask': 'flask-outline',
   'sparkles': 'sparkles',
   'gearshape': 'settings-outline',
+  'download': 'download-outline',
+  'document': 'document-text-outline',
 };
 
 export const NativeButton: React.FC<NativeButtonProps> = ({
@@ -43,18 +46,31 @@ export const NativeButton: React.FC<NativeButtonProps> = ({
   variant = 'plain',
   color,
   systemImage,
+  label,
 }) => {
   const flattenedStyle = StyleSheet.flatten(style) || {};
   const borderRadius = flattenedStyle.borderRadius !== undefined ? flattenedStyle.borderRadius : 12;
 
   const renderContent = () => {
     if (children) return children;
+    const content: React.ReactNode[] = [];
     if (systemImage) {
       const iconName = ICON_MAP[systemImage] || 'help-circle-outline';
       const iconColor = color || '#8E8E93';
-      return <Ionicons name={iconName as any} size={20} color={iconColor} />;
+      content.push(<Ionicons key="icon" name={iconName as any} size={20} color={iconColor} />);
     }
-    return null;
+    if (label) {
+      content.push(
+        <Text key="text" style={{ color: color || '#8E8E93', fontWeight: '600', marginLeft: systemImage ? 6 : 0 }}>
+          {label}
+        </Text>
+      );
+    }
+    return content.length > 0 ? (
+      <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
+        {content}
+      </View>
+    ) : null;
   };
 
   if (variant === 'glass' || variant === 'glassProminent') {

@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, Modal, Platform } from 'react-native';
+import { View, Text, Modal, Platform } from 'react-native';
 import { WebView } from 'react-native-webview';
 import { Ionicons } from '@expo/vector-icons';
+import { BouncyPressable } from './BouncyPressable';
 import { useCVContext } from '../context/CVContext';
 import { generateCVTemplate } from '../services/cvTemplate';
 import { PreviewCVSchema } from '../types/cv';
@@ -36,8 +37,9 @@ export const CVPreview = ({ visible, onClose, onExport }: CVPreviewProps) => {
             isRTL={isRTL}
             theme={theme}
             headerAction={
-              <TouchableOpacity
+              <BouncyPressable
                 onPress={onExport}
+                pressDepth={0.9}
                 style={{
                   backgroundColor: theme.accent,
                   borderRadius: 9999,
@@ -48,7 +50,7 @@ export const CVPreview = ({ visible, onClose, onExport }: CVPreviewProps) => {
                 }}
               >
                 <Ionicons name="share-outline" size={18} color="#FFFFFF" />
-              </TouchableOpacity>
+              </BouncyPressable>
             }
           />
         </View>

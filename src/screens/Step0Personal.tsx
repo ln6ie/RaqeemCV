@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, Image, Alert } from 'react-native';
-import { NativeButton } from '../components/NativeButton';
+import { BouncyPressable } from '../components/BouncyPressable';
 import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system/legacy';
@@ -76,25 +76,27 @@ export const Step0Personal = () => {
       <GlassInput label={t.labels.email} value={cvData.email} onChangeText={(v: string) => updateField('email', v)} placeholder={t.placeholders.email} keyboardType="email-address" autoCapitalize="none" isDarkMode={isDarkMode} isRTL={isRTL} error={validationErrors['email']} tip={t.tips.email} />
       <GlassInput label={t.labels.summary} value={cvData.summary} onChangeText={(v: string) => updateField('summary', v)} placeholder={t.placeholders.summary} multiline numberOfLines={3} isDarkMode={isDarkMode} isRTL={isRTL} error={validationErrors['summary']} tip={t.tips.summary} />
       {cvData.summary.trim() && (
-        <NativeButton
+        <BouncyPressable
           onPress={() => setAiSheetVisible(true)}
-          variant="glassProminent"
-          color={theme.accent}
+          pressDepth={0.93}
+          haptic
           style={{
             flexDirection: isRTL ? 'row-reverse' : 'row',
             alignItems: 'center',
-            justifyContent: 'center',
+            alignSelf: 'flex-start',
             gap: 6,
-            paddingVertical: 10,
-            paddingHorizontal: 16,
+            paddingVertical: 8,
+            paddingHorizontal: 14,
             borderRadius: 9999,
+            borderWidth: 1,
+            borderColor: theme.accent,
           }}
         >
-          <Ionicons name="sparkles" size={16} color={theme.accent} />
-          <Text style={{ fontSize: 13, fontWeight: '700', color: theme.accent, fontFamily: getFontFamily(isRTL, 700) }}>
-            {isRTL ? 'حسّن الملخص بالذكاء الاصطناعي' : 'Improve Summary with AI'}
+          <Ionicons name="sparkles" size={14} color={theme.accent} />
+          <Text style={{ fontSize: 12, fontWeight: '700', color: theme.accent, fontFamily: getFontFamily(isRTL, 700) }}>
+            {isRTL ? 'تحسين بالذكاء الاصطناعي' : 'Improve with AI'}
           </Text>
-        </NativeButton>
+        </BouncyPressable>
       )}
       <AIServiceSheet
         visible={aiSheetVisible}

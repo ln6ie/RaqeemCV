@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+
 import { SPACING, BORDER_RADIUS } from '../constants/tokens';
 import { TranslationSet } from '../constants/translations';
 import { RaqeemLogo } from './RaqeemLogo';
@@ -72,45 +72,41 @@ export const Header = ({
             <NativeButton
               onPress={onOpenCVManager}
               systemImage="folder"
+              variant="glass"
               style={styles.headerButton}
               accessibilityLabel="CV Manager"
               color={theme.textPrimary}
-            >
-              <Ionicons name="folder-outline" size={18} color={theme.textPrimary} />
-            </NativeButton>
+            />
 
             {/* Sample CV loader */}
             <NativeButton
               onPress={onLoadSample}
               systemImage="flask"
+              variant="glass"
               style={styles.headerButton}
               accessibilityLabel="Load Sample CV"
               color={theme.textSecondary}
-            >
-              <Ionicons name="flask-outline" size={18} color={theme.textSecondary} />
-            </NativeButton>
+            />
 
             {/* AI Prompt */}
             <NativeButton
               onPress={onOpenAIPrompt}
               systemImage="sparkles"
+              variant="glass"
               style={styles.headerButton}
               accessibilityLabel="AI Prompt"
               color={theme.accent}
-            >
-              <Ionicons name="sparkles" size={18} color={theme.accent} />
-            </NativeButton>
+            />
 
             {/* Settings */}
             <NativeButton
               onPress={onOpenSettings}
               systemImage="gearshape"
+              variant="glass"
               style={styles.headerButton}
               accessibilityLabel="Settings"
               color={theme.textPrimary}
-            >
-              <Ionicons name="settings-outline" size={18} color={theme.textPrimary} />
-            </NativeButton>
+            />
           </View>
         </View>
 
@@ -127,8 +123,8 @@ export const Header = ({
                   i <= activeStep
                     ? theme.accent
                     : isDarkMode
-                    ? '#2C2C2E'
-                    : '#E5E5EA',
+                      ? '#2C2C2E'
+                      : '#E5E5EA',
               }}
             />
           ))}

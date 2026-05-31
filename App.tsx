@@ -36,7 +36,7 @@ function AppShell() {
 
   return (
     <View style={[sharedStyles.root, { backgroundColor: theme.background }]}>
-      <StatusBar translucent={true} style={isDarkMode ? 'light' : 'dark'} />
+      <StatusBar style={isDarkMode ? 'light' : 'dark'} />
 
       <Header isDarkMode={isDarkMode} onOpenSettings={handleOpenSettings} onOpenAIPrompt={handleOpenAIPrompt} onOpenCVManager={handleOpenCVManager} onLoadSample={loadSampleCV} theme={theme} isRTL={isRTL} t={t} activeStep={activeStep} />
 
@@ -70,25 +70,25 @@ function AppShell() {
         {activeStep > 0 && (
           <NativeButton
             onPress={handlePrev}
-            systemImage="chevron.left"
-            style={[sharedStyles.fab, { backgroundColor: theme.buttonBackground }]}
+            systemImage={isRTL ? 'chevron.right' : 'chevron.left'}
+            variant="borderedProminent"
+            style={sharedStyles.fab}
+            size="large"
             accessibilityLabel={isRTL ? 'السابق' : 'Previous'}
-            color={theme.buttonBackground}
-          >
-            <Ionicons name={isRTL ? 'chevron-forward' : 'chevron-back'} size={24} color={theme.buttonText} />
-          </NativeButton>
+            color={theme.accent}
+          />
         )}
         <View style={{ flex: 1 }} />
         {activeStep < 4 && (
           <NativeButton
             onPress={handleNext}
-            systemImage="chevron.right"
-            style={[sharedStyles.fab, { backgroundColor: theme.buttonBackground }]}
+            systemImage={isRTL ? 'chevron.left' : 'chevron.right'}
+            variant="borderedProminent"
+            style={sharedStyles.fab}
+            size="large"
             accessibilityLabel={isRTL ? 'التالي' : 'Next'}
-            color={theme.buttonBackground}
-          >
-            <Ionicons name={isRTL ? 'chevron-back' : 'chevron-forward'} size={24} color={theme.buttonText} />
-          </NativeButton>
+            color={theme.accent}
+          />
         )}
       </View>
 

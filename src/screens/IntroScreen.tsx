@@ -80,7 +80,7 @@ export const IntroScreen = ({ onFinish, isThemeReady }: IntroScreenProps) => {
   }, [isThemeReady, minDurationElapsed, forceDismiss]);
 
   return (
-    <Animated.View style={[StyleSheet.absoluteFillObject, styles.root, { backgroundColor: theme.background, opacity: bgOpacity }]} pointerEvents="none">
+    <Animated.View style={[StyleSheet.absoluteFill, styles.root, { backgroundColor: theme.background, opacity: bgOpacity }]} pointerEvents="none">
       <StatusBar 
         barStyle={isDarkMode ? 'light-content' : 'dark-content'} 
         backgroundColor={theme.background} 

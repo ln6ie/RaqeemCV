@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, Modal, Platform } from 'react-native';
+import { View, Text, TouchableOpacity, Modal, Platform, Pressable } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { SvgXml } from 'react-native-svg';
 import { useCVContext } from '../context/CVContext';
@@ -7,6 +7,7 @@ import { SPACING, getFontFamily } from '../constants/tokens';
 import { openWithAI, AIService } from '../constants/ai';
 import { SVG_CHATGPT, SVG_GEMINI, SVG_CLAUDE } from '../constants/svg-icons';
 import { SheetHeader } from './SheetHeader';
+import { GlassicView } from './Glassic';
 
 interface AIServiceSheetProps {
   visible: boolean;
@@ -98,50 +99,63 @@ export const AIServiceSheet = ({ visible, onClose, prompt }: AIServiceSheetProps
             </Text>
 
             {services.map((s) => (
-              <TouchableOpacity
+              <Pressable
                 key={s.key}
                 onPress={() => handleSelect(s.key)}
-                activeOpacity={0.7}
-                style={{
-                  flexDirection: isRTL ? 'row-reverse' : 'row',
-                  alignItems: 'center',
-                  gap: 14,
-                  backgroundColor: isDarkMode ? '#1C1C1E' : '#FFFFFF',
-                  borderColor: isDarkMode ? 'rgba(255,255,255,0.08)' : 'rgba(60,60,67,0.03)',
-                  borderWidth: 0.5,
-                  borderRadius: 16,
-                  padding: 18,
-                }}
+                style={({ pressed }) => [
+                  {
+                    borderRadius: 58,
+                    overflow: 'hidden',
+                    opacity: pressed ? 0.9 : 1,
+                    transform: [{ scale: pressed ? 0.98 : 1 }],
+                  }
+                ]}
               >
-                <View style={{
-                  width: 44,
-                  height: 44,
-                  borderRadius: 22,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}>
-                  <SvgXml xml={s.svg} width={30} height={30} />
-                </View>
-                <View style={{ flex: 1 }}>
-                  <Text style={{
-                    fontSize: 16,
-                    fontWeight: '700',
-                    color: theme.textPrimary,
-                    fontFamily: getFontFamily(isRTL, 700),
+                <GlassicView
+                  cornerRadius={58}
+                  glassEffectStyle="regular"
+                  isDarkMode={isDarkMode}
+                  style={{
+                    flexDirection: isRTL ? 'row-reverse' : 'row',
+                    alignItems: 'center',
+                    gap: 14,
+                    padding: 16,
+                    borderWidth: 0.5,
+                    borderColor: isDarkMode ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.08)',
+                  }}
+                >
+                  <View style={{
+                    width: 44,
+                    height: 44,
+                    borderRadius: 22,
+                    alignItems: 'center',
+                    justifyContent: 'center',
                   }}>
-                    {s.label}
-                  </Text>
-                  <Text style={{
-                    fontSize: 12,
-                    color: theme.textSecondary,
-                    fontFamily: getFontFamily(isRTL, 400),
-                    marginTop: 2,
-                  }}>
-                    {s.desc}
-                  </Text>
-                </View>
-                <Ionicons name={isRTL ? 'chevron-back-outline' : 'chevron-forward-outline'} size={20} color={theme.textSecondary} />
-              </TouchableOpacity>
+                    <SvgXml xml={s.svg} width={30} height={30} />
+                  </View>
+                  <View style={{ flex: 1 }}>
+                    <Text style={{
+                      fontSize: 16,
+                      fontWeight: '700',
+                      color: theme.textPrimary,
+                      fontFamily: getFontFamily(isRTL, 700),
+                      textAlign: isRTL ? 'right' : 'left',
+                    }}>
+                      {s.label}
+                    </Text>
+                    <Text style={{
+                      fontSize: 12,
+                      color: theme.textSecondary,
+                      fontFamily: getFontFamily(isRTL, 400),
+                      textAlign: isRTL ? 'right' : 'left',
+                      marginTop: 2,
+                    }}>
+                      {s.desc}
+                    </Text>
+                  </View>
+                  <Ionicons name={isRTL ? 'chevron-back-outline' : 'chevron-forward-outline'} size={20} color={theme.textSecondary} />
+                </GlassicView>
+              </Pressable>
             ))}
           </View>
         </View>

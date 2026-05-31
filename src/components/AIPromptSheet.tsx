@@ -7,6 +7,29 @@ import { getFontFamily } from '../constants/tokens';
 import { SheetHeader } from './SheetHeader';
 import { GlassInput } from './GlassInput';
 import { GlassicView } from './Glassic';
+import { NativeButton } from './NativeButton';
+
+let Host: any = null;
+let SwiftUIPicker: any = null;
+let SwiftUIText: any = null;
+let pickerStyleMod: any = null;
+let tagMod: any = null;
+let isNativePickerReady = false;
+
+if (Platform.OS === 'ios') {
+  try {
+    const swiftUI = require('@expo/ui/swift-ui');
+    const modifiers = require('@expo/ui/swift-ui/modifiers');
+    Host = swiftUI.Host;
+    SwiftUIPicker = swiftUI.Picker;
+    SwiftUIText = swiftUI.Text;
+    pickerStyleMod = modifiers.pickerStyle;
+    tagMod = modifiers.tag;
+    isNativePickerReady = true;
+  } catch (err) {
+    console.log('[AIPromptSheet Debug] Error loading native picker:', err);
+  }
+}
 
 export const AIPromptSheet = () => {
   const {
@@ -26,7 +49,7 @@ export const AIPromptSheet = () => {
   const [copied, setCopied] = useState(false);
   const [jsonText, setJsonText] = useState('');
 
-  const promptText = isRTL 
+  const promptText = isRTL
     ? `أنت خبير محترف ومستشار كتابة سير ذاتية متوافقة مع أنظمة ATS. ستقوم بإجراء مقابلة تفاعلية ذكية وسلسة معي خطوة بخطوة باللغة العربية لجمع وتنسيق تفاصيل سيرتي الذاتية بالكامل.
 
 التعليمات الهامة:
@@ -142,7 +165,7 @@ Start now by welcoming me warmly on behalf of "Raqeem CV" and asking the first q
 
     try {
       let cleanedText = jsonText.trim();
-      
+
       // Auto-extract JSON inside conversational texts (between first { and last })
       const firstCurly = cleanedText.indexOf('{');
       const lastCurly = cleanedText.lastIndexOf('}');
@@ -203,78 +226,95 @@ Start now by welcoming me warmly on behalf of "Raqeem CV" and asking the first q
           style={[
             Platform.OS === 'ios'
               ? {
-                  flex: 1,
-                  backgroundColor: theme.background,
-                  paddingHorizontal: 24,
-                  paddingTop: 16,
-                }
+                flex: 1,
+                backgroundColor: theme.background,
+                paddingHorizontal: 24,
+                paddingTop: 16,
+              }
               : {
-                  backgroundColor: theme.cardBackground,
-                  borderTopLeftRadius: 28,
-                  borderTopRightRadius: 28,
-                  paddingHorizontal: 24,
-                  paddingVertical: 24,
-                  borderWidth: 1,
-                  borderColor: theme.cardBorder,
-                  borderBottomWidth: 0,
-                  width: '100%',
-                  maxHeight: '90%',
-                },
+                backgroundColor: theme.cardBackground,
+                borderTopLeftRadius: 28,
+                borderTopRightRadius: 28,
+                paddingHorizontal: 24,
+                paddingVertical: 24,
+                borderWidth: 1,
+                borderColor: theme.cardBorder,
+                borderBottomWidth: 0,
+                width: '100%',
+                maxHeight: '90%',
+              },
           ]}
         >
 
           <SheetHeader title={isRTL ? 'مساعد رقيم  (AI)' : 'Raqeem AI Assistant'} onClose={() => setIsAIPromptVisible(false)} isRTL={isRTL} isDarkMode={isDarkMode} theme={theme} showGrabber />
 
 
-          <View
-            style={{
-              flexDirection: isRTL ? 'row-reverse' : 'row',
-              backgroundColor: isDarkMode ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.05)',
-              borderRadius: 9999,
-              padding: 4,
-              marginBottom: 20,
-            }}
-          >
-            {([['prompt', 'sparkles', isRTL ? 'البرومبت ' : ' Prompt'] as const,
+          {isNativePickerReady && SwiftUIPicker && SwiftUIText && Host ? (
+            <Host style={{ width: '100%', height: 40, marginBottom: 20 }}>
+              <SwiftUIPicker
+                selection={activeTab}
+                onSelectionChange={(val: any) => setActiveTab(val)}
+                modifiers={[pickerStyleMod('segmented')]}
+              >
+                <SwiftUIText modifiers={[tagMod('prompt')]}>
+                  {isRTL ? 'البرومبت ' : 'Prompt'}
+                </SwiftUIText>
+                <SwiftUIText modifiers={[tagMod('import')]}>
+                  {isRTL ? 'استيراد البيانات' : 'Import JSON'}
+                </SwiftUIText>
+              </SwiftUIPicker>
+            </Host>
+          ) : (
+            <View
+              style={{
+                flexDirection: isRTL ? 'row-reverse' : 'row',
+                backgroundColor: isDarkMode ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.05)',
+                borderRadius: 9999,
+                padding: 4,
+                marginBottom: 20,
+              }}
+            >
+              {([['prompt', 'sparkles', isRTL ? 'البرومبت ' : ' Prompt'] as const,
               ['import', 'cloud-download-outline', isRTL ? 'استيراد البيانات' : 'Import JSON'] as const]).map(([key, icon, label]) => {
-              const isActive = activeTab === key;
-              const pillContent = (
-                <TouchableOpacity
-                  activeOpacity={0.7}
-                  style={{
-                    flexDirection: isRTL ? 'row-reverse' : 'row',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: 6,
-                    paddingVertical: 10,
-                    paddingHorizontal: 8,
-                    minHeight: 40,
-                    borderRadius: 9999,
-                  }}
-                  onPress={() => setActiveTab(key)}
-                >
-                  <Ionicons name={icon} size={16} color={isActive ? theme.accent : theme.textSecondary} />
-                  <Text style={{
-                    color: isActive ? theme.accent : theme.textSecondary,
-                    fontFamily: getFontFamily(isRTL, 800),
-                    fontSize: 13,
-                  }}>
-                    {label}
-                  </Text>
-                </TouchableOpacity>
-              );
+                const isActive = activeTab === key;
+                const pillContent = (
+                  <TouchableOpacity
+                    activeOpacity={0.7}
+                    style={{
+                      flexDirection: isRTL ? 'row-reverse' : 'row',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: 6,
+                      paddingVertical: 10,
+                      paddingHorizontal: 8,
+                      minHeight: 40,
+                      borderRadius: 9999,
+                    }}
+                    onPress={() => setActiveTab(key)}
+                  >
+                    <Ionicons name={icon} size={16} color={isActive ? theme.accent : theme.textSecondary} />
+                    <Text style={{
+                      color: isActive ? theme.accent : theme.textSecondary,
+                      fontFamily: getFontFamily(isRTL, 800),
+                      fontSize: 13,
+                    }}>
+                      {label}
+                    </Text>
+                  </TouchableOpacity>
+                );
 
-              return isActive ? (
-                <GlassicView key={key} cornerRadius={9999} glassEffectStyle="regular" isDarkMode={isDarkMode} style={{ flex: 1 }}>
-                  {pillContent}
-                </GlassicView>
-              ) : (
-                <View key={key} style={{ flex: 1 }}>
-                  {pillContent}
-                </View>
-              );
-            })}
-          </View>
+                return isActive ? (
+                  <GlassicView key={key} cornerRadius={9999} glassEffectStyle="regular" isDarkMode={isDarkMode} style={{ flex: 1 }}>
+                    {pillContent}
+                  </GlassicView>
+                ) : (
+                  <View key={key} style={{ flex: 1 }}>
+                    {pillContent}
+                  </View>
+                );
+              })}
+            </View>
+          )}
 
           {activeTab === 'prompt' ? (
             <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 40 }}>
@@ -313,17 +353,17 @@ Start now by welcoming me warmly on behalf of "Raqeem CV" and asking the first q
                     padding: 16,
                   }}
                 >
-                <View style={{ flexDirection: isRTL ? 'row-reverse' : 'row', alignItems: 'center', gap: 6, marginBottom: 8 }}>
-                  <Ionicons name={copied ? 'checkmark-circle' : 'copy-outline'} size={16} color={copied ? theme.success : theme.accent} />
-                  <Text style={{ color: copied ? theme.success : theme.accent, fontFamily: getFontFamily(isRTL, 700), fontSize: 13 }}>
-                    {copied ? (isRTL ? 'تم النسخ' : 'Copied') : (isRTL ? 'اضغط للنسخ' : 'Tap to copy')}
+                  <View style={{ flexDirection: isRTL ? 'row-reverse' : 'row', alignItems: 'center', gap: 6, marginBottom: 8 }}>
+                    <Ionicons name={copied ? 'checkmark-circle' : 'copy-outline'} size={16} color={copied ? theme.success : theme.accent} />
+                    <Text style={{ color: copied ? theme.success : theme.accent, fontFamily: getFontFamily(isRTL, 700), fontSize: 13 }}>
+                      {copied ? (isRTL ? 'تم النسخ' : 'Copied') : (isRTL ? 'اضغط للنسخ' : 'Tap to copy')}
+                    </Text>
+                  </View>
+                  <Text style={{ color: theme.textPrimary, fontFamily: getFontFamily(isRTL, 400), fontSize: 12, lineHeight: 18, textAlign: isRTL ? 'right' : 'left' }}>
+                    {promptText}
                   </Text>
-                </View>
-                <Text style={{ color: theme.textPrimary, fontFamily: getFontFamily(isRTL, 400), fontSize: 12, lineHeight: 18, textAlign: isRTL ? 'right' : 'left' }}>
-                  {promptText}
-                </Text>
-              </TouchableOpacity>
-            </GlassicView>
+                </TouchableOpacity>
+              </GlassicView>
             </ScrollView>
           ) : (
             <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 40 }}>
@@ -339,51 +379,25 @@ Start now by welcoming me warmly on behalf of "Raqeem CV" and asking the first q
                 placeholder={isRTL ? 'الصق كود الـ JSON أو رد الذكاء الاصطناعي هنا...' : 'Paste JSON or AI response here...'}
               />
 
-              <GlassicView
-                cornerRadius={9999}
-                glassEffectStyle="regular"
-                isDarkMode={isDarkMode}
-                isInteractive={false}
-              >
-                <TouchableOpacity
-                  activeOpacity={0.8}
-                  onPress={handleImport}
-                  style={{
-                    backgroundColor: theme.accent,
-                    borderRadius: 9999,
-                    paddingVertical: 14,
-                    flexDirection: isRTL ? 'row-reverse' : 'row',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: 8,
-                  }}
-                >
-                  <Ionicons name="download-outline" size={18} color="#FFFFFF" />
-                  <Text style={{ color: '#FFFFFF', fontFamily: getFontFamily(isRTL, 800), fontSize: 15 }}>
-                    {isRTL ? 'توليد ' : 'Auto-Fill CV'}
-                  </Text>
-                </TouchableOpacity>
-              </GlassicView>
+              <NativeButton
+                onPress={handleImport}
+                variant="borderedProminent"
+                size="large"
+                systemImage="download"
+                label={isRTL ? 'توليد السيرة الذاتية' : 'Auto-Fill CV'}
+                color={theme.accent}
+                style={{ width: '100%', height: 48, borderRadius: 9999 }}
+              />
 
-              <TouchableOpacity
-                activeOpacity={0.8}
+              <NativeButton
                 onPress={() => setIsPDFImporterVisible(true)}
-                style={{
-                  flexDirection: isRTL ? 'row-reverse' : 'row',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: 8,
-                  paddingVertical: 14,
-                  borderRadius: 9999,
-                  borderWidth: 1,
-                  borderColor: theme.accent,
-                }}
-              >
-                <Ionicons name="document-text-outline" size={18} color={theme.accent} />
-                <Text style={{ color: theme.accent, fontFamily: getFontFamily(isRTL, 800), fontSize: 15 }}>
-                  {isRTL ? 'استيراد من ملف PDF' : 'Import from PDF'}
-                </Text>
-              </TouchableOpacity>
+                variant="bordered"
+                size="large"
+                systemImage="document"
+                label={isRTL ? 'استيراد من ملف PDF' : 'Import from PDF'}
+                color={theme.accent}
+                style={{ width: '100%', height: 48, borderRadius: 9999, marginTop: 12 }}
+              />
             </ScrollView>
           )}
         </View>
