@@ -85,9 +85,9 @@ export const renderRoseTemplate = (data: CVData, isRTL: boolean): string => {
   @page { margin: 0; size: A4; }
   * { box-sizing: border-box; }
   body { margin: 0; padding: 0; font-family: ${fontStack}; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-  .page { width: 210mm; min-height: 297mm; display: flex; flex-direction: ${isRTL ? 'row-reverse' : 'row'}; }
-  .sidebar { width: ${sidebarWidth}; background: ${cols.sidebarBg}; padding: 30px; }
-  .main { width: ${mainWidth}; background: ${cols.background}; padding: 30px; display: flex; flex-direction: column; }
+  .page { width: 210mm; }
+  .sidebar { background: ${cols.sidebarBg}; }
+  .main { background: ${cols.background}; }
   .profile-img { width: 120px; height: 120px; border-radius: 50%; border: 4px solid #FFFFFF; object-fit: cover; box-shadow: 0 4px 10px rgba(0,0,0,0.05); display: block; margin: 0 auto 16px auto; }
   .name { font-size: 28px; font-weight: 300; color: ${cols.body}; letter-spacing: -0.5px; margin: 0 0 4px 0; text-align: ${textAlign}; }
   .job-title { font-size: 15px; font-weight: 400; color: ${cols.accent}; margin: 0 0 18px 0; text-align: ${textAlign}; }
@@ -99,33 +99,35 @@ export const renderRoseTemplate = (data: CVData, isRTL: boolean): string => {
 </style></head>
 <body>
 <div class="page">
+  <table style="width:100%; border-collapse:collapse;" cellpadding="0" cellspacing="0">
+    <tr>
+      <!-- Sidebar -->
+      <td style="width:35%; vertical-align:top; border:none; background:${cols.sidebarBg}; padding:30px;">
+        ${data.profileImage ? `<img class="profile-img" src="${data.profileImage}" alt="Profile" />` : ''}
 
-  <!-- Sidebar -->
-  <div class="sidebar">
-    ${data.profileImage ? `<img class="profile-img" src="${data.profileImage}" alt="Profile" />` : ''}
+        ${sidebarSection(lbl.languages, languagesHtml || `<div style="font-size:12px;color:${cols.secondary};">—</div>`)}
 
-    ${sidebarSection(lbl.languages, languagesHtml || `<div style="font-size:12px;color:${cols.secondary};">—</div>`)}
+        ${educationHtml ? sidebarSection(lbl.education, educationHtml) : ''}
 
-    ${educationHtml ? sidebarSection(lbl.education, educationHtml) : ''}
+        ${skillsHtml ? sidebarSection(lbl.skills, skillsHtml) : ''}
 
-    ${skillsHtml ? sidebarSection(lbl.skills, skillsHtml) : ''}
+        ${coursesHtml ? sidebarSection(lbl.courses, coursesHtml) : ''}
 
-    ${coursesHtml ? sidebarSection(lbl.courses, coursesHtml) : ''}
+        ${contactHtml ? sidebarSection(lbl.address, contactHtml) : ''}
+      </td>
 
-    ${contactHtml ? sidebarSection(lbl.address, contactHtml) : ''}
-  </div>
+      <!-- Main Content -->
+      <td style="width:65%; vertical-align:top; border:none; background:${cols.background}; padding:30px;">
+        <h1 class="name">${data.fullName}</h1>
+        ${jobTitle ? `<div class="job-title">${jobTitle}</div>` : ''}
 
-  <!-- Main Content -->
-  <div class="main">
-    <h1 class="name">${data.fullName}</h1>
-    ${jobTitle ? `<div class="job-title">${jobTitle}</div>` : ''}
+        ${summaryHtml ? sectionTitle(lbl.summary) + summaryHtml : ''}
 
-    ${summaryHtml ? sectionTitle(lbl.summary) + summaryHtml : ''}
-
-    ${sectionTitle(lbl.experience)}
-    ${experienceHtml}
-  </div>
-
+        ${sectionTitle(lbl.experience)}
+        ${experienceHtml}
+      </td>
+    </tr>
+  </table>
 </div>
 </body>
 </html>`;

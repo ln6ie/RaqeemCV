@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, TouchableOpacity, Modal, Platform } from 'react-native';
 import { WebView } from 'react-native-webview';
-import { Ionicons } from '@expo/vector-icons';
 import { CVTemplate, PreviewCVSchema, TEMPLATE_NAMES, TEMPLATE_DESCRIPTIONS } from '../types/cv';
 import { useCVContext } from '../context/CVContext';
 import { generateCVTemplate } from '../services/cvTemplate';
@@ -30,59 +29,96 @@ export const TemplatePreviewSheet = ({ template, onClose }: Props) => {
   const visible = template !== null;
 
   return (
-    <Modal visible={visible} animationType="slide" presentationStyle="pageSheet" transparent={false} onDismiss={onClose} onRequestClose={onClose}>
-      <View style={{ flex: 1, backgroundColor: theme.background }}>
-        <SheetHeader
-          title={template ? TEMPLATE_NAMES[template][lang] : ''}
-          onClose={onClose}
-          isDarkMode={isDarkMode}
-          isRTL={isRTL}
-          theme={theme}
-          showGrabber={false}
-          headerAction={
-            <TouchableOpacity
-              onPress={() => { if (template) { updateField('template', template); onClose(); } }}
-              style={{
-                backgroundColor: theme.accent,
-                borderRadius: 9999,
-                paddingHorizontal: 14,
-                paddingVertical: 8,
-              }}
-            >
-              <Text style={{ color: '#FFFFFF', fontSize: 13, fontWeight: '700', fontFamily: getFontFamily(isRTL, 700) }}>
-                {isRTL ? 'اختيار' : 'Select'}
-              </Text>
-            </TouchableOpacity>
-          }
-        />
-
-        {template && (
-          <View style={{ paddingHorizontal: 20, paddingVertical: 8, backgroundColor: isDarkMode ? 'rgba(255,255,255,0.03)' : 'rgba(0,122,255,0.04)' }}>
-            <Text style={{
-              fontSize: 12, color: theme.textSecondary,
-              fontFamily: getFontFamily(isRTL, 400),
-              textAlign: isRTL ? 'right' : 'left',
-            }}>
-              {TEMPLATE_DESCRIPTIONS[template][lang]}
-            </Text>
-          </View>
-        )}
-
-        {html ? (
-          <WebView
-            source={{ html }}
-            style={{ flex: 1, backgroundColor: '#FFFFFF' }}
-            originWhitelist={['*']}
-            scalesPageToFit={Platform.OS === 'android'}
+    <Modal
+      visible={visible}
+      transparent={Platform.OS === 'android'}
+      animationType="slide"
+      presentationStyle={Platform.OS === 'ios' ? 'pageSheet' : 'overFullScreen'}
+      onRequestClose={onClose}
+    >
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: Platform.OS === 'ios' ? theme.background : 'transparent',
+          justifyContent: Platform.OS === 'ios' ? 'flex-start' : 'flex-end',
+        }}
+      >
+        {/* Render Android only backdrop to allow click outside to close */}
+        {Platform.OS === 'android' && (
+          <TouchableOpacity
+            style={{ position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, backgroundColor: 'rgba(0,0,0,0.5)' }}
+            activeOpacity={1}
+            onPress={onClose}
           />
-        ) : (
-          <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-            <Text style={{ fontSize: 15, color: theme.textSecondary, textAlign: 'center', fontFamily: getFontFamily(isRTL, 400) }}>
-              {isRTL ? 'جارٍ التحميل...' : 'Loading...'}
-            </Text>
-          </View>
         )}
+
+        <View
+          style={[
+            Platform.OS === 'ios'
+              ? {
+                  flex: 1,
+                  backgroundColor: theme.background,
+                  paddingHorizontal: 24,
+                  paddingTop: 16,
+                }
+              : {
+                  backgroundColor: theme.cardBackground,
+                  borderTopLeftRadius: 28,
+                  borderTopRightRadius: 28,
+                  paddingHorizontal: 24,
+                  paddingTop: 8,
+                  paddingBottom: 24,
+                  borderWidth: 1,
+                  borderColor: theme.cardBorder,
+                  borderBottomWidth: 0,
+                  width: '100%',
+                  height: '92%',
+                },
+          ]}
+        >
+          <SheetHeader
+            title={template ? TEMPLATE_NAMES[template][lang] : ''}
+            onClose={onClose}
+            isRTL={isRTL}
+            isDarkMode={isDarkMode}
+            theme={theme}
+            showGrabber={true}
+            headerAction={
+              <TouchableOpacity
+                onPress={() => { if (template) { updateField('template', template); onClose(); } }}
+                style={{
+                  backgroundColor: theme.accent,
+                  borderRadius: 9999,
+                  paddingHorizontal: 12,
+                  paddingVertical: 8,
+                }}
+              >
+                <Text style={{ color: '#FFFFFF', fontSize: 12, fontWeight: '700', fontFamily: getFontFamily(isRTL, 700) }}>
+                  {isRTL ? 'اختيار' : 'Select'}
+                </Text>
+              </TouchableOpacity>
+            }
+          />
+
+
+
+          {html ? (
+            <WebView
+              source={{ html }}
+              style={{ flex: 1, backgroundColor: '#FFFFFF', borderRadius: 12, overflow: 'hidden' }}
+              originWhitelist={['*']}
+              scalesPageToFit={Platform.OS === 'android'}
+            />
+          ) : (
+            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+              <Text style={{ fontSize: 15, color: theme.textSecondary, textAlign: 'center', fontFamily: getFontFamily(isRTL, 400) }}>
+                {isRTL ? 'جارٍ التحميل...' : 'Loading...'}
+              </Text>
+            </View>
+          )}
+        </View>
       </View>
     </Modal>
   );
 };
+

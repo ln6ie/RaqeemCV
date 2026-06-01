@@ -1,40 +1,43 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, ScrollView, Dimensions } from 'react-native';
 import { BouncyPressable } from '../components/BouncyPressable';
 import { Ionicons } from '@expo/vector-icons';
 import { CVTemplate, TEMPLATE_NAMES, TEMPLATE_DESCRIPTIONS } from '../types/cv';
 import { useCVContext } from '../context/CVContext';
+import { TemplatePreviewSheet } from '../components/TemplatePreviewSheet';
 
 import { SPACING, getFontFamily } from '../constants/tokens';
 
-const ALL_TEMPLATES: CVTemplate[] = ['classic', 'engineering', 'hospitality', 'executive', 'zenith', 'creative-edge', 'profile-elegance', 'rose-elegance', 'mocha-executive', 'ivy-standard'];
+const ALL_TEMPLATES: CVTemplate[] = ['classic', 'engineering', 'hospitality', 'executive', 'zenith', 'creative-edge', 'profile-elegance', 'rose-elegance', 'mocha-executive', 'ivy-standard', 'elite'];
 
 export const Step0Template = () => {
   const { cvData, updateField, isDarkMode, isRTL, theme, t } = useCVContext();
+  const [previewTemplate, setPreviewTemplate] = useState<CVTemplate | null>(null);
   const current = cvData.template || 'classic';
   const lang = isRTL ? 'ar' : 'en';
 
   return (
     <View style={{ gap: SPACING.md }}>
-      <Text style={{
-        color: theme.textPrimary,
-        fontSize: 20,
-        fontWeight: '700',
-        letterSpacing: -0.3,
-        textAlign: isRTL ? 'right' : 'left',
-        fontFamily: getFontFamily(isRTL, 700),
-      }}>
-        {t.steps.template}
-      </Text>
-      <Text style={{
-        color: theme.textSecondary,
-        fontSize: 13,
-        textAlign: isRTL ? 'right' : 'left',
-        fontFamily: getFontFamily(isRTL, 400),
-        marginBottom: SPACING.xs,
-      }}>
-        {isRTL ? 'اختر القالب المناسب لسيرتك الذاتية. اضغط مطولاً لمعاينته.' : 'Choose your CV template. Long-press to preview.'}
-      </Text>
+      <View style={{ gap: 0.01 }}>
+        <Text style={{
+          color: theme.textPrimary,
+          fontSize: 20,
+          fontWeight: '700',
+          letterSpacing: -0.3,
+          textAlign: isRTL ? 'right' : 'left',
+          fontFamily: getFontFamily(isRTL, 700),
+        }}>
+          {t.steps.template}
+        </Text>
+        <Text style={{
+          color: theme.textSecondary,
+          fontSize: 13,
+          textAlign: isRTL ? 'right' : 'left',
+          fontFamily: getFontFamily(isRTL, 400),
+        }}>
+          {isRTL ? 'اختر القالب المناسب لسيرتك الذاتية. اضغط مطولاً لمعاينته.' : 'Choose your CV template. Long-press to preview.'}
+        </Text>
+      </View>
 
       <ScrollView
         showsVerticalScrollIndicator={false}
@@ -57,6 +60,7 @@ export const Step0Template = () => {
               <BouncyPressable
                 key={tmpl}
                 onPress={() => updateField('template', tmpl)}
+                onLongPress={() => setPreviewTemplate(tmpl)}
                 pressDepth={0.96}
                 haptic={false}
                 style={{ width: cardWidth }}
@@ -104,6 +108,10 @@ export const Step0Template = () => {
         </View>
       </ScrollView>
 
+      <TemplatePreviewSheet
+        template={previewTemplate}
+        onClose={() => setPreviewTemplate(null)}
+      />
     </View>
   );
 };

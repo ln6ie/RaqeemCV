@@ -9,6 +9,7 @@ import { renderProfileEleganceTemplate } from './templates/profileTemplate';
 import { renderRoseTemplate } from './templates/roseTemplate';
 import { renderMochaTemplate } from './templates/mochaTemplate';
 import { renderIvyTemplate } from './templates/ivyTemplate';
+import { renderEliteTemplate } from './templates/eliteTemplate';
 
 /**
  * Generates a fully self-contained, print-safe A4 HTML document.
@@ -40,6 +41,8 @@ export const generateCVTemplate = (
       return renderMochaTemplate(data, isRTL);
     case 'ivy-standard':
       return renderIvyTemplate(data, isRTL);
+    case 'elite':
+      return renderEliteTemplate(data, isRTL);
     case 'classic':
     default:
       return renderClassicTemplate(data, isRTL);

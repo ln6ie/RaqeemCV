@@ -12,12 +12,12 @@ export const SAMPLE_CV_EN: CVData = {
   summary:
     'Dedicated Electromechanical Engineer with 6+ years of experience in industrial maintenance, automation systems, and project management. Proven track record of improving operational efficiency by 30% through preventive maintenance programs and system upgrades. Adept at leading cross-functional teams and delivering results under tight deadlines.',
   skills: [
-    'PLC Programming (Siemens S7)',
-    'AutoCAD Electrical',
-    'Hydraulic & Pneumatic Systems',
-    'Predictive Maintenance',
-    'Project Management',
-    'MS Office Suite',
+    'PLC Programming (Siemens S7) (90%)',
+    'AutoCAD Electrical (85%)',
+    'Hydraulic & Pneumatic Systems (80%)',
+    'Predictive Maintenance (95%)',
+    'Project Management (85%)',
+    'MS Office Suite (75%)',
   ],
   workExperience: [
     {
@@ -68,12 +68,12 @@ export const SAMPLE_CV_AR: CVData = {
   summary:
     'مهندس ميكاترونيكس متمرس بخبرة تزيد على 6 سنوات في مجال الصيانة الصناعية وأنظمة الأتمتة وإدارة المشاريع. أثبتت كفاءتي في رفع الكفاءة التشغيلية بنسبة 30% من خلال برامج الصيانة الوقائية والترقيات التقنية. لديّ قدرة عالية على قيادة الفرق متعددة التخصصات وتحقيق النتائج ضمن الجداول الزمنية المحددة.',
   skills: [
-    'برمجة PLC (سيمنز S7)',
-    'AutoCAD الكهربائي',
-    'أنظمة الهيدروليك والهوائيات',
-    'الصيانة التنبؤية',
-    'إدارة المشاريع',
-    'حزمة مايكروسوفت أوفيس',
+    'برمجة PLC (سيمنز S7) (90%)',
+    'AutoCAD الكهربائي (85%)',
+    'أنظمة الهيدروليك والهوائيات (80%)',
+    'الصيانة التنبؤية (95%)',
+    'إدارة المشاريع (85%)',
+    'حزمة مايكروسوفت أوفيس (75%)',
   ],
   workExperience: [
     {

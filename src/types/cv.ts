@@ -50,14 +50,14 @@ export const CVSchema = z.object({
     .min(1, { message: 'At least one course is required' }),
   languages: z.array(LanguageSchema)
     .min(1, { message: 'At least one language is required' }),
-  template: z.enum(['classic', 'engineering', 'hospitality', 'executive', 'zenith', 'creative-edge', 'profile-elegance', 'rose-elegance', 'mocha-executive', 'ivy-standard']).optional().default('classic'),
+  template: z.enum(['classic', 'engineering', 'hospitality', 'executive', 'zenith', 'creative-edge', 'profile-elegance', 'rose-elegance', 'mocha-executive', 'ivy-standard', 'elite']).optional().default('classic'),
 });
 
 export type WorkExperience = z.infer<typeof WorkExperienceSchema>;
 export type Education = z.infer<typeof EducationSchema>;
 export type CVData = z.infer<typeof CVSchema>;
 export type Language = z.infer<typeof LanguageSchema>;
-export type CVTemplate = 'classic' | 'engineering' | 'hospitality' | 'executive' | 'zenith' | 'creative-edge' | 'profile-elegance' | 'rose-elegance' | 'mocha-executive' | 'ivy-standard';
+export type CVTemplate = 'classic' | 'engineering' | 'hospitality' | 'executive' | 'zenith' | 'creative-edge' | 'profile-elegance' | 'rose-elegance' | 'mocha-executive' | 'ivy-standard' | 'elite';
 
 /** Lightweight metadata for CV saved in the list */
 export interface CVSummary {
@@ -72,7 +72,7 @@ export interface CVSummary {
  * so partial CV data still renders. Normalises old `modern`/`creative` values.
  */
 const normalizeTemplate = (v: unknown): CVTemplate => {
-  if (v === 'engineering' || v === 'hospitality' || v === 'executive' || v === 'zenith' || v === 'creative-edge' || v === 'profile-elegance' || v === 'rose-elegance' || v === 'mocha-executive' || v === 'ivy-standard') return v;
+  if (v === 'engineering' || v === 'hospitality' || v === 'executive' || v === 'zenith' || v === 'creative-edge' || v === 'profile-elegance' || v === 'rose-elegance' || v === 'mocha-executive' || v === 'ivy-standard' || v === 'elite') return v;
   return 'classic';
 };
 
@@ -105,27 +105,29 @@ export const PreviewCVSchema = z.object({
 });
 
 export const TEMPLATE_NAMES: Record<CVTemplate, { en: string; ar: string }> = {
-  classic: { en: 'Classic Professional', ar: 'احترافي كلاسيكي' },
-  engineering: { en: 'Engineering & Technical', ar: 'هندسي وتقني' },
-  hospitality: { en: 'Hospitality & Cafe', ar: 'ضيافة ومقاهي' },
-  executive: { en: 'Executive Premium', ar: 'تنفيذي ممتاز' },
-  zenith: { en: 'Zenith Minimalist', ar: 'زينث مينيماليست' },
-  'creative-edge': { en: 'Creative Edge', ar: 'كرييتف إيدج' },
-  'profile-elegance': { en: 'Profile Elegance', ar: 'بروفايل إليغنس' },
-  'rose-elegance': { en: 'Rose Elegance', ar: 'روز إليغنس' },
-  'mocha-executive': { en: 'Mocha Executive', ar: 'موكا إكسيكيوتيف' },
-  'ivy-standard': { en: 'Ivy League Standard', ar: 'آيفي ليغ ستاندرد' },
+  classic: { en: 'Classic', ar: 'كلاسيكي' },
+  engineering: { en: 'Technical', ar: 'تقني' },
+  hospitality: { en: 'Hospitality', ar: 'ضيافة' },
+  executive: { en: 'Executive', ar: 'تنفيذي' },
+  zenith: { en: 'Zenith', ar: 'زينث' },
+  'creative-edge': { en: 'Creative', ar: 'إبداعي' },
+  'profile-elegance': { en: 'Elegant', ar: 'أنيق' },
+  'rose-elegance': { en: 'Rose', ar: 'وردي' },
+  'mocha-executive': { en: 'Mocha', ar: 'موكا' },
+  'ivy-standard': { en: 'Ivy', ar: 'آيفي' },
+  elite: { en: 'Elite', ar: 'النخبة' },
 };
 
 export const TEMPLATE_DESCRIPTIONS: Record<CVTemplate, { en: string; ar: string }> = {
-  classic: { en: 'Clean traditional layout, perfect for all industries', ar: 'تصميم نظيف تقليدي، مناسب لجميع المجالات' },
-  engineering: { en: 'Technical layout with skills sidebar, blue/gray tones', ar: 'تصميم تقني مع شريط جانبي للمهارات، درجات أزرق/رمادي' },
-  hospitality: { en: 'Warm design with rounded elements, service-focused', ar: 'تصميم دافئ مع عناصر دائرية، موجه للخدمة' },
-  executive: { en: 'Premium dark header with gold accents, management focus', ar: 'رأس غامق فاخر مع لمسات ذهبية، موجه للإدارة' },
-  zenith: { en: 'Asymmetrical dual-column layout with tag-chip skills, minimalist aesthetic', ar: 'تصميم عمودين غير متماثل مع رقاقات مهارات، جمالية بسيطة' },
-  'creative-edge': { en: 'Bold header with dark sidebar, skill progress bars, and timeline layout', ar: 'رأس جريء مع شريط جانبي غامق، أشرطة تقدم للمهارات، وتصميم زمني' },
-  'profile-elegance': { en: 'Elegant layout with profile photo, sidebar contact/skills, and clean timeline', ar: 'تصميم أنيق مع صورة شخصية، شريط جانبي للمهارات، وخط زمني نظيف' },
-  'rose-elegance': { en: 'Soft blush-pink sidebar, pill-shaped skill chips, delicate feminine aesthetic', ar: 'شريط جانبي وردي ناعم، رقاقات مهارات دائرية، جمالية أنثوية رقيقة' },
-  'mocha-executive': { en: 'Bold mocha-brown header, dual-column with skill dot indicators, executive presence', ar: 'رأس بني غامق جريء، عمودين مع نقاط مهارات، حضور تنفيذي' },
-  'ivy-standard': { en: 'Single-column ATS-optimized resume, pure white, centered sections, Harvard business format', ar: 'سيرة ذاتية عمود واحد محسّنة لـATS، أبيض نقي، أقسام مركزة، تنسيق هارفارد' },
+  classic: { en: 'Clean traditional layout for all industries', ar: 'تصميم كلاسيكي نظيف لجميع المجالات' },
+  engineering: { en: 'Technical sidebar layout for practitioners', ar: 'تصميم تقني عملي مع عمود جانبي' },
+  hospitality: { en: 'Warm design with service-focused details', ar: 'تصميم دافئ ومميز للخدمات والضيافة' },
+  executive: { en: 'Premium gold accents management style', ar: 'تصميم رسمي فاخر بلمسات ذهبية للإدارة' },
+  zenith: { en: 'Asymmetrical dual-column modern format', ar: 'تصميم عصري مبسط وموزع في عمودين' },
+  'creative-edge': { en: 'Bold dark sidebar with experience timeline', ar: 'تصميم إبداعي جريء ومخطط زمني مميز' },
+  'profile-elegance': { en: 'Elegant profile picture sidebar layout', ar: 'تصميم أنيق بالصورة الشخصية وتوزيع متناسق' },
+  'rose-elegance': { en: 'Soft pink background with pill-shaped skill chips', ar: 'تصميم هادئ بألوان وردية وتفاصيل ناعمة' },
+  'mocha-executive': { en: 'Rich brown premium corporate presence', ar: 'تصميم فاخر باللون البني بحضور رسمي' },
+  'ivy-standard': { en: 'ATS-friendly centered Ivy League layout', ar: 'تصميم أكاديمي معتمد ومحسن لأنظمة ATS' },
+  elite: { en: 'Luxury two-page professional grid layout', ar: 'تصميم النخبة الفاخر الممتد على صفحتين' },
 };

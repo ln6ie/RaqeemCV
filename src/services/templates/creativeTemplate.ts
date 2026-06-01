@@ -7,7 +7,7 @@ export const renderCreativeEdgeTemplate = (data: CVData, isRTL: boolean): string
   const dir = isRTL ? 'rtl' : 'ltr';
   const textAlign = isRTL ? 'right' : 'left';
   const listPaddingSide = isRTL ? 'padding-right' : 'padding-left';
-  const fontStack = "'Poppins', 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
+  const fontStack = "'Poppins', 'Cairo', 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
   const gold = '#FFB800';
   const dark = '#1A1A1A';
   const lightBg = '#F9F9F9';
@@ -34,9 +34,17 @@ export const renderCreativeEdgeTemplate = (data: CVData, isRTL: boolean): string
 
   const jobTitle = data.workExperience.length > 0 ? data.workExperience[0].jobTitle : '';
 
-  const skillLevel = (_skill: string, idx: number): number => {
-    const levels = [88, 92, 78, 85, 70, 95, 75, 82, 90, 68];
-    return levels[idx % levels.length];
+  const parseSkill = (skillStr: string, defaultVal: number = 85): { name: string; percentage: number } => {
+    const percentRegex = /(?::|\||-|\()?[:\s]*(\d+)\s*%?\)?\s*$/;
+    const match = skillStr.match(percentRegex);
+    if (match) {
+      const val = parseInt(match[1], 10);
+      if (!isNaN(val) && val >= 0 && val <= 100) {
+        const cleanName = skillStr.replace(percentRegex, '').trim();
+        return { name: cleanName, percentage: val };
+      }
+    }
+    return { name: skillStr.trim(), percentage: defaultVal };
   };
 
   const svgPhone = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="${gold}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>`;
@@ -58,13 +66,19 @@ export const renderCreativeEdgeTemplate = (data: CVData, isRTL: boolean): string
   const skillsBlock = data.skills.length > 0 ? `
     <div class="section-block" style="margin-bottom:28px;">
       <h2 style="font-family:${fontStack}; font-size:11px; font-weight:700; color:${gold}; text-transform:uppercase; letter-spacing:1.5px; margin-bottom:14px; text-align:${leftAlign};">${lbl.skills}</h2>
-      ${data.skills.map((skill, i) => `
-        <div style="margin-bottom:10px;">
-          <div style="font-family:${fontStack}; font-size:9.5px; color:${c.sidebarText}; margin-bottom:4px; text-align:${leftAlign};">${skill}</div>
-          <div style="width:100%; height:6px; background:rgba(255,255,255,0.15); border-radius:3px; overflow:hidden;">
-            <div style="width:${skillLevel(skill, i)}%; height:100%; background:${gold}; border-radius:3px;"></div>
-          </div>
-        </div>`).join('')}
+      ${data.skills.map((skill) => {
+        const info = parseSkill(skill);
+        return `
+          <div style="margin-bottom:12px; page-break-inside:avoid; break-inside:avoid;">
+            <div style="display:flex; justify-content:space-between; font-family:${fontStack}; font-size:10px; color:${c.sidebarText}; margin-bottom:4px; flex-direction:${isRTL ? 'row-reverse' : 'row'};">
+              <span style="font-weight:500;">${info.name}</span>
+              <span style="color:${gold}; font-weight:600;">${info.percentage}%</span>
+            </div>
+            <div style="width:100%; height:6px; background:rgba(255,255,255,0.15); border-radius:3px; overflow:hidden;">
+              <div style="width:${info.percentage}%; height:100%; background:${gold}; border-radius:3px;"></div>
+            </div>
+          </div>`;
+      }).join('')}
     </div>` : '';
 
   const languagesBlock = data.languages.length > 0 ? `
@@ -78,18 +92,10 @@ export const renderCreativeEdgeTemplate = (data: CVData, isRTL: boolean): string
     </div>` : '';
 
   const socialBlock = `
-    <div style="position:absolute; bottom:28px; ${leftAlign}: 20px; display:flex; gap:14px;">
+    <div style="margin-top:40px; display:flex; gap:14px; ${isRTL ? 'justify-content:flex-end' : 'justify-content:flex-start'};">
       ${svgLinkedin}
       ${svgTwitter}
       ${svgGithub}
-    </div>`;
-
-  const sidebarContent = `
-    <div style="background:${c.sidebarBg}; padding:30px 20px; height:100%; position:relative; min-height:700px;">
-      ${contactBlock}
-      ${skillsBlock}
-      ${languagesBlock}
-      ${socialBlock}
     </div>`;
 
   const renderExperience = (): string =>
@@ -129,16 +135,6 @@ export const renderCreativeEdgeTemplate = (data: CVData, isRTL: boolean): string
   const sectionTitle = (title: string): string => `
     <h2 style="font-family:${fontStack}; font-size:12px; font-weight:700; color:${c.body}; text-transform:uppercase; letter-spacing:1px; margin:22px 0 14px 0; text-align:${textAlign}; border-bottom:2px solid ${gold}; padding-bottom:4px; display:inline-block;">${title}</h2>`;
 
-  const rightContent = `
-    <div style="padding:30px 24px;">
-      ${summarySection}
-      ${data.workExperience.length > 0 ? `<div>${sectionTitle(lbl.experience)}<div style="position:relative;">${renderExperience()}</div></div>` : ''}
-      ${data.education.length > 0 ? `<div>${sectionTitle(lbl.education)}<div style="position:relative;">${renderEducation()}</div></div>` : ''}
-    </div>`;
-
-  const sidebarSide = isRTL ? 'right' : 'left';
-  const mainSide = isRTL ? 'left' : 'right';
-
   return `<!DOCTYPE html>
 <html lang="${lang}" dir="${dir}" style="color-scheme:light;">
 <head>
@@ -146,7 +142,7 @@ export const renderCreativeEdgeTemplate = (data: CVData, isRTL: boolean): string
   <title>${data.fullName} - CV</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;900&family=Montserrat:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;900&family=Cairo:wght@400;600;700;900&family=Montserrat:wght@400;500;600;700;900&display=swap" rel="stylesheet">
   <style>
     @media print {
       .no-print{display:none!important;}
@@ -163,8 +159,12 @@ export const renderCreativeEdgeTemplate = (data: CVData, isRTL: boolean): string
 </head>
 <body>
   <div style="background:${gold}; padding:24px 30px; text-align:${isRTL ? 'right' : 'left'}; display:flex; align-items:center; gap:20px; flex-direction:${isRTL ? 'row-reverse' : 'row'};" class="force-bg">
-    <div style="width:80px; height:80px; border-radius:50%; background:rgba(255,255,255,0.2); border:3px solid #FFFFFF; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
-      <span style="font-family:${fontStack}; font-size:28px; font-weight:900; color:#FFFFFF;">${initials}</span>
+    <div style="width:80px; height:80px; border-radius:50%; background:rgba(255,255,255,0.2); border:3px solid #FFFFFF; display:flex; align-items:center; justify-content:center; flex-shrink:0; overflow:hidden;">
+      ${data.profileImage ? `
+        <img src="${data.profileImage}" alt="Profile Image" style="width:100%; height:100%; object-fit:cover; display:block;" />
+      ` : `
+        <span style="font-family:${fontStack}; font-size:28px; font-weight:900; color:#FFFFFF;">${initials}</span>
+      `}
     </div>
     <div>
       <h1 style="font-family:${fontStack}; font-size:26px; font-weight:900; color:#FFFFFF; text-transform:uppercase; letter-spacing:1px; margin:0; line-height:1.2;">${data.fullName}</h1>
@@ -174,8 +174,20 @@ export const renderCreativeEdgeTemplate = (data: CVData, isRTL: boolean): string
 
   <table style="width:100%; border-collapse:collapse;" cellpadding="0" cellspacing="0">
     <tr>
-      <td style="width:35%; vertical-align:top; border:none; padding:0;">${sidebarContent}</td>
-      <td style="width:65%; vertical-align:top; border:none; padding:0;">${rightContent}</td>
+      <!-- Sidebar -->
+      <td style="width:35%; vertical-align:top; border:none; background:${c.sidebarBg}; padding:30px 20px;">
+        ${contactBlock}
+        ${skillsBlock}
+        ${languagesBlock}
+        ${socialBlock}
+      </td>
+
+      <!-- Main Content -->
+      <td style="width:65%; vertical-align:top; border:none; background:${c.background}; padding:30px 24px;">
+        ${summarySection}
+        ${data.workExperience.length > 0 ? `<div>${sectionTitle(lbl.experience)}<div style="position:relative;">${renderExperience()}</div></div>` : ''}
+        ${data.education.length > 0 ? `<div>${sectionTitle(lbl.education)}<div style="position:relative;">${renderEducation()}</div></div>` : ''}
+      </td>
     </tr>
   </table>
 </body>

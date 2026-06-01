@@ -7,10 +7,10 @@ export const renderZenithTemplate = (data: CVData, isRTL: boolean): string => {
   const dir = isRTL ? 'rtl' : 'ltr';
   const textAlign = isRTL ? 'right' : 'left';
   const listPaddingSide = isRTL ? 'padding-right' : 'padding-left';
-  const fontStack = "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif";
+  const fontStack = "'Inter', 'Cairo', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
   const c = {
     sidebarBg: '#F8FAFC',
-    sidebarText: '#334155',
+    sidebarText: '#475569',
     background: '#FFFFFF',
     body: '#334155',
     primaryText: '#0F172A',
@@ -25,46 +25,38 @@ export const renderZenithTemplate = (data: CVData, isRTL: boolean): string => {
   const leftAlign = isRTL ? 'right' : 'left';
 
   const sectionTitle = (title: string): string => `
-    <h2 class="section-block" style="font-family:${fontStack}; font-size:14px; font-weight:600; color:${c.primaryText}; text-transform:uppercase; letter-spacing:1.2px; margin:22px 0 12px 0; padding-bottom:6px; border-bottom:1.5px solid ${c.accent}; text-align:${textAlign};">${title}</h2>`;
+    <h2 class="section-block" style="font-family:${fontStack}; font-size:12px; font-weight:700; color:${c.primaryText}; text-transform:uppercase; letter-spacing:1.2px; margin:22px 0 12px 0; padding-bottom:6px; border-bottom:1.5px solid ${c.accent}; text-align:${textAlign};">${title}</h2>`;
 
   const contactBlock = `
-    <div style="font-family:${fontStack}; font-size:11px; color:${c.sidebarText}; line-height:1.8; text-align:${leftAlign};">
-      <div>${data.address}</div>
-      <div>${data.phone}</div>
-      <div>${data.email}</div>
+    <div style="font-family:${fontStack}; font-size:10.5px; color:${c.sidebarText}; line-height:1.8; text-align:${leftAlign};">
+      ${data.address ? `<div style="margin-bottom:4px;"><strong>${lbl.address}:</strong><br/>${data.address}</div>` : ''}
+      ${data.phone ? `<div style="margin-bottom:4px;">${data.phone}</div>` : ''}
+      ${data.email ? `<div style="word-break:break-all;">${data.email}</div>` : ''}
     </div>`;
 
   const languagesBlock = data.languages.length > 0 ? `
-    <div class="section-block">
+    <div class="section-block" style="margin-top:6px;">
       ${sectionTitle(lbl.languages)}
-      <div style="font-family:${fontStack}; font-size:11px; color:${c.sidebarText}; line-height:1.9; text-align:${leftAlign};">
-        ${data.languages.map(l => `<div style="margin-bottom:2px;">${l.name} — ${l.level}</div>`).join('')}
+      <div style="font-family:${fontStack}; font-size:10.5px; color:${c.sidebarText}; line-height:1.9; text-align:${leftAlign};">
+        ${data.languages.map(l => `<div style="margin-bottom:2px;"><strong style="color:${c.primaryText};">${l.name}</strong> — ${l.level}</div>`).join('')}
       </div>
     </div>` : '';
 
   const skillsBlock = data.skills.length > 0 ? `
-    <div class="section-block skills-container">
+    <div class="section-block skills-container" style="margin-top:6px;">
       ${sectionTitle(lbl.skills)}
       <div style="font-size:0; line-height:0;">
-        ${data.skills.map(s => `<span style="display:inline-block; font-family:${fontStack}; font-size:10px; font-weight:500; color:${c.tagText}; background:${c.tagBg}; border-radius:6px; padding:4px 10px; margin:0 4px 6px 0; line-height:1.4;">${s}</span>`).join('')}
+        ${data.skills.map(s => `<span style="display:inline-block; font-family:${fontStack}; font-size:9.5px; font-weight:500; color:${c.tagText}; background:${c.tagBg}; border-radius:4px; padding:3px 8px; margin:0 4px 6px 0; line-height:1.4;">${s}</span>`).join('')}
       </div>
     </div>` : '';
 
   const coursesBlock = data.courses.length > 0 ? `
-    <div class="section-block">
+    <div class="section-block" style="margin-top:6px;">
       ${sectionTitle(lbl.courses)}
       <div style="font-size:0; line-height:0;">
-        ${data.courses.map(course => `<span style="display:inline-block; font-family:${fontStack}; font-size:10px; font-weight:500; color:${c.secondaryText}; background:${c.border}; border-radius:6px; padding:4px 10px; margin:0 4px 6px 0; line-height:1.4;">${course}</span>`).join('')}
+        ${data.courses.map(course => `<span style="display:inline-block; font-family:${fontStack}; font-size:9.5px; font-weight:500; color:${c.secondaryText}; background:${c.border}; border-radius:4px; padding:3px 8px; margin:0 4px 6px 0; line-height:1.4;">${course}</span>`).join('')}
       </div>
     </div>` : '';
-
-  const sidebarContent = `
-    <div style="background:${c.sidebarBg}; padding:30px 20px; height:100%;">
-      <div style="margin-bottom:24px;">${contactBlock}</div>
-      ${languagesBlock}
-      ${skillsBlock}
-      ${coursesBlock}
-    </div>`;
 
   const renderExperience = (): string =>
     data.workExperience.map((exp) => `
@@ -107,7 +99,11 @@ export const renderZenithTemplate = (data: CVData, isRTL: boolean): string => {
 <head>
   <meta charset="utf-8"><meta name="color-scheme" content="light">
   <title>${data.fullName} - CV</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
+    @media print{body{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;}}
     html{color-scheme:light;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
     *{box-sizing:border-box;margin:0;padding:0;forced-color-adjust:none;}
     .experience-item,.education-item,.skills-container,.section-block{page-break-inside:avoid;break-inside:avoid;}
@@ -115,12 +111,29 @@ export const renderZenithTemplate = (data: CVData, isRTL: boolean): string => {
   </style>
 </head>
 <body>
-  <table style="width:100%; border-collapse:collapse; min-height:297mm;" cellpadding="0" cellspacing="0">
-    <tr>
-      <td style="width:32%; vertical-align:top; border:none; padding:0;">${sidebarContent}</td>
-      <td style="width:68%; vertical-align:top; border:none; padding:0;">${rightContent}</td>
-    </tr>
-  </table>
+  <div style="width:210mm;">
+    <table style="width:100%; border-collapse:collapse;" cellpadding="0" cellspacing="0">
+      <tr>
+        <!-- Sidebar Column -->
+        <td style="width:32%; vertical-align:top; border:none; background:${c.sidebarBg}; padding:30px 20px;">
+          ${data.profileImage ? `
+            <div style="text-align:center; margin-bottom:24px; page-break-inside:avoid; break-inside:avoid;">
+              <img src="${data.profileImage}" alt="Profile Image" style="width:90px; height:90px; borderRadius:45px; border-radius:50%; object-fit:cover; border:2px solid ${c.accent}; display:inline-block;" />
+            </div>
+          ` : ''}
+          <div style="margin-bottom:24px;">${contactBlock}</div>
+          ${languagesBlock}
+          ${skillsBlock}
+          ${coursesBlock}
+        </td>
+
+        <!-- Main Content Column -->
+        <td style="width:68%; vertical-align:top; border:none; background:${c.background}; padding:0;">
+          ${rightContent}
+        </td>
+      </tr>
+    </table>
+  </div>
 </body>
 </html>`;
 };

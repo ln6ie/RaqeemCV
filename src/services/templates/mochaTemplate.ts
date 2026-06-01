@@ -1,11 +1,24 @@
 import { CVData } from '../../types/cv';
 import { LABELS } from './labels';
 
-const renderSkillDots = (level: number): string => {
+const renderSkillDots = (level: number, isRTL: boolean): string => {
   const dots = Array.from({ length: 5 }, (_, i) =>
-    `<span style="width:10px;height:10px;border-radius:50%;display:inline-block;background-color:${i < level ? '#FFFFFF' : 'rgba(255,255,255,0.3)'};margin-right:4px;"></span>`
+    `<span style="width:10px;height:10px;border-radius:50%;display:inline-block;background-color:${i < level ? '#FFFFFF' : 'rgba(255,255,255,0.3)'};margin-${isRTL ? 'left' : 'right'}:4px;"></span>`
   ).join('');
-  return `<div style="display:flex;flex-wrap:nowrap;gap:2px;margin-top:2px;">${dots}</div>`;
+  return `<div style="display:flex;flex-wrap:nowrap;gap:2px;margin-top:4px;flex-direction:${isRTL ? 'row-reverse' : 'row'};">${dots}</div>`;
+};
+
+const parseSkill = (skillStr: string, defaultVal: number = 85): { name: string; percentage: number } => {
+  const percentRegex = /(?::|\||-|\()?[:\s]*(\d+)\s*%?\)?\s*$/;
+  const match = skillStr.match(percentRegex);
+  if (match) {
+    const val = parseInt(match[1], 10);
+    if (!isNaN(val) && val >= 0 && val <= 100) {
+      const cleanName = skillStr.replace(percentRegex, '').trim();
+      return { name: cleanName, percentage: val };
+    }
+  }
+  return { name: skillStr.trim(), percentage: defaultVal };
 };
 
 export const renderMochaTemplate = (data: CVData, isRTL: boolean): string => {
@@ -50,12 +63,18 @@ export const renderMochaTemplate = (data: CVData, isRTL: boolean): string => {
 
   const skillsHtml = data.skills.length > 0 ? `
     <div style="text-align:${textAlign};">
-      ${data.skills.map(s => `
-        <div style="margin-bottom:8px;page-break-inside:avoid;break-inside:avoid;">
-          <div style="font-size:10.5px;color:${c.sidebarText};font-weight:500;">${s}</div>
-          ${renderSkillDots(3)}
-        </div>
-      `).join('')}
+      ${data.skills.map(s => {
+        const info = parseSkill(s);
+        const dotsCount = Math.max(1, Math.min(5, Math.round(info.percentage / 20)));
+        return `
+          <div style="margin-bottom:10px;page-break-inside:avoid;break-inside:avoid;">
+            <div style="font-size:10.5px;color:${c.sidebarText};font-weight:500;display:flex;justify-content:space-between;flex-direction:${isRTL ? 'row-reverse' : 'row'};">
+              <span>${info.name}</span>
+              <span style="opacity:0.65;font-size:9.5px;">${info.percentage}%</span>
+            </div>
+            ${renderSkillDots(dotsCount, isRTL)}
+          </div>`;
+      }).join('')}
     </div>` : '';
 
   const coursesHtml = data.courses.length > 0 ? `
@@ -118,70 +137,71 @@ export const renderMochaTemplate = (data: CVData, isRTL: boolean): string => {
   <style>
     html{color-scheme:light;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
     *{box-sizing:border-box;margin:0;padding:0;forced-color-adjust:none;}
-    body{background:#FFFFFF;color:${c.body};color-scheme:light;font-family:${fontStack};font-size:11px;line-height:1.5;width:210mm;min-height:297mm;margin:0 auto;direction:${dir};-webkit-print-color-adjust:exact;print-color-adjust:exact;}
-    .body-row{display:flex;align-items:flex-start;}
-    .sidebar{width:${sidebarWidth};padding:24px 20px;page-break-inside:avoid;}
-    .main{width:${mainWidth};padding:24px 28px;}
-    .sidebar,.main{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
-    h2, .contact-item, .skill-item, .experience-item, .education-item, .award-item, .section-heading{
-      page-break-inside:avoid;
-      break-inside:avoid;
-    }
-    @media print{
-      body{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
-      .sidebar{-webkit-print-color-adjust:exact;print-color-adjust:exact;color:#FFFFFF !important;}
-      .sidebar *{-webkit-print-color-adjust:exact;print-color-adjust:exact;color:#FFFFFF !important;}
-      .main{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
-    }
-  </style>
-</head>
+  body { background:#FFFFFF; color:${c.body}; color-scheme:light; font-family:${fontStack}; font-size:11px; line-height:1.5; width:210mm; min-height:297mm; margin:0 auto; direction:${dir}; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+  .page { width: 210mm; }
+  .sidebar { padding:24px 20px; page-break-inside:avoid; }
+  .main { padding:24px 28px; }
+  .sidebar, .main { -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+  h2, .contact-item, .skill-item, .experience-item, .education-item, .award-item, .section-heading {
+    page-break-inside:avoid;
+    break-inside:avoid;
+  }
+  @media print {
+    body { -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+    .sidebar { -webkit-print-color-adjust:exact; print-color-adjust:exact; color:#FFFFFF !important; }
+    .sidebar * { -webkit-print-color-adjust:exact; print-color-adjust:exact; color:#FFFFFF !important; }
+    .main { -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+  }
+</style></head>
 <body>
-
+<div class="page">
   <!-- Header Row -->
-  <div style="display:flex;flex-direction:${isRTL ? 'row-reverse' : 'row'};width:100%;">
-    <div style="width:35%;">
-      ${data.profileImage
-        ? `<img src="${data.profileImage}" alt="Profile" style="width:100%;aspect-ratio:1/1;object-fit:cover;display:block;border-radius:0;" />`
-        : `<div style="width:100%;aspect-ratio:1/1;background:${c.mochaLight};display:flex;align-items:center;justify-content:center;"><span style="color:rgba(255,255,255,0.4);font-size:32px;font-weight:800;">${data.fullName ? data.fullName.charAt(0).toUpperCase() : ''}</span></div>`
-      }
-    </div>
-    <div style="width:65%;background:${c.mocha};display:flex;flex-direction:column;justify-content:center;padding:24px 28px;min-height:${data.profileImage ? 'auto' : '180px'};">
-      ${(() => {
-        const nameParts = data.fullName.trim().split(' ');
-        const firstName = nameParts[0] || data.fullName;
-        const lastName = nameParts.slice(1).join(' ') || '';
-        const jobTitle = data.workExperience.length > 0 ? data.workExperience[0].jobTitle : '';
-        return `
-          <div style="text-align:${textAlign};">
-            <h1 style="font-family:${fontStack};font-size:28px;font-weight:900;color:${c.white};text-transform:uppercase;letter-spacing:1.5px;margin:0 0 2px 0;line-height:1.2;">${firstName}</h1>
-            ${lastName ? `<h1 style="font-family:${fontStack};font-size:28px;font-weight:900;color:${c.white};text-transform:uppercase;letter-spacing:1.5px;margin:0 0 6px 0;line-height:1.2;">${lastName}</h1>` : ''}
-            ${jobTitle ? `<div style="font-family:${fontStack};font-size:11px;font-weight:500;color:rgba(255,255,255,0.8);text-transform:uppercase;letter-spacing:2px;margin-top:4px;">${jobTitle}</div>` : ''}
-          </div>
-        `;
-      })()}
-    </div>
-  </div>
+  <table style="width:100%; border-collapse:collapse;" cellpadding="0" cellspacing="0">
+    <tr>
+      <td style="width:35%; vertical-align:middle; border:none; background:${c.mocha}; padding:20px; text-align:center;">
+        ${data.profileImage
+          ? `<img src="${data.profileImage}" alt="Profile" style="width:110px; height:110px; border-radius:50%; object-fit:cover; display:inline-block; border:3px solid #FFFFFF; box-shadow: 0 4px 12px rgba(0,0,0,0.15);" />`
+          : `<div style="width:110px; height:110px; border-radius:50%; background:${c.mochaLight}; display:inline-block; vertical-align:middle; border:3px solid rgba(255,255,255,0.25); line-height:104px; text-align:center;"><span style="color:#FFFFFF; font-size:36px; font-weight:900; font-family:${fontStack};">${data.fullName ? data.fullName.charAt(0).toUpperCase() : ''}</span></div>`
+        }
+      </td>
+      <td style="width:65%; vertical-align:middle; border:none; background:${c.mocha}; padding:24px 28px;">
+        ${(() => {
+          const nameParts = data.fullName.trim().split(' ');
+          const firstName = nameParts[0] || data.fullName;
+          const lastName = nameParts.slice(1).join(' ') || '';
+          const jobTitle = data.workExperience.length > 0 ? data.workExperience[0].jobTitle : '';
+          return `
+            <div style="text-align:${textAlign};">
+              <h1 style="font-family:${fontStack};font-size:28px;font-weight:900;color:${c.white};text-transform:uppercase;letter-spacing:1.5px;margin:0 0 2px 0;line-height:1.2;">${firstName}</h1>
+              ${lastName ? `<h1 style="font-family:${fontStack};font-size:28px;font-weight:900;color:${c.white};text-transform:uppercase;letter-spacing:1.5px;margin:0 0 6px 0;line-height:1.2;">${lastName}</h1>` : ''}
+              ${jobTitle ? `<div style="font-family:${fontStack};font-size:11px;font-weight:500;color:rgba(255,255,255,0.8);text-transform:uppercase;letter-spacing:2px;margin-top:4px;">${jobTitle}</div>` : ''}
+            </div>
+          `;
+        })()}
+      </td>
+    </tr>
+  </table>
 
   <!-- Main Body Row -->
-  <div class="body-row" style="background:linear-gradient(${gradientDir}, ${c.mocha} 0%, ${c.mocha} 35%, #FFFFFF 35%, #FFFFFF 100%);">
+  <table style="width:100%; border-collapse:collapse;" cellpadding="0" cellspacing="0">
+    <tr>
+      <!-- Left Sidebar -->
+      <td class="sidebar" style="width:35%; vertical-align:top; border:none; background:${c.mocha}; color:${c.sidebarText};">
+        ${contactHtml ? sectionTitle(lbl.address, userIcon) + contactHtml : ''}
+        ${skillsHtml ? sectionTitle(lbl.skills, bookIcon) + skillsHtml : ''}
+        ${coursesHtml ? sectionTitle(lbl.courses, trophyIcon) + coursesHtml : ''}
+        ${languagesHtml ? sectionTitle(lbl.languages, globeIcon) + languagesHtml : ''}
+      </td>
 
-    <!-- Left Sidebar -->
-    <div class="sidebar" style="color:${c.sidebarText};">
-      ${contactHtml ? sectionTitle(lbl.address, userIcon) + contactHtml : ''}
-      ${skillsHtml ? sectionTitle(lbl.skills, bookIcon) + skillsHtml : ''}
-      ${coursesHtml ? sectionTitle(lbl.courses, trophyIcon) + coursesHtml : ''}
-      ${languagesHtml ? sectionTitle(lbl.languages, globeIcon) + languagesHtml : ''}
-    </div>
-
-    <!-- Right Main Content -->
-    <div class="main" style="color:${c.body};">
-      ${summaryHtml ? mainSectionTitle(lbl.summary) + summaryHtml : ''}
-      ${experienceHtml ? mainSectionTitle(lbl.experience) + experienceHtml : ''}
-      ${educationHtml ? mainSectionTitle(lbl.education) + educationHtml : ''}
-    </div>
-
-  </div>
-
+      <!-- Right Main Content -->
+      <td class="main" style="width:65%; vertical-align:top; border:none; background:#FFFFFF; color:${c.body};">
+        ${summaryHtml ? mainSectionTitle(lbl.summary) + summaryHtml : ''}
+        ${experienceHtml ? mainSectionTitle(lbl.experience) + experienceHtml : ''}
+        ${educationHtml ? mainSectionTitle(lbl.education) + educationHtml : ''}
+      </td>
+    </tr>
+  </table>
+</div>
 </body>
 </html>`;
 };
