@@ -2,7 +2,7 @@
   "expo": {
     "name": "Raqeem CV",
     "slug": "raqeem",
-    "version": "1.0.8",
+    "version": "1.0.9",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
@@ -11,6 +11,7 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.elcomlab.raqeem",
       "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false,
         "LSApplicationQueriesSchemes": ["chatgpt", "claude"],
         "NSPhotoLibraryUsageDescription": "This app requires access to your photo library to select a profile photo for your generated CV documents.",
         "NSCameraUsageDescription": "This app requires access to your camera to capture a new profile photo directly for your generated CV documents."
