@@ -50,14 +50,14 @@ export const CVSchema = z.object({
     .min(1, { message: 'At least one course is required' }),
   languages: z.array(LanguageSchema)
     .min(1, { message: 'At least one language is required' }),
-  template: z.enum(['classic', 'engineering', 'hospitality', 'executive', 'zenith', 'creative-edge', 'profile-elegance']).optional().default('classic'),
+  template: z.enum(['classic', 'engineering', 'hospitality', 'executive', 'zenith', 'creative-edge', 'profile-elegance', 'rose-elegance', 'mocha-executive', 'ivy-standard']).optional().default('classic'),
 });
 
 export type WorkExperience = z.infer<typeof WorkExperienceSchema>;
 export type Education = z.infer<typeof EducationSchema>;
 export type CVData = z.infer<typeof CVSchema>;
 export type Language = z.infer<typeof LanguageSchema>;
-export type CVTemplate = 'classic' | 'engineering' | 'hospitality' | 'executive' | 'zenith' | 'creative-edge' | 'profile-elegance';
+export type CVTemplate = 'classic' | 'engineering' | 'hospitality' | 'executive' | 'zenith' | 'creative-edge' | 'profile-elegance' | 'rose-elegance' | 'mocha-executive' | 'ivy-standard';
 
 /** Lightweight metadata for CV saved in the list */
 export interface CVSummary {
@@ -72,7 +72,7 @@ export interface CVSummary {
  * so partial CV data still renders. Normalises old `modern`/`creative` values.
  */
 const normalizeTemplate = (v: unknown): CVTemplate => {
-  if (v === 'engineering' || v === 'hospitality' || v === 'executive' || v === 'zenith' || v === 'creative-edge' || v === 'profile-elegance') return v;
+  if (v === 'engineering' || v === 'hospitality' || v === 'executive' || v === 'zenith' || v === 'creative-edge' || v === 'profile-elegance' || v === 'rose-elegance' || v === 'mocha-executive' || v === 'ivy-standard') return v;
   return 'classic';
 };
 
@@ -112,6 +112,9 @@ export const TEMPLATE_NAMES: Record<CVTemplate, { en: string; ar: string }> = {
   zenith: { en: 'Zenith Minimalist', ar: 'زينث مينيماليست' },
   'creative-edge': { en: 'Creative Edge', ar: 'كرييتف إيدج' },
   'profile-elegance': { en: 'Profile Elegance', ar: 'بروفايل إليغنس' },
+  'rose-elegance': { en: 'Rose Elegance', ar: 'روز إليغنس' },
+  'mocha-executive': { en: 'Mocha Executive', ar: 'موكا إكسيكيوتيف' },
+  'ivy-standard': { en: 'Ivy League Standard', ar: 'آيفي ليغ ستاندرد' },
 };
 
 export const TEMPLATE_DESCRIPTIONS: Record<CVTemplate, { en: string; ar: string }> = {
@@ -122,4 +125,7 @@ export const TEMPLATE_DESCRIPTIONS: Record<CVTemplate, { en: string; ar: string 
   zenith: { en: 'Asymmetrical dual-column layout with tag-chip skills, minimalist aesthetic', ar: 'تصميم عمودين غير متماثل مع رقاقات مهارات، جمالية بسيطة' },
   'creative-edge': { en: 'Bold header with dark sidebar, skill progress bars, and timeline layout', ar: 'رأس جريء مع شريط جانبي غامق، أشرطة تقدم للمهارات، وتصميم زمني' },
   'profile-elegance': { en: 'Elegant layout with profile photo, sidebar contact/skills, and clean timeline', ar: 'تصميم أنيق مع صورة شخصية، شريط جانبي للمهارات، وخط زمني نظيف' },
+  'rose-elegance': { en: 'Soft blush-pink sidebar, pill-shaped skill chips, delicate feminine aesthetic', ar: 'شريط جانبي وردي ناعم، رقاقات مهارات دائرية، جمالية أنثوية رقيقة' },
+  'mocha-executive': { en: 'Bold mocha-brown header, dual-column with skill dot indicators, executive presence', ar: 'رأس بني غامق جريء، عمودين مع نقاط مهارات، حضور تنفيذي' },
+  'ivy-standard': { en: 'Single-column ATS-optimized resume, pure white, centered sections, Harvard business format', ar: 'سيرة ذاتية عمود واحد محسّنة لـATS، أبيض نقي، أقسام مركزة، تنسيق هارفارد' },
 };

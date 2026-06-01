@@ -6,6 +6,9 @@ import { renderExecutiveTemplate } from './templates/executiveTemplate';
 import { renderZenithTemplate } from './templates/zenithTemplate';
 import { renderCreativeEdgeTemplate } from './templates/creativeTemplate';
 import { renderProfileEleganceTemplate } from './templates/profileTemplate';
+import { renderRoseTemplate } from './templates/roseTemplate';
+import { renderMochaTemplate } from './templates/mochaTemplate';
+import { renderIvyTemplate } from './templates/ivyTemplate';
 
 /**
  * Generates a fully self-contained, print-safe A4 HTML document.
@@ -31,6 +34,12 @@ export const generateCVTemplate = (
       return renderCreativeEdgeTemplate(data, isRTL);
     case 'profile-elegance':
       return renderProfileEleganceTemplate(data, isRTL);
+    case 'rose-elegance':
+      return renderRoseTemplate(data, isRTL);
+    case 'mocha-executive':
+      return renderMochaTemplate(data, isRTL);
+    case 'ivy-standard':
+      return renderIvyTemplate(data, isRTL);
     case 'classic':
     default:
       return renderClassicTemplate(data, isRTL);

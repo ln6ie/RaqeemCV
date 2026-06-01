@@ -81,7 +81,7 @@ export const Header = ({
             {/* Sample CV loader */}
             <NativeButton
               onPress={onLoadSample}
-              systemImage="flask"
+              systemImage="document"
               variant="glass"
               style={styles.headerButton}
               accessibilityLabel="Load Sample CV"

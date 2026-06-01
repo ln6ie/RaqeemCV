@@ -1,20 +1,18 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { View, Text, ScrollView, Dimensions } from 'react-native';
 import { BouncyPressable } from '../components/BouncyPressable';
 import { Ionicons } from '@expo/vector-icons';
 import { CVTemplate, TEMPLATE_NAMES, TEMPLATE_DESCRIPTIONS } from '../types/cv';
 import { useCVContext } from '../context/CVContext';
-import { TemplatePreviewSheet } from '../components/TemplatePreviewSheet';
-import { SPACING, getFontFamily } from '../constants/tokens';
-import { GlassicView } from '../components/Glassic';
 
-const ALL_TEMPLATES: CVTemplate[] = ['classic', 'engineering', 'hospitality', 'executive', 'zenith', 'creative-edge', 'profile-elegance'];
+import { SPACING, getFontFamily } from '../constants/tokens';
+
+const ALL_TEMPLATES: CVTemplate[] = ['classic', 'engineering', 'hospitality', 'executive', 'zenith', 'creative-edge', 'profile-elegance', 'rose-elegance', 'mocha-executive', 'ivy-standard'];
 
 export const Step0Template = () => {
   const { cvData, updateField, isDarkMode, isRTL, theme, t } = useCVContext();
   const current = cvData.template || 'classic';
   const lang = isRTL ? 'ar' : 'en';
-  const [previewTarget, setPreviewTarget] = useState<CVTemplate | null>(null);
 
   return (
     <View style={{ gap: SPACING.md }}>
@@ -59,34 +57,23 @@ export const Step0Template = () => {
               <BouncyPressable
                 key={tmpl}
                 onPress={() => updateField('template', tmpl)}
-                onLongPress={() => setPreviewTarget(tmpl)}
                 pressDepth={0.96}
                 haptic={false}
                 style={{ width: cardWidth }}
               >
-                <GlassicView
-                  cornerRadius={16}
-                  glassEffectStyle={isActive ? 'prominent' : 'regular'}
-                  isDarkMode={isDarkMode}
-                  style={{
-                    padding: 14,
-                    minHeight: 120,
-                    justifyContent: 'space-between',
-                    borderWidth: isActive ? 2 : 0.5,
-                    borderColor: isActive ? theme.accent : (isDarkMode ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.08)'),
-                  }}
-                >
+                <View style={{
+                  padding: 14,
+                  minHeight: 120,
+                  justifyContent: 'space-between',
+                  borderWidth: isActive ? 2 : 0.5,
+                  borderColor: isActive ? theme.accent : (isDarkMode ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.08)'),
+                  borderRadius: 16,
+                }}>
                   <View style={{ flexDirection: isRTL ? 'row-reverse' : 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                     <Ionicons
                       name={isActive ? "checkmark-circle" : "ellipse-outline"}
                       size={20}
                       color={isActive ? theme.accent : theme.textSecondary}
-                    />
-                    <Ionicons
-                      name="eye-outline"
-                      size={16}
-                      color={theme.textSecondary}
-                      style={{ opacity: 0.6 }}
                     />
                   </View>
 
@@ -110,17 +97,13 @@ export const Step0Template = () => {
                       {TEMPLATE_DESCRIPTIONS[tmpl][lang]}
                     </Text>
                   </View>
-                </GlassicView>
+                </View>
               </BouncyPressable>
             );
           })}
         </View>
       </ScrollView>
 
-      <TemplatePreviewSheet
-        template={previewTarget}
-        onClose={() => setPreviewTarget(null)}
-      />
     </View>
   );
 };

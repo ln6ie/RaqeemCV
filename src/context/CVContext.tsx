@@ -123,7 +123,7 @@ export function CVProvider({ children }: { children: React.ReactNode }) {
   const [isPDFImporterVisible, setIsPDFImporterVisible] = useState(false);
 
   const snackOpacity = useRef(new Animated.Value(0)).current;
-  const snackTranslateY = useRef(new Animated.Value(50)).current;
+  const snackTranslateY = useRef(new Animated.Value(-50)).current;
   const snackTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const t = translations[activeLanguage];
@@ -343,7 +343,7 @@ export function CVProvider({ children }: { children: React.ReactNode }) {
   const showSnack = useCallback((msg: string) => {
     setSnackMessage(msg);
     snackOpacity.setValue(0);
-    snackTranslateY.setValue(50);
+    snackTranslateY.setValue(-50);
     Animated.parallel([
       Animated.timing(snackOpacity, { toValue: 1, duration: 300, useNativeDriver: true }),
       Animated.timing(snackTranslateY, { toValue: 0, duration: 400, useNativeDriver: true }),
@@ -352,7 +352,7 @@ export function CVProvider({ children }: { children: React.ReactNode }) {
     snackTimer.current = setTimeout(() => {
       Animated.parallel([
         Animated.timing(snackOpacity, { toValue: 0, duration: 300, useNativeDriver: true }),
-        Animated.timing(snackTranslateY, { toValue: 50, duration: 300, useNativeDriver: true }),
+        Animated.timing(snackTranslateY, { toValue: -50, duration: 300, useNativeDriver: true }),
       ]).start(() => setSnackMessage(null));
     }, 3500);
   }, [snackOpacity, snackTranslateY]);

@@ -26,7 +26,6 @@ const ICON_MAP: Record<string, string> = {
   'chevron.left': 'chevron-back',
   'chevron.right': 'chevron-forward',
   'folder': 'folder-outline',
-  'flask': 'flask-outline',
   'sparkles': 'sparkles',
   'gearshape': 'settings-outline',
   'download': 'download-outline',

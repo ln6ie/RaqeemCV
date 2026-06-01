@@ -95,14 +95,17 @@ function AppShell() {
       {snackMessage && (
         <Animated.View
           style={[sharedStyles.snackPill, {
-            bottom: insets.bottom + 90, backgroundColor: theme.error,
+            top: insets.top + 10, backgroundColor: theme.success,
             opacity: snackOpacity, transform: [{ translateY: snackTranslateY }],
             flexDirection: isRTL ? 'row-reverse' : 'row',
+            zIndex: 1001, elevation: 1001,
+            justifyContent: 'center',
+            gap: 6,
           }]}
           pointerEvents="none"
         >
-          <Ionicons name="alert-circle" size={18} color="#FFFFFF" />
-          <Text style={{ color: '#FFFFFF', fontSize: 14, fontWeight: '600', flex: 1, fontFamily: getFontFamily(isRTL, 600) }} numberOfLines={1}>
+          <Ionicons name="checkmark-circle" size={18} color="#FFFFFF" />
+          <Text style={{ color: '#FFFFFF', fontSize: 14, fontWeight: '600', fontFamily: getFontFamily(isRTL, 600), textAlign: 'center' }} numberOfLines={1}>
             {snackMessage}
           </Text>
         </Animated.View>

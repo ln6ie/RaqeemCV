@@ -73,15 +73,12 @@ export const SettingsSheet = () => {
 
 
           <View style={{ marginBottom: 16 }}>
-            {/* Bar: subtle background — no glass, so active pill can pop */}
-          <View
-              style={{
-                flexDirection: isRTL ? 'row-reverse' : 'row',
-                backgroundColor: isDarkMode ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.05)',
-                borderRadius: 9999,
-                padding: 4,
-              }}
-            >
+            <View style={{
+              flexDirection: isRTL ? 'row-reverse' : 'row',
+              backgroundColor: isDarkMode ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.05)',
+              borderRadius: 9999,
+              padding: 4,
+            }}>
               {([['light', 'sunny-outline', isRTL ? 'فاتح' : 'Light'],
                 ['system', 'phone-portrait-outline', isRTL ? 'النظام' : 'System'],
                 ['dark', 'moon-outline', isRTL ? 'داكن' : 'Dark']] as const).map(([mode, icon, label]) => {
@@ -124,14 +121,12 @@ export const SettingsSheet = () => {
           </View>
 
           <View style={{ marginBottom: 16 }}>
-            <View
-              style={{
-                flexDirection: isRTL ? 'row-reverse' : 'row',
-                backgroundColor: isDarkMode ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.05)',
-                borderRadius: 9999,
-                padding: 4,
-              }}
-            >
+            <View style={{
+              flexDirection: isRTL ? 'row-reverse' : 'row',
+              backgroundColor: isDarkMode ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.05)',
+              borderRadius: 9999,
+              padding: 4,
+            }}>
               {([['en', isRTL ? 'إنجليزي' : 'English'],
                 ['ar', isRTL ? 'عربي' : 'العربية']] as const).map(([lang, label]) => {
                 const isActive = activeLanguage === lang;
