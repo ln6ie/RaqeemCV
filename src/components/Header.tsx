@@ -137,9 +137,10 @@ export const Header = ({
 const styles = StyleSheet.create({
   headerButton: {
     borderRadius: BORDER_RADIUS.full,
-    width: 36,
-    height: 36,
+    width: 40,
+    height: 40,
     alignItems: 'center',
     justifyContent: 'center',
+    borderCurve: 'circular',
   },
 });

@@ -70,10 +70,16 @@ function AppShell() {
         {activeStep > 0 && (
           <NativeButton
             onPress={handlePrev}
-            systemImage={isRTL ? 'chevron.right' : 'chevron.left'}
-            variant="borderedProminent"
-            style={sharedStyles.fab}
-            size="large"
+            systemImage={isRTL ? 'arrow.right' : 'arrow.left'}
+            variant="glass"
+            style={{
+              width: 40,
+              height: 40,
+              borderRadius: 9999,
+              alignItems: 'center',
+              justifyContent: 'center',
+              borderCurve: 'circular',
+            }}
             accessibilityLabel={isRTL ? 'السابق' : 'Previous'}
             color={theme.accent}
           />
@@ -82,10 +88,16 @@ function AppShell() {
         {activeStep < 4 && (
           <NativeButton
             onPress={handleNext}
-            systemImage={isRTL ? 'chevron.left' : 'chevron.right'}
-            variant="borderedProminent"
-            style={sharedStyles.fab}
-            size="large"
+            systemImage={isRTL ? 'arrow.left' : 'arrow.right'}
+            variant="glass"
+            style={{
+              width: 40,
+              height: 40,
+              borderRadius: 9999,
+              alignItems: 'center',
+              justifyContent: 'center',
+              borderCurve: 'circular',
+            }}
             accessibilityLabel={isRTL ? 'التالي' : 'Next'}
             color={theme.accent}
           />

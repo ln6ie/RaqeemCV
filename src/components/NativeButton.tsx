@@ -25,6 +25,8 @@ const ICON_MAP: Record<string, string> = {
   'xmark': 'close',
   'chevron.left': 'chevron-back',
   'chevron.right': 'chevron-forward',
+  'arrow.left': 'arrow-back',
+  'arrow.right': 'arrow-forward',
   'folder': 'folder-outline',
   'sparkles': 'sparkles',
   'gearshape': 'settings-outline',

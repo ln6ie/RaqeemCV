@@ -97,5 +97,6 @@ const styles = StyleSheet.create({
     borderRadius: 9999,
     alignItems: 'center',
     justifyContent: 'center',
+    borderCurve: 'circular',
   },
 });

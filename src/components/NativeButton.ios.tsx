@@ -25,6 +25,8 @@ const ICON_MAP: Record<string, string> = {
   'xmark': 'close',
   'chevron.left': 'chevron-back',
   'chevron.right': 'chevron-forward',
+  'arrow.left': 'arrow-back',
+  'arrow.right': 'arrow-forward',
   'folder': 'folder-outline',
   'sparkles': 'sparkles',
   'gearshape': 'settings-outline',
@@ -40,7 +42,7 @@ let tintMod: any = null;
 let controlSizeMod: any = null;
 let labelStyleMod: any = null;
 let frameMod: any = null;
-let clipShapeMod: any = null;
+let buttonBorderShapeMod: any = null;
 let isNativeUIReady = false;
 
 try {
@@ -53,7 +55,7 @@ try {
   controlSizeMod = modifiers.controlSize;
   labelStyleMod = modifiers.labelStyle;
   frameMod = modifiers.frame;
-  clipShapeMod = modifiers.clipShape;
+  buttonBorderShapeMod = modifiers.buttonBorderShape;
   isNativeUIReady = true;
 } catch (err) {
   console.log('[NativeButton Debug] Error loading @expo/ui:', err);
@@ -203,7 +205,14 @@ export const NativeButton: React.FC<NativeButtonProps> = ({
 
   // We can render ANY button natively if @expo/ui is available, we have a system image or a label,
   // and there are no custom React Native children.
+  // Can render native ONLY if:
+  // - @expo/ui is available
+  // - Button has systemImage or label (no children)
+  // - Button is not circular, OR buttonBorderShape modifier is available (for perfect circles)
+  const isCircular = wVal === hVal && wVal > 0;
+  const hasBorderShapeFix = !isCircular || buttonBorderShapeMod != null;
   const canRenderNative =
+    hasBorderShapeFix &&
     isNativeUIReady &&
     Host &&
     SwiftUIButton &&
@@ -215,6 +224,9 @@ export const NativeButton: React.FC<NativeButtonProps> = ({
     if (buttonStyleMod) {
       mods.push(buttonStyleMod(variant));
     }
+    if (isCircular && buttonBorderShapeMod) {
+      mods.push(buttonBorderShapeMod('circle'));
+    }
     if (tintMod && color) {
       mods.push(tintMod(color));
     }
@@ -222,7 +234,7 @@ export const NativeButton: React.FC<NativeButtonProps> = ({
     // Auto-determine control size based on layout dimensions to prevent squeezing/clipping
     const wVal = typeof flattenedStyle.width === 'number' ? flattenedStyle.width : 44;
     const hVal = typeof flattenedStyle.height === 'number' ? flattenedStyle.height : 44;
-    const resolvedSize = size || (wVal <= 36 ? 'small' : wVal <= 44 ? 'regular' : 'large');
+    const resolvedSize = size || (wVal <= 32 ? 'small' : wVal <= 44 ? 'regular' : 'large');
 
     if (controlSizeMod) {
       mods.push(controlSizeMod(resolvedSize));
@@ -241,8 +253,7 @@ export const NativeButton: React.FC<NativeButtonProps> = ({
       }
     }
 
-    // Build a minimal, transparent Host style — only layout dims and position.
-    // ALL visual styling is the SwiftUI button's own responsibility.
+    // Build a minimal Host style — only layout dims and position.
     const hostStyle: Record<string, any> = {};
     if (typeof flattenedStyle.width === 'number') hostStyle.width = flattenedStyle.width;
     if (typeof flattenedStyle.height === 'number') hostStyle.height = flattenedStyle.height;
