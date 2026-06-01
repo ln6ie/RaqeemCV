@@ -48,6 +48,7 @@ let controlSizeMod: any = null;
 let labelStyleMod: any = null;
 let frameMod: any = null;
 let buttonBorderShapeMod: any = null;
+let foregroundColorMod: any = null;
 let isNativeUIReady = false;
 
 try {
@@ -57,6 +58,7 @@ try {
   SwiftUIButton = swiftUI.Button;
   buttonStyleMod = modifiers.buttonStyle;
   tintMod = modifiers.tint;
+  foregroundColorMod = modifiers.foregroundColor;
   controlSizeMod = modifiers.controlSize;
   labelStyleMod = modifiers.labelStyle;
   frameMod = modifiers.frame;
@@ -234,8 +236,12 @@ export const NativeButton: React.FC<NativeButtonProps> = ({
     if (isCircular && buttonBorderShapeMod) {
       mods.push(buttonBorderShapeMod('circle'));
     }
-    if (tintMod && color) {
-      mods.push(tintMod(color));
+    if (color) {
+      if (variant === 'plain' && foregroundColorMod) {
+        mods.push(foregroundColorMod(color));
+      } else if (tintMod) {
+        mods.push(tintMod(color));
+      }
     }
 
     // Auto-determine control size based on layout dimensions to prevent squeezing/clipping

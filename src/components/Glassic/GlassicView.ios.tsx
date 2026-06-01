@@ -44,14 +44,12 @@ export const GlassicView = ({
   const borderColor = isDarkMode ? 'rgba(255,255,255,0.12)' : 'rgba(255,255,255,0.55)';
   const bgColor = isDarkMode ? 'rgba(28,28,30,0.55)' : 'rgba(255,255,255,0.45)';
 
-  // 👈 استخراج نوع الانحناء من الـ style القادم من الزر لإجبار الزجاج على الدائرة
   const flattenedStyle = StyleSheet.flatten(style) || {};
   const customBorderCurve = flattenedStyle.borderCurve || 'circular';
 
-  // ── iOS 26+ native GlassView ─────────────────────────────────
   if (isLiquidGlassAvailable && GlassView) {
     return (
-      <View style={[{ position: 'relative', borderRadius: cornerRadius, overflow: 'hidden', borderWidth: 0.5, borderColor }, style]}>
+      <View style={[{ position: 'relative', borderRadius: cornerRadius, borderWidth: 0.5, borderColor }, style]}>
         <GlassView
           glassEffectStyle={glassEffectStyle}
           style={[StyleSheet.absoluteFill, { borderRadius: cornerRadius, borderCurve: customBorderCurve }]}
@@ -62,7 +60,6 @@ export const GlassicView = ({
     );
   }
 
-  // ── BlurView fallback (pre-iOS 26 or Expo Go) ────────────────
   const tint = resolveBlurTint(glassEffectStyle);
 
   return (
@@ -71,7 +68,6 @@ export const GlassicView = ({
         {
           position: 'relative',
           borderRadius: cornerRadius,
-          overflow: 'hidden',
           borderWidth: 0.5,
           borderColor,
           backgroundColor: bgColor,

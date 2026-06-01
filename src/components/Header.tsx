@@ -91,7 +91,7 @@ export const Header = ({
                 variant="plain"
                 style={styles.headerButton}
                 accessibilityLabel="Load Sample CV"
-                color={theme.textSecondary}
+                color={theme.textPrimary}
               />
 
               {/* AI Prompt */}
@@ -101,7 +101,7 @@ export const Header = ({
                 variant="plain"
                 style={styles.headerButton}
                 accessibilityLabel="AI Prompt"
-                color={theme.accent}
+                color="#007AFF"
               />
 
               {/* Settings */}
