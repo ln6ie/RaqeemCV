@@ -11,9 +11,20 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.elcomlab.raqeem",
       "infoPlist": {
-        "LSApplicationQueriesSchemes": ["chatgpt", "claude"]
+        "LSApplicationQueriesSchemes": ["chatgpt", "claude"],
+        "NSPhotoLibraryUsageDescription": "This app requires access to your photo library to select a profile photo for your generated CV documents.",
+        "NSCameraUsageDescription": "This app requires access to your camera to capture a new profile photo directly for your generated CV documents."
       }
     },
+    "plugins": [
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "This app requires access to your photo library to select a profile photo for your generated CV documents.",
+          "cameraPermission": "This app requires access to your camera to capture a new profile photo directly for your generated CV documents."
+        }
+      ]
+    ],
     "android": {
       "adaptiveIcon": {
         "backgroundColor": "#FFFFFF",

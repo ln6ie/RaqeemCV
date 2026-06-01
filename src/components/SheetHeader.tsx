@@ -22,7 +22,7 @@ export const SheetHeader = ({
   showGrabber = true,
   headerAction,
 }: SheetHeaderProps) => {
-  const CLOSE_SIZE = 40;
+  const CLOSE_SIZE = 56;
 
   return (
     <View style={styles.wrapper}>
@@ -92,8 +92,8 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   closeButtonInner: {
-    width: 40,
-    height: 40,
+    width: 56,
+    height: 56,
     borderRadius: 9999,
     alignItems: 'center',
     justifyContent: 'center',

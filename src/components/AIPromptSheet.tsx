@@ -157,14 +157,24 @@ Start now by welcoming me warmly on behalf of "Raqeem CV" and asking the first q
     }, 2500);
   };
 
-  const handleImport = () => {
-    if (!jsonText.trim()) {
+  const handleImport = async () => {
+    let text = jsonText.trim();
+
+    if (!text) {
+      const clipboard = await Clipboard.getStringAsync();
+      if (clipboard) {
+        text = clipboard.trim();
+        setJsonText(clipboard);
+      }
+    }
+
+    if (!text) {
       showSnack(t.errors.importEmpty);
       return;
     }
 
     try {
-      let cleanedText = jsonText.trim();
+      let cleanedText = text;
 
       // Auto-extract JSON inside conversational texts (between first { and last })
       const firstCurly = cleanedText.indexOf('{');
@@ -246,10 +256,28 @@ Start now by welcoming me warmly on behalf of "Raqeem CV" and asking the first q
           ]}
         >
 
-          <SheetHeader title={isRTL ? 'مساعد رقيم  (AI)' : 'Raqeem AI Assistant'} onClose={() => setIsAIPromptVisible(false)} isRTL={isRTL} isDarkMode={isDarkMode} theme={theme} showGrabber />
+          <SheetHeader title={isRTL ? 'مساعد رقيم  (AI)' : 'Raqeem AI Assistant'} onClose={() => setIsAIPromptVisible(false)} isRTL={isRTL} isDarkMode={isDarkMode} theme={theme} showGrabber
+            headerAction={
+              <NativeButton
+                onPress={handleImport}
+                variant="glassProminent"
+                systemImage="checkmark"
+                style={{
+                  width: 56,
+                  height: 56,
+                  borderRadius: 9999,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  borderCurve: 'circular',
+                }}
+                accessibilityLabel={isRTL ? 'تأكيد' : 'Confirm'}
+                color={theme.accent}
+              />
+            }
+          />
 
 
-          {isNativePickerReady && SwiftUIPicker && SwiftUIText && Host ? (
+          {false && isNativePickerReady && SwiftUIPicker && SwiftUIText && Host ? (
             <Host style={{ width: '100%', height: 40, marginBottom: 20 }}>
               <SwiftUIPicker
                 selection={activeTab}
@@ -284,10 +312,10 @@ Start now by welcoming me warmly on behalf of "Raqeem CV" and asking the first q
                       flexDirection: isRTL ? 'row-reverse' : 'row',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      gap: 6,
+                      gap: 4,
                       paddingVertical: 10,
                       paddingHorizontal: 8,
-                      minHeight: 40,
+                      minHeight: 44,
                       borderRadius: 9999,
                     }}
                     onPress={() => setActiveTab(key)}
@@ -297,7 +325,7 @@ Start now by welcoming me warmly on behalf of "Raqeem CV" and asking the first q
                       color: isActive ? theme.accent : theme.textSecondary,
                       fontFamily: getFontFamily(isRTL, 800),
                       fontSize: 13,
-                    }}>
+                    }} numberOfLines={1} adjustsFontSizeToFit>
                       {label}
                     </Text>
                   </TouchableOpacity>
@@ -367,37 +395,53 @@ Start now by welcoming me warmly on behalf of "Raqeem CV" and asking the first q
             </ScrollView>
           ) : (
             <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 40 }}>
-              <GlassInput
-                label={isRTL ? 'بيانات JSON' : 'JSON Data'}
+              <GlassicView
+                cornerRadius={20}
+                glassEffectStyle="regular"
                 isDarkMode={isDarkMode}
-                isRTL={isRTL}
-                multiline
-                inlineMultiline
-                numberOfLines={12}
-                value={jsonText}
-                onChangeText={setJsonText}
-                placeholder={isRTL ? 'الصق كود الـ JSON أو رد الذكاء الاصطناعي هنا...' : 'Paste JSON or AI response here...'}
-              />
+                style={{ padding: 6, minHeight: 120 }}
+              >
+                <GlassInput
+                  label={isRTL ? 'بيانات JSON' : 'JSON Data'}
+                  isDarkMode={isDarkMode}
+                  isRTL={isRTL}
+                  multiline
+                  inlineMultiline
+                  noCard
+                  numberOfLines={14}
+                  value={jsonText}
+                  onChangeText={setJsonText}
+                  placeholder={isRTL ? 'الصق كود الـ JSON أو رد الذكاء الاصطناعي هنا...' : 'Paste JSON or AI response here...'}
+                />
 
-              <NativeButton
-                onPress={handleImport}
-                variant="borderedProminent"
-                size="large"
-                systemImage="download"
-                label={isRTL ? 'توليد السيرة الذاتية' : 'Auto-Fill CV'}
-                color={theme.accent}
-                style={{ width: '100%', height: 48, borderRadius: 9999 }}
-              />
-
-              <NativeButton
-                onPress={() => setIsPDFImporterVisible(true)}
-                variant="bordered"
-                size="large"
-                systemImage="document"
-                label={isRTL ? 'استيراد من ملف PDF' : 'Import from PDF'}
-                color={theme.accent}
-                style={{ width: '100%', height: 48, borderRadius: 9999, marginTop: 12 }}
-              />
+                <View style={{
+                  position: 'absolute',
+                  bottom: 12,
+                  [isRTL ? 'left' : 'right']: 12,
+                  zIndex: 10,
+                }}>
+                  <NativeButton
+                    onPress={async () => {
+                      const clipboard = await Clipboard.getStringAsync();
+                      if (clipboard) {
+                        setJsonText(clipboard);
+                      }
+                    }}
+                    variant="glass"
+                    systemImage="doc.on.clipboard"
+                    style={{
+                      width: 56,
+                      height: 56,
+                      borderRadius: 9999,
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      borderCurve: 'circular',
+                    }}
+                    accessibilityLabel={isRTL ? 'توليد السيرة الذاتية' : 'Auto-Fill CV'}
+                    color={theme.accent}
+                  />
+                </View>
+              </GlassicView>
             </ScrollView>
           )}
         </View>

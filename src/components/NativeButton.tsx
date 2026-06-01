@@ -31,6 +31,11 @@ const ICON_MAP: Record<string, string> = {
   'sparkles': 'sparkles',
   'gearshape': 'settings-outline',
   'download': 'download-outline',
+  'square.and.arrow.down': 'download-outline',
+  'doc.on.clipboard': 'clipboard-outline',
+  'checkmark': 'checkmark',
+  'square.and.arrow.up': 'share-outline',
+  'eye': 'eye-outline',
   'document': 'document-text-outline',
 };
 
@@ -91,6 +96,7 @@ export const NativeButton: React.FC<NativeButtonProps> = ({
       right,
       zIndex,
       alignSelf,
+      borderCurve,
       ...pressableStyle
     } = flattenedStyle;
 
@@ -109,6 +115,7 @@ export const NativeButton: React.FC<NativeButtonProps> = ({
       right,
       zIndex,
       alignSelf,
+      borderCurve,
     };
 
     return (

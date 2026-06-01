@@ -44,7 +44,7 @@ function AppShell() {
         <ScrollView
           style={{ backgroundColor: theme.background }}
           contentContainerStyle={{
-            paddingTop: 130,
+            paddingTop: 150,
             paddingBottom: insets.bottom + 20 + SPACING.lg + SPACING.md,
             paddingHorizontal: 16,
             flexGrow: 1,
@@ -71,10 +71,10 @@ function AppShell() {
           <NativeButton
             onPress={handlePrev}
             systemImage={isRTL ? 'arrow.right' : 'arrow.left'}
-            variant="glass"
+            variant="glassProminent"
             style={{
-              width: 40,
-              height: 40,
+              width: 56,
+              height: 56,
               borderRadius: 9999,
               alignItems: 'center',
               justifyContent: 'center',
@@ -89,10 +89,10 @@ function AppShell() {
           <NativeButton
             onPress={handleNext}
             systemImage={isRTL ? 'arrow.left' : 'arrow.right'}
-            variant="glass"
+            variant="glassProminent"
             style={{
-              width: 40,
-              height: 40,
+              width: 56,
+              height: 56,
               borderRadius: 9999,
               alignItems: 'center',
               justifyContent: 'center',

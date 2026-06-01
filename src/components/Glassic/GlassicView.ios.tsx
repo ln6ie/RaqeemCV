@@ -44,13 +44,17 @@ export const GlassicView = ({
   const borderColor = isDarkMode ? 'rgba(255,255,255,0.12)' : 'rgba(255,255,255,0.55)';
   const bgColor = isDarkMode ? 'rgba(28,28,30,0.55)' : 'rgba(255,255,255,0.45)';
 
+  // 👈 استخراج نوع الانحناء من الـ style القادم من الزر لإجبار الزجاج على الدائرة
+  const flattenedStyle = StyleSheet.flatten(style) || {};
+  const customBorderCurve = flattenedStyle.borderCurve || 'circular';
+
   // ── iOS 26+ native GlassView ─────────────────────────────────
   if (isLiquidGlassAvailable && GlassView) {
     return (
-      <View style={[{ position: 'relative', borderRadius: cornerRadius, borderWidth: 0.5, borderColor }, style]}>
+      <View style={[{ position: 'relative', borderRadius: cornerRadius, overflow: 'hidden', borderWidth: 0.5, borderColor }, style]}>
         <GlassView
           glassEffectStyle={glassEffectStyle}
-          style={[StyleSheet.absoluteFill, { borderRadius: cornerRadius }]}
+          style={[StyleSheet.absoluteFill, { borderRadius: cornerRadius, borderCurve: customBorderCurve }]}
           pointerEvents={isInteractive ? 'auto' : 'none'}
         />
         {children}
@@ -78,7 +82,7 @@ export const GlassicView = ({
       <BlurView
         intensity={70}
         tint={tint}
-        style={[StyleSheet.absoluteFill, { borderRadius: cornerRadius }]}
+        style={[StyleSheet.absoluteFill, { borderRadius: cornerRadius, borderCurve: customBorderCurve }]}
         pointerEvents="none"
       />
       {children}

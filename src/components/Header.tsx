@@ -68,45 +68,52 @@ export const Header = ({
               marginLeft: isRTL ? 12 : 0,
             }}
           >
-            {/* CV Manager */}
-            <NativeButton
-              onPress={onOpenCVManager}
-              systemImage="folder"
-              variant="glass"
-              style={styles.headerButton}
-              accessibilityLabel="CV Manager"
-              color={theme.textPrimary}
-            />
+            <GlassicView
+              cornerRadius={9999}
+              glassEffectStyle="regular"
+              isDarkMode={isDarkMode}
+              style={{ flexDirection: 'row', gap: 2, paddingHorizontal: 4, paddingVertical: 4 }}
+            >
+              {/* CV Manager */}
+              <NativeButton
+                onPress={onOpenCVManager}
+                systemImage="folder"
+                variant="plain"
+                style={styles.headerButton}
+                accessibilityLabel="CV Manager"
+                color={theme.textPrimary}
+              />
 
-            {/* Sample CV loader */}
-            <NativeButton
-              onPress={onLoadSample}
-              systemImage="document"
-              variant="glass"
-              style={styles.headerButton}
-              accessibilityLabel="Load Sample CV"
-              color={theme.textSecondary}
-            />
+              {/* Sample CV loader */}
+              <NativeButton
+                onPress={onLoadSample}
+                systemImage="document"
+                variant="plain"
+                style={styles.headerButton}
+                accessibilityLabel="Load Sample CV"
+                color={theme.textSecondary}
+              />
 
-            {/* AI Prompt */}
-            <NativeButton
-              onPress={onOpenAIPrompt}
-              systemImage="sparkles"
-              variant="glass"
-              style={styles.headerButton}
-              accessibilityLabel="AI Prompt"
-              color={theme.accent}
-            />
+              {/* AI Prompt */}
+              <NativeButton
+                onPress={onOpenAIPrompt}
+                systemImage="sparkles"
+                variant="plain"
+                style={styles.headerButton}
+                accessibilityLabel="AI Prompt"
+                color={theme.accent}
+              />
 
-            {/* Settings */}
-            <NativeButton
-              onPress={onOpenSettings}
-              systemImage="gearshape"
-              variant="glass"
-              style={styles.headerButton}
-              accessibilityLabel="Settings"
-              color={theme.textPrimary}
-            />
+              {/* Settings */}
+              <NativeButton
+                onPress={onOpenSettings}
+                systemImage="gearshape"
+                variant="plain"
+                style={styles.headerButton}
+                accessibilityLabel="Settings"
+                color={theme.textPrimary}
+              />
+            </GlassicView>
           </View>
         </View>
 
