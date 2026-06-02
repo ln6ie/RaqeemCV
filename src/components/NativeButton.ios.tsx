@@ -225,6 +225,8 @@ export const NativeButton: React.FC<NativeButtonProps> = ({
     isNativeUIReady &&
     Host &&
     SwiftUIButton &&
+    variant !== 'glass' &&
+    variant !== 'glassProminent' &&
     ((typeof systemImage === 'string' && systemImage.length > 0) || (typeof label === 'string' && label.length > 0)) &&
     !children;
 

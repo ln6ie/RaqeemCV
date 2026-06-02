@@ -4,14 +4,7 @@ import { BlurView, BlurTint } from 'expo-blur';
 import { GlassicViewProps, GlassEffectStyle } from './GlassicView.types';
 
 let GlassView: any = null;
-let isLiquidGlassAvailable = false;
-
-try {
-  GlassView = require('expo-glass-effect').GlassView;
-  isLiquidGlassAvailable = true;
-} catch {
-  // expo-glass-effect native module unavailable (Expo Go or pre-iOS 26)
-}
+let isLiquidGlassAvailable = false; // Enforce false to bypass buggy expo-glass-effect and use stable expo-blur BlurView in Release builds
 
 const BLUR_TINT_MAP: Record<GlassEffectStyle, BlurTint> = {
   regular: 'systemMaterial',
