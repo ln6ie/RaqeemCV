@@ -49,6 +49,7 @@ let labelStyleMod: any = null;
 let frameMod: any = null;
 let buttonBorderShapeMod: any = null;
 let foregroundColorMod: any = null;
+let cornerRadiusMod: any = null;
 let isNativeUIReady = false;
 
 try {
@@ -63,6 +64,7 @@ try {
   labelStyleMod = modifiers.labelStyle;
   frameMod = modifiers.frame;
   buttonBorderShapeMod = modifiers.buttonBorderShape;
+  cornerRadiusMod = modifiers.cornerRadius;
   isNativeUIReady = true;
 } catch (err) {
   console.log('[NativeButton Debug] Error loading @expo/ui:', err);
@@ -143,6 +145,7 @@ export const NativeButton: React.FC<NativeButtonProps> = ({
         zIndex,
         alignSelf,
         borderCurve,
+        borderRadius: _extractedBorderRadius,
         ...pressableStyle
       } = flattenedStyle;
 
@@ -162,6 +165,7 @@ export const NativeButton: React.FC<NativeButtonProps> = ({
         zIndex,
         alignSelf,
         borderCurve,
+        borderRadius,
       };
 
       return (
@@ -219,7 +223,8 @@ export const NativeButton: React.FC<NativeButtonProps> = ({
   // - Button has systemImage or label (no children)
   // - Button is not circular, OR buttonBorderShape modifier is available (for perfect circles)
   const isCircular = wVal === hVal && wVal > 0;
-  const hasBorderShapeFix = !isCircular || buttonBorderShapeMod != null;
+  const isCapsule = borderRadius >= hVal / 2 && !isCircular;
+  const hasBorderShapeFix = buttonBorderShapeMod != null || cornerRadiusMod != null || !isCircular;
   const canRenderNative =
     hasBorderShapeFix &&
     isNativeUIReady &&
@@ -235,9 +240,19 @@ export const NativeButton: React.FC<NativeButtonProps> = ({
     if (buttonStyleMod) {
       mods.push(buttonStyleMod(variant));
     }
-    if (isCircular && buttonBorderShapeMod) {
-      mods.push(buttonBorderShapeMod('circle'));
+
+    if (buttonBorderShapeMod) {
+      if (isCircular) {
+        mods.push(buttonBorderShapeMod('circle'));
+      } else if (isCapsule) {
+        mods.push(buttonBorderShapeMod('capsule'));
+      } else {
+        mods.push(buttonBorderShapeMod('roundedRectangle', borderRadius));
+      }
+    } else if (cornerRadiusMod) {
+      mods.push(cornerRadiusMod(borderRadius));
     }
+
     if (color) {
       if (variant === 'plain' && foregroundColorMod) {
         mods.push(foregroundColorMod(color));

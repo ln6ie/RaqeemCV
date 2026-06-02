@@ -42,10 +42,10 @@ export const GlassicView = ({
 
   if (isLiquidGlassAvailable && GlassView) {
     return (
-      <View style={[{ position: 'relative', borderRadius: cornerRadius, borderWidth: 0.5, borderColor }, style]}>
+      <View style={[{ position: 'relative', borderRadius: cornerRadius, borderWidth: 0.5, borderColor, overflow: 'hidden' }, style]}>
         <GlassView
           glassEffectStyle={glassEffectStyle}
-          style={[StyleSheet.absoluteFill, { borderRadius: cornerRadius, borderCurve: customBorderCurve }]}
+          style={[StyleSheet.absoluteFill, { borderRadius: cornerRadius, borderCurve: customBorderCurve, overflow: 'hidden' }]}
           pointerEvents={isInteractive ? 'auto' : 'none'}
         />
         {children}
@@ -64,6 +64,7 @@ export const GlassicView = ({
           borderWidth: 0.5,
           borderColor,
           backgroundColor: bgColor,
+          overflow: 'hidden',
         },
         style,
       ]}
@@ -71,7 +72,7 @@ export const GlassicView = ({
       <BlurView
         intensity={70}
         tint={tint}
-        style={[StyleSheet.absoluteFill, { borderRadius: cornerRadius, borderCurve: customBorderCurve }]}
+        style={[StyleSheet.absoluteFill, { borderRadius: cornerRadius, borderCurve: customBorderCurve, overflow: 'hidden' }]}
         pointerEvents="none"
       />
       {children}
