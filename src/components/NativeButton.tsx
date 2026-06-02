@@ -97,6 +97,7 @@ export const NativeButton: React.FC<NativeButtonProps> = ({
       zIndex,
       alignSelf,
       borderCurve,
+      borderRadius: _extractedBorderRadius,
       ...pressableStyle
     } = flattenedStyle;
 
@@ -116,6 +117,7 @@ export const NativeButton: React.FC<NativeButtonProps> = ({
       zIndex,
       alignSelf,
       borderCurve,
+      borderRadius,
     };
 
     return (
