@@ -29,7 +29,7 @@ class SiteHeader extends HTMLElement {
                     </nav>
 
                     <div class="nav-cta desktop-only">
-                        <a href="#" class="btn btn-primary">ابدأ مجاناً</a>
+                        <a href="raqeem-cv.apk" class="btn btn-primary">تحميل أندرويد APK</a>
                     </div>
 
                     <!-- Hamburger Menu Icon for Mobile -->
@@ -48,7 +48,7 @@ class SiteHeader extends HTMLElement {
                 <a href="suitability.html">الملائمة</a>
                 <a href="support.html">الدعم الفني</a>
                 <a href="privacy.html">الخصوصية</a>
-                <a href="#" class="btn btn-primary mobile-cta" style="margin-top:12px; text-align:center;">ابدأ مجاناً</a>
+                <a href="raqeem-cv.apk" class="btn btn-primary mobile-cta" style="margin-top:12px; text-align:center;">تحميل أندرويد APK</a>
             </div>
         `;
 
