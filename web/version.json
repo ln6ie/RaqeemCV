@@ -1,6 +1,6 @@
 {
-  "latestVersion": "1.0.0",
-  "minimumRequiredVersion": "1.0.0",
+  "latestVersion": "1.1.1",
+  "minimumRequiredVersion": "1.1.0",
   "features": {
     "en": [
       "Brand new SVG typographic layout",
