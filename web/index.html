@@ -7,47 +7,132 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
-        <!-- Brand Premium SVG Monogram Logo (R) matching assets/logo.svg -->
-        <div class="logo-container">
-            <svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="50" cy="50" r="46" stroke="#0A84FF" stroke-width="3" fill="none" opacity="0.15" />
-              <circle cx="50" cy="50" r="38" stroke="#0A84FF" stroke-width="2.5" fill="none" opacity="0.4" />
-              <circle cx="50" cy="50" r="28" stroke="#0A84FF" stroke-width="2.5" fill="none" />
-              <path d="M41,36 C41,36 53,29 58,39 C62,47 56,54 50,55 C58,58 61,67 61,67" stroke="#0A84FF" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" fill="none" />
-              <path d="M43,34 L43,67" stroke="#0A84FF" stroke-width="3.5" stroke-linecap="round" fill="none" />
-            </svg>
-        </div>
-        <div class="brand-title">راقيم</div>
-        <div class="brand-subtitle">منشئ السير الذاتية الاحترافي </div>
 
-        <h1 class="page-title">الموقع التعريفي والتسويقي لـ رقيم</h1>
-        <div class="content">
-            <p><strong>تطبيق رقيم (Raqeem CV)</strong> هو الأداة الاحترافية الأرقى لتوليد وتصميم سيرتك الذاتية محلياً وفقاً لأعلى المعايير المهنية العالمية المتوافقة مع خوارزميات التوظيف (ATS-compliant).</p>
+    <!-- Header Navigation -->
+    <header class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <svg width="40" height="40" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" class="nav-logo">
+                    <circle cx="50" cy="50" r="46" stroke="#0A84FF" stroke-width="3" fill="none" opacity="0.15" />
+                    <circle cx="50" cy="50" r="38" stroke="#0A84FF" stroke-width="2.5" fill="none" opacity="0.4" />
+                    <circle cx="50" cy="50" r="28" stroke="#0A84FF" stroke-width="2.5" fill="none" />
+                    <path d="M41,36 C41,36 53,29 58,39 C62,47 56,54 50,55 C58,58 61,67 61,67" stroke="#0A84FF" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+                    <path d="M43,34 L43,67" stroke="#0A84FF" stroke-width="3.5" stroke-linecap="round" fill="none" />
+                </svg>
+                <span class="brand-name">رقيم</span>
+            </div>
+
+            <nav class="nav-links desktop-only">
+                <a href="#features">المميزات</a>
+                <a href="#templates">القوالب</a>
+                <a href="support.html">الدعم الفني</a>
+            </nav>
             
-            <h2>لماذا تختار رقيم لبناء سيرتك الذاتية؟</h2>
-            <ul>
-                <li><strong>تنسيقات عالمية معتمدة:</strong> قوالب كلاسيكية راقية بنصوص سوداء ناصعة ومرتبة على خلفية بيضاء وخط Cairo المتصل الأنيق لجذب مسؤولي التوظيف.</li>
-                <li><strong>أمان وخصوصية مطلقة:</strong> تتم معالجة وتوليد السيرة الذاتية محلياً بالكامل على جهازك دون إرسال أي بيانات شخصية حساسة إلى أي سيرفر خارجي.</li>
-                <li><strong>واجهات زجاجية تفاعلية:</strong> تجربة استخدام ناعمة وعصرية تدعم الوضعين الداكن والفاتح لتوفير الراحة التامة لبصرك أثناء إدخال البيانات.</li>
-                <li><strong>مزامنة الحفظ والتحرير:</strong> حفظ تلقائي للمدخلات مع محرر نصوص واسع مخصص للمهام الطويلة وتجربة تصدير ومشاركة بلمسة واحدة.</li>
-            </ul>
+            <div class="nav-cta desktop-only">
+                <a href="#" class="button button-primary">ابدأ مجاناً</a>
+            </div>
 
-            <center>
-                <a href="support.html" class="button">تواصل مع الدعم الفني</a>
-            </center>
+            <!-- Hamburger Menu Icon for Mobile -->
+            <div class="hamburger-menu mobile-only" id="mobile-menu-btn">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
         </div>
+    </header>
 
-        <div class="footer">
-            <p>© 2026 رقيم - Raqeem CV. جميع الحقوق محفوظة.</p>
-            <p>
+    <!-- Mobile Dropdown Menu -->
+    <div class="mobile-nav-dropdown" id="mobile-dropdown">
+        <a href="#features">المميزات</a>
+        <a href="#templates">القوالب</a>
+        <a href="support.html">الدعم الفني</a>
+        <a href="#" class="button button-primary mobile-cta">ابدأ مجاناً</a>
+    </div>
+
+    <!-- Main Content Canvas -->
+    <main class="main-canvas">
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-content">
+                <h1 class="hero-headline">منشئ السير الذاتية الأرقى لبناء مستقبلك</h1>
+                <p class="hero-subheadline">تطبيق رقيم (Raqeem CV) هو الأداة الاحترافية لتوليد وتصميم سيرتك الذاتية محلياً وفقاً لأعلى المعايير العالمية المتوافقة مع خوارزميات التوظيف (ATS-compliant).</p>
+                <div class="hero-actions">
+                    <a href="#" class="button button-primary">صمم سيرتك الآن</a>
+                    <a href="support.html" class="button button-secondary">تواصل مع الدعم</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section id="features" class="features">
+            <div class="features-header">
+                <h2>لماذا تختار رقيم؟</h2>
+                <p>صُمم بأحدث التقنيات ليوفر لك تجربة سلسة وآمنة.</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <h3>تنسيقات عالمية معتمدة</h3>
+                    <p>قوالب كلاسيكية راقية بنصوص سوداء ناصعة وخط Cairo الأنيق لجذب مسؤولي التوظيف.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>أمان وخصوصية مطلقة</h3>
+                    <p>تتم معالجة السيرة الذاتية محلياً بالكامل على جهازك دون إرسال بيانات إلى سيرفرات خارجية.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>واجهات زجاجية تفاعلية</h3>
+                    <p>تجربة استخدام ناعمة وعصرية توفر الراحة التامة لبصرك أثناء إدخال البيانات.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>مزامنة وتصدير ذكي</h3>
+                    <p>حفظ تلقائي للمدخلات مع تجربة تصدير ومشاركة بلمسة واحدة بصيغة PDF عالية الجودة.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modern Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-brand">
+                <svg width="50" height="50" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" class="footer-logo">
+                    <circle cx="50" cy="50" r="46" stroke="#0A84FF" stroke-width="3" fill="none" opacity="0.15" />
+                    <circle cx="50" cy="50" r="38" stroke="#0A84FF" stroke-width="2.5" fill="none" opacity="0.4" />
+                    <circle cx="50" cy="50" r="28" stroke="#0A84FF" stroke-width="2.5" fill="none" />
+                    <path d="M41,36 C41,36 53,29 58,39 C62,47 56,54 50,55 C58,58 61,67 61,67" stroke="#0A84FF" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+                    <path d="M43,34 L43,67" stroke="#0A84FF" stroke-width="3.5" stroke-linecap="round" fill="none" />
+                </svg>
+                <div class="brand-name-footer">رقيم</div>
+                <p class="mission-statement">تمكين المحترفين بأدوات بناء مسار مهني استثنائي بخصوصية وأناقة.</p>
+            </div>
+
+            <div class="footer-links-group">
+                <h4>الروابط المهمة</h4>
                 <a href="index.html">الرئيسية</a>
                 <a href="support.html">الدعم الفني</a>
+            </div>
+
+            <div class="footer-links-group">
+                <h4>القانونية والخصوصية</h4>
                 <a href="privacy.html">سياسة الخصوصية</a>
                 <a href="choices.html">خيارات الخصوصية</a>
                 <a href="suitability.html">الملائمة العمرية</a>
-            </p>
+            </div>
         </div>
-    </div>
+
+        <div class="footer-bottom">
+            <p>© 2026 رقيم - Raqeem CV. جميع الحقوق محفوظة.</p>
+        </div>
+    </footer>
+
+    <!-- Interactive Mobile Menu Script -->
+    <script>
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileDropdown = document.getElementById('mobile-dropdown');
+
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenuBtn.classList.toggle('active');
+            mobileDropdown.classList.toggle('open');
+        });
+    </script>
 </body>
 </html>
