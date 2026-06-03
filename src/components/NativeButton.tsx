@@ -57,17 +57,17 @@ export const NativeButton: React.FC<NativeButtonProps> = ({
   const flattenedStyle = StyleSheet.flatten(style) || {};
   const borderRadius = flattenedStyle.borderRadius !== undefined ? flattenedStyle.borderRadius : 12;
 
-  const renderContent = () => {
+  const renderContent = (contentColor?: string) => {
     if (children) return children;
     const content: React.ReactNode[] = [];
+    const finalColor = contentColor || color || '#8E8E93';
     if (systemImage) {
       const iconName = ICON_MAP[systemImage] || 'help-circle-outline';
-      const iconColor = color || '#8E8E93';
-      content.push(<Ionicons key="icon" name={iconName as any} size={20} color={iconColor} />);
+      content.push(<Ionicons key="icon" name={iconName as any} size={20} color={finalColor} />);
     }
     if (label) {
       content.push(
-        <Text key="text" style={{ color: color || '#8E8E93', fontWeight: '600', marginLeft: systemImage ? 6 : 0 }}>
+        <Text key="text" style={{ color: finalColor, fontWeight: '600', marginLeft: systemImage ? 6 : 0 }}>
           {label}
         </Text>
       );
@@ -80,7 +80,7 @@ export const NativeButton: React.FC<NativeButtonProps> = ({
   };
 
   if (variant === 'glass' || variant === 'glassProminent') {
-    // Extract layout-specific props to the GlassicView container
+    // Extract layout-specific props
     const {
       width,
       height,
@@ -101,54 +101,44 @@ export const NativeButton: React.FC<NativeButtonProps> = ({
       ...pressableStyle
     } = flattenedStyle;
 
-    const glassStyle = {
-      width,
-      height,
-      margin,
-      marginTop,
-      marginBottom,
-      marginLeft,
-      marginRight,
-      position,
-      top,
-      bottom,
-      left,
-      right,
-      zIndex,
-      alignSelf,
-      borderCurve,
-      borderRadius,
-    };
+    const buttonBgColor = color || '#007AFF'; // Solid blue background on Android (color is theme.accent, e.g. blue)
+    const iconLabelColor = '#FFFFFF'; // White icons/labels
 
     return (
-      <GlassicView
-        cornerRadius={Number(borderRadius)}
-        glassEffectStyle={variant === 'glassProminent' ? 'prominent' : 'regular'}
-        style={glassStyle}
+      <BouncyPressable
+        onPress={onPress}
+        onLongPress={onLongPress}
+        disabled={disabled}
+        hitSlop={hitSlop}
+        accessibilityLabel={accessibilityLabel}
+        pressDepth={pressDepth}
+        haptic={haptic}
+        style={[
+          pressableStyle,
+          {
+            width,
+            height,
+            margin,
+            marginTop,
+            marginBottom,
+            marginLeft,
+            marginRight,
+            position,
+            top,
+            bottom,
+            left,
+            right,
+            zIndex,
+            alignSelf,
+            borderRadius,
+            justifyContent: 'center',
+            alignItems: 'center',
+            backgroundColor: buttonBgColor,
+          },
+        ]}
       >
-        <BouncyPressable
-          onPress={onPress}
-          onLongPress={onLongPress}
-          disabled={disabled}
-          hitSlop={hitSlop}
-          accessibilityLabel={accessibilityLabel}
-          pressDepth={pressDepth}
-          haptic={haptic}
-          style={[
-            pressableStyle,
-            {
-              width: '100%',
-              height: '100%',
-              justifyContent: 'center',
-              alignItems: 'center',
-              backgroundColor: 'transparent',
-              borderWidth: 0,
-            },
-          ]}
-        >
-          {renderContent()}
-        </BouncyPressable>
-      </GlassicView>
+        {renderContent(iconLabelColor)}
+      </BouncyPressable>
     );
   }
 

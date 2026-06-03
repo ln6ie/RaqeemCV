@@ -6,6 +6,10 @@
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
+    "splash": {
+      "resizeMode": "contain",
+      "backgroundColor": "#0A0A0C"
+    },
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
@@ -32,7 +36,10 @@
         "foregroundImage": "./assets/android-icon-foreground.png"
       },
       "package": "com.elcomlab.raqeem",
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "androidNavigationBar": {
+        "enforceContrast": false
+      }
     },
     "web": {
       "favicon": "./assets/favicon.png"

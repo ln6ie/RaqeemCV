@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, TouchableOpacity, Modal, TextInput, Alert, ScrollView, ActivityIndicator, Platform } from 'react-native';
+import { View, Text, TouchableOpacity, TextInput, Alert, ScrollView, ActivityIndicator, Platform } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useCVContext } from '../context/CVContext';
 import { CVSummary, CVData } from '../types/cv';
 import { SPACING, getFontFamily } from '../constants/tokens';
 import { DEFAULT_CV } from '../constants/defaultCV';
-import { SheetHeader } from './SheetHeader';
+import { ModalBottomSheet } from './ModalBottomSheet';
 
 const CV_LIST_KEY = '@Raqeem_CV_List';
 const CV_DATA_PREFIX = '@Raqeem_CV_Data_';
@@ -120,52 +120,15 @@ export const CVManager = () => {
   };
 
   return (
-    <Modal
+    <ModalBottomSheet
       visible={isCVManagerVisible}
-      transparent={Platform.OS === 'android'}
-      animationType="slide"
-      presentationStyle={Platform.OS === 'ios' ? 'pageSheet' : 'overFullScreen'}
-      onDismiss={() => handleCloseCVManager()}
-      onRequestClose={() => handleCloseCVManager()}
+      onClose={() => handleCloseCVManager()}
+      title={t.cvManager.title}
+      theme={theme}
+      isDarkMode={isDarkMode}
+      isRTL={isRTL}
+      showGrabber
     >
-      <View
-        style={{
-          flex: 1,
-          backgroundColor: theme.background,
-          justifyContent: Platform.OS === 'ios' ? 'flex-start' : 'flex-end',
-        }}
-      >
-        {Platform.OS === 'android' && (
-          <TouchableOpacity
-            style={{ position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, backgroundColor: 'rgba(0,0,0,0.5)' }}
-            activeOpacity={1}
-            onPress={() => handleCloseCVManager()}
-          />
-        )}
-
-        <View
-          style={[
-            Platform.OS === 'ios'
-              ? {
-                  flex: 1,
-                  backgroundColor: theme.background,
-                  paddingHorizontal: 24,
-                  paddingTop: 16,
-                }
-              : {
-                  backgroundColor: theme.cardBackground,
-                  borderTopLeftRadius: 28,
-                  borderTopRightRadius: 28,
-                  paddingHorizontal: 24,
-                  paddingVertical: 24,
-                  borderWidth: 1,
-                  borderColor: theme.cardBorder,
-                  borderBottomWidth: 0,
-                  width: '100%',
-                },
-          ]}
-        >
-          <SheetHeader title={t.cvManager.title} onClose={() => handleCloseCVManager()} isRTL={isRTL} isDarkMode={isDarkMode} theme={theme} showGrabber />
 
           {loading ? (
             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
@@ -267,8 +230,6 @@ export const CVManager = () => {
               ))}
             </ScrollView>
           )}
-        </View>
-      </View>
-    </Modal>
+    </ModalBottomSheet>
   );
 };

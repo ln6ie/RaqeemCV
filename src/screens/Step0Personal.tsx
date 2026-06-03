@@ -157,22 +157,21 @@ export const Step0Personal = () => {
               </View>
             </View>
           ) : (
-            <GlassicView
-              cornerRadius={52}
-              glassEffectStyle="regular"
-              isDarkMode={isDarkMode}
+            <View
               style={{
                 width: 104,
                 height: 104,
+                borderRadius: 52,
                 justifyContent: 'center',
                 alignItems: 'center',
                 borderWidth: 1.5,
-                borderColor: isDarkMode ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.1)',
+                borderColor: theme.accent,
+                backgroundColor: isDarkMode ? '#1C1C1E' : '#FFFFFF',
                 shadowColor: '#000',
                 shadowOffset: { width: 0, height: 4 },
-                shadowOpacity: 0.05,
-                shadowRadius: 10,
-                elevation: 2,
+                shadowOpacity: isDarkMode ? 0.4 : 0.1,
+                shadowRadius: 12,
+                elevation: 4,
               }}
             >
               <Ionicons name="camera-outline" size={36} color={theme.accent} />
@@ -191,7 +190,7 @@ export const Step0Personal = () => {
               }}>
                 <Ionicons name="add" size={18} color={theme.textPrimary} />
               </View>
-            </GlassicView>
+            </View>
           )}
         </Pressable>
         <Text style={{

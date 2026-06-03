@@ -1,12 +1,12 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, Modal, Platform, Pressable } from 'react-native';
+import { View, Text, TouchableOpacity, Platform, Pressable } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { SvgXml } from 'react-native-svg';
 import { useCVContext } from '../context/CVContext';
 import { SPACING, getFontFamily } from '../constants/tokens';
 import { openWithAI, AIService } from '../constants/ai';
 import { SVG_CHATGPT, SVG_GEMINI, SVG_CLAUDE } from '../constants/svg-icons';
-import { SheetHeader } from './SheetHeader';
+import { ModalBottomSheet } from './ModalBottomSheet';
 import { GlassicView } from './Glassic';
 
 interface AIServiceSheetProps {
@@ -45,47 +45,15 @@ export const AIServiceSheet = ({ visible, onClose, prompt }: AIServiceSheetProps
   ];
 
   return (
-    <Modal
+    <ModalBottomSheet
       visible={visible}
-      transparent={Platform.OS === 'android'}
-      animationType="slide"
-      presentationStyle={Platform.OS === 'ios' ? 'pageSheet' : 'overFullScreen'}
-      onDismiss={onClose}
-      onRequestClose={onClose}
+      onClose={onClose}
+      title={isRTL ? 'تحسين بالذكاء الاصطناعي' : 'Improve with AI'}
+      theme={theme}
+      isDarkMode={isDarkMode}
+      isRTL={isRTL}
+      showGrabber
     >
-      <View
-        style={{
-          flex: 1,
-          backgroundColor: theme.background,
-          justifyContent: Platform.OS === 'ios' ? 'flex-start' : 'flex-end',
-        }}
-      >
-        {Platform.OS === 'android' && (
-          <TouchableOpacity
-            style={{ position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, backgroundColor: 'rgba(0,0,0,0.5)' }}
-            activeOpacity={1}
-            onPress={onClose}
-          />
-        )}
-
-        <View
-          style={[
-            Platform.OS === 'ios'
-              ? { flex: 1, backgroundColor: theme.background, paddingHorizontal: 24, paddingTop: 16 }
-              : {
-                  backgroundColor: theme.cardBackground,
-                  borderTopLeftRadius: 28,
-                  borderTopRightRadius: 28,
-                  paddingHorizontal: 24,
-                  paddingVertical: 24,
-                  borderWidth: 1,
-                  borderColor: theme.cardBorder,
-                  borderBottomWidth: 0,
-                  width: '100%',
-                },
-          ]}
-        >
-          <SheetHeader title={isRTL ? 'تحسين بالذكاء الاصطناعي' : 'Improve with AI'} onClose={onClose} isRTL={isRTL} isDarkMode={isDarkMode} theme={theme} showGrabber />
 
           <View style={{ gap: SPACING.md, paddingTop: SPACING.lg }}>
             <Text style={{
@@ -158,8 +126,6 @@ export const AIServiceSheet = ({ visible, onClose, prompt }: AIServiceSheetProps
               </Pressable>
             ))}
           </View>
-        </View>
-      </View>
-    </Modal>
+    </ModalBottomSheet>
   );
 };

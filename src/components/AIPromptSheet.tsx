@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, Modal, Platform, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, Platform, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import * as Clipboard from 'expo-clipboard';
 import { useCVContext } from '../context/CVContext';
 import { getFontFamily } from '../constants/tokens';
-import { SheetHeader } from './SheetHeader';
+import { ModalBottomSheet } from './ModalBottomSheet';
 import { GlassInput } from './GlassInput';
 import { GlassicView } from './Glassic';
 import { NativeButton } from './NativeButton';
@@ -210,71 +210,33 @@ Start now by welcoming me warmly on behalf of "Raqeem CV" and asking the first q
   };
 
   return (
-    <Modal
+    <ModalBottomSheet
       visible={isAIPromptVisible}
-      transparent={Platform.OS === 'android'}
-      animationType="slide"
-      presentationStyle={Platform.OS === 'ios' ? 'pageSheet' : 'overFullScreen'}
-      onRequestClose={() => setIsAIPromptVisible(false)}
+      onClose={() => setIsAIPromptVisible(false)}
+      title={isRTL ? 'مساعد رقيم  (AI)' : 'Raqeem AI Assistant'}
+      theme={theme}
+      isDarkMode={isDarkMode}
+      isRTL={isRTL}
+      showGrabber
+      height="90%"
+      headerAction={
+        <NativeButton
+          onPress={handleImport}
+          variant="glassProminent"
+          systemImage="checkmark"
+          style={{
+            width: 56,
+            height: 56,
+            borderRadius: 9999,
+            alignItems: 'center',
+            justifyContent: 'center',
+            borderCurve: 'circular',
+          }}
+          accessibilityLabel={isRTL ? 'تأكيد' : 'Confirm'}
+          color={theme.accent}
+        />
+      }
     >
-      <View
-        style={{
-          flex: 1,
-          backgroundColor: theme.background,
-          justifyContent: Platform.OS === 'ios' ? 'flex-start' : 'flex-end',
-        }}
-      >
-        {Platform.OS === 'android' && (
-          <TouchableOpacity
-            style={{ position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, backgroundColor: 'rgba(0,0,0,0.5)' }}
-            activeOpacity={1}
-            onPress={() => setIsAIPromptVisible(false)}
-          />
-        )}
-
-        <View
-          style={[
-            Platform.OS === 'ios'
-              ? {
-                flex: 1,
-                backgroundColor: theme.background,
-                paddingHorizontal: 24,
-                paddingTop: 16,
-              }
-              : {
-                backgroundColor: theme.cardBackground,
-                borderTopLeftRadius: 28,
-                borderTopRightRadius: 28,
-                paddingHorizontal: 24,
-                paddingVertical: 24,
-                borderWidth: 1,
-                borderColor: theme.cardBorder,
-                borderBottomWidth: 0,
-                width: '100%',
-                maxHeight: '90%',
-              },
-          ]}
-        >
-
-          <SheetHeader title={isRTL ? 'مساعد رقيم  (AI)' : 'Raqeem AI Assistant'} onClose={() => setIsAIPromptVisible(false)} isRTL={isRTL} isDarkMode={isDarkMode} theme={theme} showGrabber
-            headerAction={
-              <NativeButton
-                onPress={handleImport}
-                variant="glassProminent"
-                systemImage="checkmark"
-                style={{
-                  width: 56,
-                  height: 56,
-                  borderRadius: 9999,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  borderCurve: 'circular',
-                }}
-                accessibilityLabel={isRTL ? 'تأكيد' : 'Confirm'}
-                color={theme.accent}
-              />
-            }
-          />
 
 
           {false && isNativePickerReady && SwiftUIPicker && SwiftUIText && Host ? (
@@ -444,8 +406,6 @@ Start now by welcoming me warmly on behalf of "Raqeem CV" and asking the first q
               </GlassicView>
             </ScrollView>
           )}
-        </View>
-      </View>
-    </Modal>
+    </ModalBottomSheet>
   );
 };

@@ -11,6 +11,7 @@ interface SheetHeaderProps {
   theme: { textPrimary: string; textSecondary: string; cardBackground?: string };
   showGrabber?: boolean;
   headerAction?: React.ReactNode;
+  panHandlers?: any;
 }
 
 export const SheetHeader = ({
@@ -21,11 +22,12 @@ export const SheetHeader = ({
   theme,
   showGrabber = true,
   headerAction,
+  panHandlers,
 }: SheetHeaderProps) => {
   const CLOSE_SIZE = 56;
 
   return (
-    <View style={styles.wrapper}>
+    <View style={styles.wrapper} {...panHandlers}>
       {showGrabber && (
         <View
           style={[
