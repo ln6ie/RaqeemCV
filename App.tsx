@@ -40,7 +40,7 @@ function AppShell() {
 
       <Header isDarkMode={isDarkMode} onOpenSettings={handleOpenSettings} onOpenAIPrompt={handleOpenAIPrompt} onOpenCVManager={handleOpenCVManager} onLoadSample={loadSampleCV} theme={theme} isRTL={isRTL} t={t} activeStep={activeStep} />
 
-      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={[sharedStyles.flex, { backgroundColor: theme.background }]}>
+      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={[sharedStyles.flex, { backgroundColor: theme.background }]}>
         <ScrollView
           style={{ backgroundColor: theme.background }}
           contentContainerStyle={{
