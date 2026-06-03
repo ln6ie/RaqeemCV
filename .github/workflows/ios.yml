@@ -1,8 +1,8 @@
 name: iOS Build & Upload to TestFlight
 
 on:
-  push:
-    branches: ["main"]
+  # push:
+  #   branches: ["main"]
   workflow_dispatch: # Allows manual trigger
 
 env:
