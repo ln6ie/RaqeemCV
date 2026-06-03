@@ -50,7 +50,7 @@ a {
     align-items: center;
     justify-content: center;
     padding: 12px 28px;
-    border-radius: 8px; /* Modern subtle squircle */
+    border-radius: 999px; /* 100% circular pill shape */
     font-weight: 700;
     font-size: 1rem;
     transition: all var(--transition-fast);
